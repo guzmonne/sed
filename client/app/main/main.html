@@ -2,15 +2,34 @@
 
 <header class="hero-unit" id="banner">
   <div class="container">
-    <h1>Bienvenido a SED!</h1>
-    <p class="lead">Por favor ingrese sus datos para iniciar su sesión.</p>
+    <div ng-if="notLoggedIn()">
+    	<h1>Bienvenido a SED!</h1>
+    	<p class="lead">Por favor ingrese sus datos para comenzar a usar el programa.</p>
+    </div>
+    <div ng-if="isLoggedIn()">
+    	<h1 class="lead">{{userName()}}</h1>
+    	<p class="lead">Bienvenido a SED!</p>
+    </div>
   </div>
 </header>
 
-<div class="container">
-  <h1>TODO</h1>
+<div class="container" ng-if="notLoggedIn()">
+  <div ng-include="'/app/account/login/login.html'"></div>
 </div>
 
-<footer class="footer">
-  <i class="fa fa-github"></i>&nbsp;<a href="http://github.com/guzmonne/sed/issues">Reportar Problemas</a>
-</footer>
+<div class="container air-top" ng-if="isLoggedIn()">
+	<div class="row">
+		<div class="col-sm-6">
+			<button class="btn btn-success btn-lg btn-block">
+				Nueva Orden de Servicio
+			</button>
+		</div><!-- /.col-sm-6 -->
+		<div class="col-sm-6">
+			<button class="btn btn-primary btn-lg btn-block">
+				Ordenes de Servicio
+			</button>
+		</div><!-- /.col-sm-6 -->
+	</div><!-- /.row -->
+</div><!-- /.container -->
+
+<footer class="footer" ng-include="'components/footer/footer.html'"></footer>

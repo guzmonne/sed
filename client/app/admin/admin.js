@@ -6,6 +6,13 @@ angular.module('sedApp')
       .state('admin', {
         url: '/admin',
         templateUrl: 'app/admin/admin.html',
-        controller: 'AdminCtrl'
+        controller: 'AdminCtrl',
+        data: {
+        	admin: true
+        }
+      })
+      .state('unauthorized', {
+      	url: '/unauthorized',
+      	templateUrl: 'app/admin/unauthorized.html',
       });
   });

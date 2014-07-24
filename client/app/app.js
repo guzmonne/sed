@@ -41,11 +41,22 @@ angular.module('sedApp', [
     };
   })
 
-  .run(function ($rootScope, $location, Auth) {
+  .run(function ($rootScope, $location, Auth, $timeout) {
     // Redirect to login if route requires auth and you're not logged in
     $rootScope.$on('$stateChangeStart', function (event, next) {
-      if (next.authenticate && !Auth.isLoggedIn()) {
-        $location.path('/login');
+      if (next.data){
+        // TODO - messy...
+        $timeout(function(){
+          if (!Auth.isLoggedIn() && next.data.login === true){ 
+            return $location.path('/'); 
+          }
+          if (!Auth.isAdmin() && next.data.admin === true){ 
+            return $location.path('/unauthorized'); 
+          }
+        }, 500);
       }
+      //if (next.authenticate && !Auth.isLoggedIn()) {
+      //  $location.path('/login');
+      //}
     });
   });

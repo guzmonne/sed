@@ -2,14 +2,11 @@
 
 angular.module('sedApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
-    $scope.menu = [{
-      'title': 'Home',
-      'link': '/'
-    }];
+    $scope.menu = [];
 
-    $scope.isCollapsed = true;
-    $scope.isLoggedIn = Auth.isLoggedIn;
-    $scope.isAdmin = Auth.isAdmin;
+    $scope.isCollapsed    = true;
+    $scope.isLoggedIn     = Auth.isLoggedIn;
+    $scope.isAdmin        = Auth.isAdmin;
     $scope.getCurrentUser = Auth.getCurrentUser;
 
     $scope.logout = function() {
