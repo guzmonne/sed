@@ -2,7 +2,10 @@
 
 angular.module('sedApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
-    $scope.menu = [];
+    $scope.menu = [{
+      title: 'Clientes',
+      link: '/client/index'
+    }];
 
     $scope.isCollapsed    = true;
     $scope.isLoggedIn     = Auth.isLoggedIn;
@@ -15,6 +18,7 @@ angular.module('sedApp')
     };
 
     $scope.isActive = function(route) {
-      return route === $location.path();
+      route = route.split(/(\/[a-z_\-\.0-9]+)/g)[1]
+      return ($location.path().search(route) > -1);
     };
   });

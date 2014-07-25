@@ -7,9 +7,7 @@ angular.module('sedApp')
         url: '/admin',
         templateUrl: 'app/admin/admin.html',
         controller: 'AdminCtrl',
-        data: {
-        	admin: true
-        }
+        adminonly: true,
       })
       .state('unauthorized', {
       	url: '/unauthorized',
