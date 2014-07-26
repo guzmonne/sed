@@ -1,0 +1,40 @@
+<form name="deviceNewForm" method="POST" class="form-horizontal" ng-submit="submit()" ng-controller="DeviceFormCtrl" novalidate>
+	<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert(alerts, $index)">{{alert.msg}}</alert>
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group" ng-class="{'has-error': !deviceNewForm.brand.$valid && deviceNewForm.brand.$dirty, 'has-success': deviceNewForm.brand.$valid && deviceNewForm.brand.$dirty}">
+				<label for="name" class="col-xs-12 col-sm-4 control-label">Marca</label>
+				<div class="col-sm-8 col-xs-4">
+					<input type="text" name="brand" required placeholder="Marca" ng-model="model.brand" class="form-control"/>
+				</div><!-- /.col-sm-5 -->
+			</div><!-- /.form-group -->
+		</div><!-- /.col-sm-6 -->
+		<div class="col-sm-6">
+			<div class="form-group" ng-class="{'has-error': !deviceNewForm.model.$valid && deviceNewForm.model.$dirty, 'has-success': deviceNewForm.model.$valid && deviceNewForm.model.$dirty}">
+				<label for="name" class="col-xs-12 col-sm-2 control-label">Modelo</label>
+				<div class="col-sm-10 col-xs-4">
+					<input type="text" name="model" placeholder="Modelo" required ng-model="model.model" class="form-control"/>
+				</div><!-- /.col-sm-5 -->
+			</div><!-- /.form-group -->
+		</div><!-- /.col-sm-6 -->
+	</div><!-- /.row -->
+	<div class="form-group" ng-class="{'has-error': !deviceNewForm.description.$valid && deviceNewForm.description.$dirty, 'has-success': deviceNewForm.description.$valid && deviceNewForm.description.$dirty}">
+		<label class="col-sm-2 control-label">Descripción</label>
+		<div class="col-sm-10">
+			<input type="text" ng-model="model.description" name="description" required class="form-control" placeholder="Descripción" />
+		</div><!-- /.col-sm-5 -->
+	</div><!-- /.form-group -->
+	<div class="form-group" ng-class="{'has-error': !deviceNewForm.image.$valid && deviceNewForm.image.$dirty, 'has-success': deviceNewForm.image.$valid && deviceNewForm.image.$dirty}">
+		<label class="col-sm-2 control-label">Image</label>
+		<div class="col-sm-10">
+			<input type="url" ng-model="model.image" name="image" class="form-control" placeholder="http://..." />
+		</div><!-- /.col-sm-5 -->
+	</div><!-- /.form-group -->
+	<hr />
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<input ng-if="!model._id" type="submit" class="btn btn-primary" value="Crear" ng-disabled="!deviceNewForm.$valid"/>
+			<input ng-if="model._id" type="submit" class="btn btn-warning" value="Actualizar" ng-disabled="!deviceNewForm.$valid"/>
+		</div><!-- /.col-sm-5 -->
+	</div><!-- /.form-group -->
+</form>

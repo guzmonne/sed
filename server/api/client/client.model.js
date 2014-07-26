@@ -22,6 +22,10 @@ var ClientSchema = new Schema({
 		type: String,
 		set : helper.onlyNumbers
 	},
+	'email': {
+		type: String,
+		lowercase: true
+	},
 	'createdBy': {
 		type: Schema.Types.ObjectId,
 		ref : 'User'
@@ -29,10 +33,6 @@ var ClientSchema = new Schema({
 	'updatedBy': {
 		type: Schema.Types.ObjectId,
 		ref : 'User'
-	},
-	'email': {
-		type: String,
-		lowercase: true
 	},
 	'createdAt': Date,
 	'updatedAt': Date

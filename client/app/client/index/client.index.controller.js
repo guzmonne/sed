@@ -24,7 +24,7 @@ angular.module('sedApp')
     function remove(model){
     	var index = $scope.collection.indexOf(model);
   		if (index > -1){
-  			collection.splice(index, 1);
+  			$scope.collection.splice(index, 1);
   		}
     };
   });

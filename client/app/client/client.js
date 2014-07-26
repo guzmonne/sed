@@ -10,7 +10,6 @@ angular.module('sedApp')
         	'<div ui-view></div>',
         	'<footer class="footer" ng-include="'+"'components/footer/footer.html'"+'"></footer>'
         ].join(''),
-        //authenticate: true,
       })
       .state('client.index', {
         url: '/index',

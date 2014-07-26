@@ -29,13 +29,10 @@ angular.module('sedApp', [
       // Intercept 401s and redirect you to login
       responseError: function(response) {
         if(response.status === 401) {
-          $location.path('/unauthorize');
+          console.log(response);
+          window.location.href = '/';
           // remove any stale tokens
           $cookieStore.remove('token');
-          return $q.reject(response);
-        }
-        else if (response.status === 403) {
-          $location.path('/unauthorized');
           return $q.reject(response);
         }
         else {
@@ -47,9 +44,9 @@ angular.module('sedApp', [
 
   .run(function ($rootScope, $location, Auth) {
     // Redirect to main if route requires auth and you're not logged in
-    $rootScope.$on('$stateChangeStart', function (event, next, nextParams) {
+    $rootScope.$on('$stateChangeStart', function (event, next) {
       if (next.authenticate && !Auth.isLoggedIn()) {
-        return $location.path('/');
+        $location.path('/');
       }
     });
   });
