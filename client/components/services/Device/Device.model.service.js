@@ -18,12 +18,7 @@ function DeviceModel ($q, Device, $rootScope){
 	};
 	// Public
 	// ------
-	DeviceModel.defaults = {
-		brand      : null,
-		model      : null,
-		description: null,
-		image      : null,
-	};
+	DeviceModel.defaults = {};
 	DeviceModel.empty    = function(){ return _.cloneDeep(DeviceModel.defaults); }
 	DeviceModel.get      = function(id){
 		if (!_.isString(id)) { return; }

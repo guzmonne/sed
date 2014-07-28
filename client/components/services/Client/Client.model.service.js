@@ -18,12 +18,7 @@ function ClientModel ($q, Client){
 	// Public
 	// ------
 	ClientModel.defaults = {
-		name     : null,
 		docType  : 'C.I.',
-		docNumber: null,
-		phone    : null,
-		email    : null,
-		address  : null
 	};
 	ClientModel.docTypes = ['C.I.', 'R.U.T'];
 	ClientModel.empty    = function(){ return _.cloneDeep(ClientModel.defaults); }

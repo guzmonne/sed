@@ -10,6 +10,10 @@ angular.module('sedApp')
       {
         title: 'Modelos',
         link: '/device/index'
+      },
+      {
+        title: 'Ordenes de Servicio',
+        link: '/service_request/index'
       }
     ];
 

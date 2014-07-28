@@ -1,0 +1,88 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12">
+			<h2>Ordenes de Servicio</h2>
+			<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert(alerts, $index)">{{alert.msg}}</alert>
+			<a ui-sref="service_request.new" class="btn btn-success">
+				Nueva Orden de Servicio
+			</a>
+			<span class="dropdown pull-right">
+	      <a href class="dropdown-toggle">
+	        Mostrar Columnas
+	      </a>
+	      <ul class="dropdown-menu">
+	        <li ng-repeat="(index, column) in columns">
+	        	<a href="javascript:void(0);">
+	      			<input name="{{column.name}}" type="checkbox" ng-model="column.show" />&nbsp;<label>{{column.name}}</label>
+	        	</a>
+	        </li>
+	      </ul>
+    </span>
+		</div><!-- /.col-lg-12 -->
+	</div><!-- /.row -->
+	<div class="row air-top">
+		<div class="col-lg-12 table-responsive-always">
+			<table class="table table-hover table-striped">
+				<thead>
+					<tr>
+						<th ng-repeat="(index, column) in columns" ng-show="column.show">{{column.name}}</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="model in collection 
+					| orderBy:tableOpts.sortField:tableOpts.sortReverse
+					| filter:tableOpts.searchString
+					| limitTo:tableOpts.modelsPerPage">
+						<td ng-show="columns['01'].show">{{model.id}}</td>
+						<td ng-show="columns['02'].show">{{model.clientName}}</td>
+						<td ng-show="columns['03'].show">{{model.deviceBrand}}</td>
+						<td ng-show="columns['04'].show">{{model.deviceModel}}</td>
+						<td ng-show="columns['05'].show">{{model.deviceDescription}}</td>
+						<td ng-show="columns['06'].show">{{model.serial}}</td>
+						<td ng-show="columns['07'].show">{{model.status}}</td>
+						<td ng-show="columns['08'].show" class="text-center"><i class="fa fa-check" ng-if="model.withWarranty === true"></i></td>
+						<td ng-show="columns['09'].show">{{model.invoiceNumber}}</td>
+						<td ng-show="columns['10'].show">{{model.boughtAt | date: 'dd MMMM yyyy'}}</td>
+						<td ng-show="columns['11'].show">
+							<ul class="half-left-padding">
+								<li ng-repeat="accessory in model.accessories">{{accessory}}</li>
+							</ul><!-- /.list-unstyled -->
+						</td>
+						<td ng-show="columns['12'].show" ng-show="cols.defect">{{model.defect}}</td>
+						<td ng-show="columns['13'].show" class="text-center">{{model.priority}}</td>
+						<td ng-show="columns['14'].show">{{model.technician}}</td>
+						<td ng-show="columns['15'].show">{{model.cost}}</td>
+						<td ng-show="columns['16'].show">{{model.authorizedBy}}</td>
+						<td ng-show="columns['17'].show">{{model.authorizedAt}}</td>
+						<td ng-show="columns['18'].show">{{model.costAccepted}}</td>
+						<td ng-show="columns['19'].show">{{model.costAcceptedAt}}</td>
+						<td ng-show="columns['20'].show">{{model.createdAt | date:'dd MMMM yyyy'}}</td>
+						<td ng-show="columns['21'].show">{{model.updatedAt | date:'dd MMMM yyyy'}}</td>
+						<td ng-show="columns['22'].show">{{model.closedAt  | date:'dd MMMM yyyy'}}</td>
+						<td>
+							<div class="btn-toolbar">
+								<div class="btn-group">
+									<a ui-sref="service_request.show({id: model._id})" class="btn btn-info btn-sm">
+										<i class="fa fa-ellipsis-h fa-fw"></i>
+									</a>
+								</div><!-- /.btn-group -->
+								<div class="btn-group">
+									<a ui-sref="service_request.edit({id: model._id})" class="btn btn-warning btn-sm">
+										<i class="fa fa-pencil fa-fw"></i>
+									</a>
+								</div><!-- /.btn-group -->
+								<div class="btn-group">
+									<button class="btn btn-danger btn-sm" ng-if="isAdmin()" ng-click="delete(model)">
+										<i class="fa fa-trash-o fa-fw"></i>
+									</button>
+								</div><!-- /.btn-group -->
+							</div><!-- /.btn-toolbar -->
+						</td>
+					</tr>
+				</tbody>
+			</table><!-- /.table table-hover table-striped -->
+		</div><!-- /.col-lg-12 -->
+	</div><!-- /.row -->
+</div><!-- /.container -->

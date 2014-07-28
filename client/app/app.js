@@ -14,6 +14,19 @@ angular.module('sedApp', [
     $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('authInterceptor');
   })
+  
+  .config(function(datepickerPopupConfig){
+    datepickerPopupConfig.currentText = 'Hoy';
+    datepickerPopupConfig.closeText   = 'Cerrar';
+    datepickerPopupConfig.clearText   = 'Borrar';
+  })
+
+  .config(function (datepickerConfig) {
+    datepickerConfig.showWeeks              = false;
+    datepickerConfig.currentText            = 'Hoy';
+    datepickerConfig.clearText              = 'Borrar';
+    datepickerConfig.closeText              = 'Cerrar';
+  })
 
   .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
     return {
@@ -29,7 +42,6 @@ angular.module('sedApp', [
       // Intercept 401s and redirect you to login
       responseError: function(response) {
         if(response.status === 401) {
-          console.log(response);
           window.location.href = '/';
           // remove any stale tokens
           $cookieStore.remove('token');

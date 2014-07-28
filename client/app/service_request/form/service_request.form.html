@@ -1,0 +1,116 @@
+<form name="serviceRequestNewForm" method="POST" class="form-horizontal" ng-submit="submit()" ng-controller="ServiceRequestFormCtrl" novalidate>
+	<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert(alerts, $index)">{{alert.msg}}</alert>
+	<div class="form-group" ng-class="{'has-error': !serviceRequestNewForm.name.$valid && serviceRequestNewForm.name.$dirty, 'has-success': serviceRequestNewForm.name.$valid && serviceRequestNewForm.name.$dirty}">
+		<label class="col-sm-2 control-label">Cliente</label>
+		<div class="col-sm-10">
+			<input 
+				placeholder="Nombre de Cliente"
+				typeahead="client.name for client in clients | filter: {name: $viewValue} | limitTo: 9"
+				typeahead-on-select="onSelectClient($item)"
+				ng-model="client.name" 
+				typeahead-editable="false"
+				type="text" 
+				class="form-control" 
+			/>
+		</div><!-- /.col-sm-5 -->
+	</div><!-- /.form-group -->
+	<div class="form-group" ng-class="{'has-error': !serviceRequestNewForm.doc_number.$valid && serviceRequestNewForm.doc_number.$dirty, 'has-success': serviceRequestNewForm.doc_number.$valid && serviceRequestNewForm.doc_number.$dirty}">
+		<label class="control-label col-sm-2">Modelo</label><!-- /.label col-sm-2 -->
+		<div class="col-sm-4">
+			<input 
+				placeholder="Modelo"
+				typeahead="device.model for device in devices | filter: $viewValue | limitTo: 9"
+				typeahead-on-select="onSelectDevice($item)"
+				ng-model="device.model" 
+				typeahead-editable="false"
+				type="text" 
+				class="form-control" 
+			/>
+		</div><!-- /.col-sm-4 -->
+		<label class="col-sm-2 control-label">Marca</label>
+		<div class="col-sm-4">
+			<input tabindex="-1" type="text" ng-model="device.brand" class="form-control" placeholder="Marca" readonly/>
+		</div><!-- /.col-sm-6 -->
+	</div><!-- /.form-group -->
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Descripción</label>
+		<div class="col-sm-10">
+			<input tabindex="-1" type="text" ng-model="device.description" placeholder="Descripción" class="form-control" readonly/>
+		</div><!-- /.col-sm-10 -->
+	</div><!-- /.form-group -->
+	<div class="form-group">
+		<label class="control-label col-sm-2">Serie</label>
+		<div class="col-sm-10">
+			<input type="text" ng-model="model.serial" placeholder="Serie" class="form-control" />
+		</div><!-- /.col-sm-10 -->
+	</div><!-- /.form-group -->
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Garantía</label>
+		<div class="col-sm-2">
+			<input type="checkbox" ng-model="model.withWarranty" class="form-control"/>
+		</div><!-- /.col-sm-2 -->
+		<div ng-if="model.withWarranty">
+			<label class="control-label col-sm-2">N° Boleta</label>
+			<div class="col-sm-6">
+				<input type="text"  placeholder="Numero de Boleta" ng-required="model.withWarranty" class="form-control" ng-model="model.invoiceNumber" />
+			</div><!-- /.col-sm-3 -->
+		</div>
+	</div><!-- /.form-group -->
+	<div class="form-group" ng-if="model.withWarranty">
+		<label class="col-sm-offset-4 col-sm-2 control-label">Fecha de Compra</label>
+		<div class="col-sm-6">
+			<div class="input-group">
+	      <input 
+	      	type="text" 
+	      	class="form-control"
+	      	datepicker-popup="{{format}}"
+	      	ng-model="model.boughtAt"
+	      	is-open="datepicker.openedBoughtAt"
+	      	datepicker-options="dateOptions"
+	      	readonly
+	      	tabindex="-1"
+	      />
+	      <span class="input-group-btn">
+	        <button type="button" class="btn btn-primary" ng-click="openBoughtAt($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+	      </span>
+	    </div><!-- /input-group -->
+		</div><!-- /.col-sm-4 -->
+	</div><!-- /.form-group -->
+	<div class="form-group">
+		<label class="control-label col-sm-2">Accesorios</label>
+		<div class="col-sm-7">
+			<input type="text" placeholder="Agregar nuevo accesorio" ng-model="newAccessory" class="form-control"/>
+		</div><!-- /.col-sm-10 -->
+		<div class="col-sm-3">
+			<button class="btn btn-success" ng-click="addAccessory($event)" tabindex="-1">
+				<i class="fa fa-plus fa-fw"></i>
+			</button>
+		</div><!-- /.col-sm-2 -->
+	</div><!-- /.form-group -->
+	<div class="form-group" ng-repeat="accessory in model.accessories">
+		<div class="col-sm-offset-2 col-sm-7">
+			<input type="text" ng-model="accessory" class="form-control" readonly tabindex="-1"/>
+		</div><!-- /.col-sm-offset-2 -->
+		<div class="col-sm-3">
+			<button class="btn btn-warning" ng-click="editAccessory($event, $index)" tabindex="-1">
+				<i class="fa fa-pencil fa-fw"></i>
+			</button>	
+			<button class="btn btn-danger" ng-click="removeAccessory($event, $index)" tabindex="-1">
+				<i class="fa fa-times fa-fw"></i>
+			</button>	
+		</div><!-- /.col-sm-2 -->
+	</div><!-- /.form-group -->
+	<div class="form-group">
+		<label class="control-label col-sm-2">Defecto</label>
+		<div class="col-sm-10">
+			<input ng-model="model.defect" type="text" placeholder="Defecto" class="form-control" />
+		</div><!-- /.col-sm-10 -->
+	</div><!-- /.form-group -->
+	<hr />
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<input ng-if="!model._id" type="submit" class="btn btn-primary" value="Crear" ng-disabled="!serviceRequestNewForm.$valid"/>
+			<input ng-if="model._id" type="submit" class="btn btn-warning" value="Actualizar" ng-disabled="!serviceRequestNewForm.$valid"/>
+		</div><!-- /.col-sm-5 -->
+	</div><!-- /.form-group -->
+</form>

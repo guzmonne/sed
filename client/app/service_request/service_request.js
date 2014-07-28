@@ -14,40 +14,69 @@ angular.module('sedApp')
       .state('service_request.index', {
         url: '/index',
         templateUrl: 'app/service_request/index/service_request.index.html',
-        controller: 'ClientIndexCtrl',
+        controller: 'ServiceRequestIndexCtrl',
         resolve: {
-          collection: function(ClientCollection){
+          clients: function(ClientCollection){
             return ClientCollection.index();
+          },
+          devices: function(DeviceCollection){
+            return DeviceCollection.index();
+          },
+          collection: function(clients, devices, ServiceRequestCollection){
+            return ServiceRequestCollection.index().then(function(services){
+              _.each(services, function(service){
+                var client = _.find(clients, function(client){return client._id === service.client_id});
+                var device = _.find(devices, function(device){return device._id === service.device_id});
+                service.clientName        = client.name;
+                service.deviceBrand       = device.brand;
+                service.deviceModel       = device.model;
+                service.deviceDescription = device.description;
+              });
+              return services;
+            });
+
           }
         }
       })
       .state('service_request.new', {
         url: '/new',
         templateUrl: 'app/service_request/new/service_request.new.html',
-        controller: 'ClientNewCtrl',
+        controller: 'ServiceRequestNewCtrl',
         resolve: {
-          model: function(ClientModel){
-            return ClientModel.empty();
+          model: function(ServiceRequestModel){
+            return ServiceRequestModel.empty();
+          },
+          clients: function(ClientCollection){
+            return ClientCollection.index();
+          },
+          devices: function(DeviceCollection){
+            return DeviceCollection.index();
           }
         }
       })
       .state('service_request.edit',{
         url: '/:id/edit',
         templateUrl: 'app/service_request/edit/service_request.edit.html',
-        controller: 'ClientEditCtrl',
+        controller: 'ServiceRequestEditCtrl',
         resolve: {
-          model: function($stateParams, ClientModel){
-            return ClientModel.get($stateParams.id);
+          model: function($stateParams, ServiceRequestModel){
+            return ServiceRequestModel.get($stateParams.id);
+          },
+          clients: function(ClientCollection){
+            return ClientCollection.index();
+          },
+          devices: function(DeviceCollection){
+            return DeviceCollection.index();
           }
         } 
       })
       .state('service_request.show', {
         url: '/:id',
         templateUrl: 'app/service_request/show/service_request.show.html',
-        controller: 'ClientShowCtrl',
+        controller: 'ServiceRequestShowCtrl',
         resolve: {
-          model: function($stateParams, ClientModel){
-            return ClientModel.show($stateParams.id);
+          model: function($stateParams, ServiceRequestModel){
+            return ServiceRequestModel.show($stateParams.id);
           }
         }
       });

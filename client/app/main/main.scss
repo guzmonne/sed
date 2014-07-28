@@ -34,6 +34,7 @@ body {
 /* Padding helpers */
 /* --------------- */
 $air: 20px;
+$padding: 40px;
 
 .air-top {
     margin-top: $air;
@@ -50,3 +51,8 @@ $air: 20px;
 .air-top-3 {
     margin-top: ($air*3);
 }
+
+.half-left-padding {
+    padding-left: $padding/2;
+}
+
