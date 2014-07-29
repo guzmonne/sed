@@ -42,7 +42,7 @@ angular.module('sedApp', [
       // Intercept 401s and redirect you to login
       responseError: function(response) {
         if(response.status === 401) {
-          window.location.href = '/';
+          $location.path('/');
           // remove any stale tokens
           $cookieStore.remove('token');
           return $q.reject(response);

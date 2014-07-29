@@ -21,13 +21,12 @@ angular.module('sedApp')
       	/*
       	** Private
       	*/
-      	var defaults = ClientModel.empty();
       	function errorHandler(error){
           Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Ya existe un cliente con este documento o ha ocurrido un error en el servidor'});
           if (_.isFunction($scope.error)){ $scope.error(error); }
-        };
+        }
         function successHandler(data){
-          var type, msg;
+          var msg;
           if ($scope.model._id){ 
             msg = 'Cliente actualizado con exito!'; 
           } else { 
@@ -37,10 +36,10 @@ angular.module('sedApp')
       		Alerts.pushAlert($scope.alerts, {type: 'success', msg: msg});
       		$scope.clientForm.$setPristine();
       		if (_.isFunction($scope.success)){ $scope.success(data); }
-      	};
+      	}
       	function submit(method){
       		ClientModel[method]($scope.model).then(successHandler, errorHandler);
-      	};
+      	}
       }],
     };
   });

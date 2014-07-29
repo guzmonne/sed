@@ -14,14 +14,14 @@ function ClientModel ($q, Client){
 			deferred.reject(error);
 		});
 		return deferred.promise;//
-	};
+	}
 	// Public
 	// ------
 	ClientModel.defaults = {
 		docType  : 'C.I.',
 	};
 	ClientModel.docTypes = ['C.I.', 'R.U.T'];
-	ClientModel.empty    = function(){ return _.cloneDeep(ClientModel.defaults); }
+	ClientModel.empty    = function(){ return _.cloneDeep(ClientModel.defaults); };
 	ClientModel.get      = function(id){
 		if (!_.isString(id)) { return; }
 		return sync('show', {id: id});
@@ -29,7 +29,7 @@ function ClientModel ($q, Client){
 	ClientModel.create = function(model){
 		if (!_.isObject(model)){ return; }
 		return sync('create', model);
-	}
+	};
 	ClientModel.update = function(model){
 		if (!_.isObject(model)){ return; }
 		return sync('update', model);
@@ -40,7 +40,7 @@ function ClientModel ($q, Client){
 		if (_.isObject(model) && !_.isUndefined(model._id)){id = model._id;}
 		if (_.isString(model)){id = model;}
 		return sync('delete', {id: id});
-	}
+	};
 	ClientModel.show = ClientModel.get;
 	return ClientModel;
 }

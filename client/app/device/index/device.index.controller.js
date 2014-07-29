@@ -13,14 +13,15 @@ angular.module('sedApp')
 			sortField    : '_id',
 			searchString : null,
 			modelsPerPage: 10
-    }
+    };
     $scope.closeAlerts = Alerts.closeAlerts;
     $scope.isAdmin     = Auth.isAdmin;
     $scope.showForm    = false;
     $scope.toggleForm  = function(item){
       if (item === 'new') {
         $scope.model = DeviceCollection.empty();
-        return $scope.showForm = true;
+        $scope.showForm = true;
+        return;
       }
       if (_.isObject(item)) { $scope.model = item; }
       if ($scope.showForm === true) {
@@ -34,17 +35,10 @@ angular.module('sedApp')
     $scope.delete = function(model){
     	var success = function(){
     		Alerts.pushAlert($scope.alerts, {type: 'info', msg: 'El cliente fue eliminado con exito'});		
-    	}
-    	var error = function(error){
+    	};
+    	var error = function(){
     		Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Hubo un problema al intetar elminar al cliente'});
-    	}
+    	};
     	DeviceCollection.delete(model).then(success, error);
-    };
-    // Private
-    function remove(model){
-    	var index = $scope.collection.indexOf(model);
-  		if (index > -1){
-  			$scope.collection.splice(index, 1);
-  		}
     };
   });

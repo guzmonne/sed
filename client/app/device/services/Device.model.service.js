@@ -15,11 +15,11 @@ function DeviceModel ($q, Device, $rootScope){
 			deferred.reject(error);
 		});
 		return deferred.promise;//
-	};
+	}
 	// Public
 	// ------
 	DeviceModel.defaults = {};
-	DeviceModel.empty    = function(){ return _.cloneDeep(DeviceModel.defaults); }
+	DeviceModel.empty    = function(){ return _.cloneDeep(DeviceModel.defaults); };
 	DeviceModel.get      = function(id){
 		if (!_.isString(id)) { return; }
 		return sync('show', {id: id});
@@ -27,7 +27,7 @@ function DeviceModel ($q, Device, $rootScope){
 	DeviceModel.create = function(model){
 		if (!_.isObject(model)){ return; }
 		return sync('create', model);
-	}
+	};
 	DeviceModel.update = function(model){
 		if (!_.isObject(model)){ return; }
 		return sync('update', model);
@@ -38,7 +38,7 @@ function DeviceModel ($q, Device, $rootScope){
 		if (_.isObject(model) && !_.isUndefined(model._id)){id = model._id;}
 		if (_.isString(model)){id = model;}
 		return sync('delete', {id: id});
-	}
+	};
 	DeviceModel.show = DeviceModel.get;
 	return DeviceModel;
 }

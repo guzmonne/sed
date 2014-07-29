@@ -15,7 +15,7 @@ function ServiceRequestModel ($q, ServiceRequest, $rootScope){
 			deferred.reject(error);
 		});
 		return deferred.promise;//
-	};
+	}
 	// Public
 	// ------
 	ServiceRequestModel.defaults = {
@@ -23,7 +23,7 @@ function ServiceRequestModel ($q, ServiceRequest, $rootScope){
 		accessories   : [],
 		priority      : 3,
 	};
-	ServiceRequestModel.empty    = function(){ return _.cloneDeep(ServiceRequestModel.defaults); }
+	ServiceRequestModel.empty    = function(){ return _.cloneDeep(ServiceRequestModel.defaults); };
 	ServiceRequestModel.get      = function(id){
 		if (!_.isString(id)) { return; }
 		return sync('show', {id: id});
@@ -31,7 +31,7 @@ function ServiceRequestModel ($q, ServiceRequest, $rootScope){
 	ServiceRequestModel.create = function(model){
 		if (!_.isObject(model)){ return; }
 		return sync('create', model);
-	}
+	};
 	ServiceRequestModel.update = function(model){
 		if (!_.isObject(model)){ return; }
 		return sync('update', model);
@@ -42,7 +42,7 @@ function ServiceRequestModel ($q, ServiceRequest, $rootScope){
 		if (_.isObject(model) && !_.isUndefined(model._id)){id = model._id;}
 		if (_.isString(model)){id = model;}
 		return sync('delete', {id: id});
-	}
+	};
 	ServiceRequestModel.show = ServiceRequestModel.get;
 	return ServiceRequestModel;
 }

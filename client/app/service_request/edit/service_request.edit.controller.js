@@ -1,10 +1,11 @@
 'use strict';
+/* jshint camelcase: false */
 
 angular.module('sedApp')
-  .controller('ServiceRequestEditCtrl', function ($scope, $rootScope, model, clients, devices) {
+  .controller('ServiceRequestEditCtrl', function ($scope, $rootScope, ServiceRequestModel, model, clients, devices) {
 		// Events
 		// ------
-		$rootScope.$on('service_request:create', function(event){
+		$rootScope.$on('service_request:create', function(){
 			$scope.client = null;
   		$scope.device = null;
 			$scope.model = ServiceRequestModel.empty();
@@ -20,7 +21,7 @@ angular.module('sedApp')
 		// -------
 		function find(collection, id){
 			return _.find(collection, function(m){ if(m._id){ return m._id === id; } });
-		};
+		}
 		// Initialize
 		// ----------
 		$scope.client = find(clients, $scope.model.client_id);
