@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sedApp')
-  .controller('MainCtrl', ['$scope', 'Auth', function ($scope, Auth) {
+  .controller('MainCtrl', ['$scope', '$location', 'Auth', function ($scope, $location, Auth) {
     $scope.notLoggedIn = function(){
       return !Auth.isLoggedIn();
     };
