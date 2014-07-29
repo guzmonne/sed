@@ -10,7 +10,7 @@ angular.module('sedApp')
 				success: '&',
 				error  : '&',
       },
-      controller : ['$scope', 'ClientModel', 'Alerts', function($scope, ClientModel, Alerts){
+      controller : function($scope, ClientModel, Alerts){
       	/*
       	** Public
         */
@@ -40,6 +40,6 @@ angular.module('sedApp')
       	function submit(method){
       		ClientModel[method]($scope.model).then(successHandler, errorHandler);
       	}
-      }],
+      },
     };
   });

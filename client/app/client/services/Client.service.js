@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sedApp')
-  .factory('Client', ['$resource', function ($resource) {
+  .factory('Client', function Client($resource) {
     // Public API here
     return $resource('/api/clients/:id', {id: '@_id'}, {
       'create':  { method: 'POST' },
@@ -10,4 +10,4 @@ angular.module('sedApp')
       'update':  { method: 'PUT' },
       'destroy': { method: 'DELETE' }
     });
-  }]);
+  });
