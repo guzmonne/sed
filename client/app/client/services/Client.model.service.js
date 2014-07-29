@@ -11,7 +11,7 @@ angular.module('sedApp')
 			}, function(error){
 				deferred.reject(error);
 			});
-			return deferred.promise;//
+			return deferred.promise;
 		}
   	return {
   		defaults : { docType  : 'C.I.' },
@@ -37,5 +37,5 @@ angular.module('sedApp')
 				return sync('delete', {id: id});
 			},
 			show : this.get
-  	}
+  	};
   });

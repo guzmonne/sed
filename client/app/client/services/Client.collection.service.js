@@ -12,6 +12,6 @@ angular.module('sedApp')
 					deferred.reject(error);
 				});
 				return deferred.promise;
-			}
+			};
   	}
   });
