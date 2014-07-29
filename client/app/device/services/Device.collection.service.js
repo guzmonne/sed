@@ -18,6 +18,10 @@ function DeviceCollection ($q, Device, DeviceModel, $rootScope){
 		});
 		return deferred.promise;
 	};
+	function remove(model){
+		var index = DeviceCollection.data.indexOf(model);
+		if (index > -1){ DeviceCollection.data.splice(index, 1); } 
+	};
 	function findModel(id){
 		return _.find(DeviceCollection.data, function(m){
 			return m._id === id;
@@ -47,7 +51,16 @@ function DeviceCollection ($q, Device, DeviceModel, $rootScope){
 	// ------
 	DeviceCollection.data     = [];
 	DeviceCollection.empty    = DeviceModel.empty;
-	DeviceCollection.delete   = DeviceModel.delete;
+	DeviceCollection.delete   = function(model){
+		var deferred = $q.defer();
+		Device.delete(model, function(data){
+			remove(model);
+			deferred.resolve(data);
+		}, function(error){
+			deferred.reject(error);
+		});
+		return deferred.promise;
+	};
 	DeviceCollection.addModel = addModel;
 	DeviceCollection.index    = function(){
 		var deferred = $q.defer();

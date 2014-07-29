@@ -1,12 +1,12 @@
-<form name="clientNewForm" method="POST" class="form-horizontal" ng-submit="submit()" ng-controller="ClientFormCtrl" novalidate>
+<form name="clientForm" method="POST" class="form-horizontal" ng-submit="submit()" novalidate>
 	<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert(alerts, $index)">{{alert.msg}}</alert>
-	<div class="form-group" ng-class="{'has-error': !clientNewForm.name.$valid && clientNewForm.name.$dirty, 'has-success': clientNewForm.name.$valid && clientNewForm.name.$dirty}">
+	<div class="form-group" ng-class="{'has-error': !clientForm.name.$valid && clientForm.name.$dirty, 'has-success': clientForm.name.$valid && clientForm.name.$dirty}">
 		<label class="col-sm-2 control-label">Nombre</label>
 		<div class="col-sm-10">
 			<input type="text" ng-model="model.name" name="name" class="form-control" placeholder="Nombre" required/>
 		</div><!-- /.col-sm-5 -->
 	</div><!-- /.form-group -->
-	<div class="form-group" ng-class="{'has-error': !clientNewForm.doc_number.$valid && clientNewForm.doc_number.$dirty, 'has-success': clientNewForm.doc_number.$valid && clientNewForm.doc_number.$dirty}">
+	<div class="form-group" ng-class="{'has-error': !clientForm.doc_number.$valid && clientForm.doc_number.$dirty, 'has-success': clientForm.doc_number.$valid && clientForm.doc_number.$dirty}">
 		<label for="name" class="col-xs-12 col-sm-2 control-label">Documento</label>
 		<div class="col-sm-5 col-xs-4">
 			<select name="doc-type" ng-model="model.docType" class="form-control">
@@ -19,7 +19,7 @@
 	</div><!-- /.form-group -->
 	<div class="row">
 		<div class="col-sm-6">
-			<div class="form-group" ng-class="{'has-error': !clientNewForm.phone.$valid && clientNewForm.phone.$dirty, 'has-success': clientNewForm.phone.$valid && clientNewForm.phone.$dirty}">
+			<div class="form-group" ng-class="{'has-error': !clientForm.phone.$valid && clientForm.phone.$dirty, 'has-success': clientForm.phone.$valid && clientForm.phone.$dirty}">
 				<label for="name" class="col-xs-12 col-sm-4 control-label">Telefono</label>
 				<div class="col-sm-8 col-xs-4">
 					<input type="text" name="phone" ng-pattern="/^\d+$/" placeholder="Telefono" ng-model="model.phone" class="form-control"/>
@@ -27,7 +27,7 @@
 			</div><!-- /.form-group -->
 		</div><!-- /.col-sm-6 -->
 		<div class="col-sm-6">
-			<div class="form-group" ng-class="{'has-error': !clientNewForm.email.$valid && clientNewForm.email.$dirty, 'has-success': clientNewForm.email.$valid && clientNewForm.email.$dirty}">
+			<div class="form-group" ng-class="{'has-error': !clientForm.email.$valid && clientForm.email.$dirty, 'has-success': clientForm.email.$valid && clientForm.email.$dirty}">
 				<label for="name" class="col-xs-12 col-sm-2 control-label">Email</label>
 				<div class="col-sm-10 col-xs-4">
 					<input type="email" name="email" placeholder="Email" ng-model="model.email" class="form-control"/>
@@ -44,8 +44,8 @@
 	<hr />
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
-			<input ng-if="!model._id" type="submit" class="btn btn-primary" value="Crear" ng-disabled="!clientNewForm.$valid"/>
-			<input ng-if="model._id" type="submit" class="btn btn-warning" value="Actualizar" ng-disabled="!clientNewForm.$valid"/>
+			<input ng-if="!model._id" type="submit" class="btn btn-primary" value="Crear" ng-disabled="!clientForm.$valid"/>
+			<input ng-if="model._id" type="submit" class="btn btn-warning" value="Actualizar" ng-disabled="!clientForm.$valid"/>
 		</div><!-- /.col-sm-5 -->
 	</div><!-- /.form-group -->
 </form>

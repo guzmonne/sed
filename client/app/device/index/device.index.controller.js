@@ -4,7 +4,7 @@ angular.module('sedApp')
   .controller('DeviceIndexCtrl', function ($scope, $rootScope, DeviceCollection, Alerts, Auth) {
     // Events
     // ------
-    $rootScope.$on('device:create', function(){$scope.model = DeviceCollection.empty();})
+    //$rootScope.$on('device:create', function(){$scope.model = DeviceCollection.empty();})
     // Public
     $scope.model      = DeviceCollection.empty();
     $scope.collection = DeviceCollection.data;
@@ -33,7 +33,6 @@ angular.module('sedApp')
     };
     $scope.delete = function(model){
     	var success = function(){
-    		remove(model);
     		Alerts.pushAlert($scope.alerts, {type: 'info', msg: 'El cliente fue eliminado con exito'});		
     	}
     	var error = function(error){
