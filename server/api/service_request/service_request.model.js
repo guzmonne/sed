@@ -18,7 +18,7 @@ var ServiceRequestSchema = new Schema({
 	'serial': String,
 	'status': {
 		type   : String,
-		default: 'Pendiendte'
+		default: 'Pendiente'
 	},
 	'withWarranty'  : Boolean,
 	'invoiceNumber' : String,

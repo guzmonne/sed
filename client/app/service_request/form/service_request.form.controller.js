@@ -31,11 +31,11 @@ angular.module('sedApp')
   		$scope.model.accessories.splice(index, 1);
   	};
   	$scope.onSelectClient = function(item){
-      $rootScope.$broadcast('service_request:form:client:update', item);
+      $rootScope.$broadcast('servicerequest:form:client:update', item);
       $scope.model.client_id = item._id;
     };
     $scope.onSelectDevice = function(item){
-      $rootScope.$broadcast('service_request:form:device:update', item);
+      $rootScope.$broadcast('servicerequest:form:device:update', item);
 			$scope.model.device_id = item._id;
   	}
   	$scope.openBoughtAt = function($event) {

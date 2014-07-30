@@ -4,15 +4,15 @@ angular.module('sedApp')
   .controller('ServiceRequestNewCtrl', function ($scope, $rootScope, ServiceRequestModel, model, clients, devices) {
 		// Events
 		// ------
-		$rootScope.$on('service_request:create', function(event){
+		$rootScope.$on('servicerequest:create', function(event){
 			$scope.client = {};
 			$scope.device = {};
 			$scope.model  = ServiceRequestModel.empty();
 		});
-		$rootScope.$on('service_request:form:client:update', function($event, client){
+		$rootScope.$on('servicerequest:form:client:update', function($event, client){
 			$scope.client = client;
 		});
-		$rootScope.$on('service_request:form:device:update', function($event, device){
+		$rootScope.$on('servicerequest:form:device:update', function($event, device){
 			$scope.device = device;
 		});
 		// Private
