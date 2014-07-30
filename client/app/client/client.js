@@ -16,9 +16,9 @@ angular.module('sedApp')
         templateUrl: 'app/client/index/client.index.html',
         controller: 'ClientIndexCtrl',
         resolve: {
-          collection: function(ClientCollection){
+          collection: ['ClientCollection', function(ClientCollection){
             return ClientCollection.index();
-          }
+          }]
         }
       })
       .state('client.new', {
@@ -26,9 +26,9 @@ angular.module('sedApp')
         templateUrl: 'app/client/new/client.new.html',
         controller: 'ClientNewCtrl',
         resolve: {
-          model: function(ClientModel){
+          model: ['ClientModel', function(ClientModel){
             return ClientModel.empty();
-          }
+          }]
         }
       })
       .state('client.edit',{
@@ -36,9 +36,9 @@ angular.module('sedApp')
         templateUrl: 'app/client/edit/client.edit.html',
         controller: 'ClientEditCtrl',
         resolve: {
-          model: function($stateParams, ClientModel){
+          model: ['$stateParams', 'ClientModel', function($stateParams, ClientModel){
             return ClientModel.get($stateParams.id);
-          }
+          }]
         } 
       })
       .state('client.show', {
@@ -46,9 +46,9 @@ angular.module('sedApp')
         templateUrl: 'app/client/show/client.show.html',
         controller: 'ClientShowCtrl',
         resolve: {
-          model: function($stateParams, ClientModel){
+          model: ['$stateParams', 'ClientModel', function($stateParams, ClientModel){
             return ClientModel.show($stateParams.id);
-          }
+          }]
         }
       });
   });
