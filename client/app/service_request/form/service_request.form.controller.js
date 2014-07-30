@@ -1,4 +1,5 @@
 'use strict';
+/*jshint camelcase: false */
 
 angular.module('sedApp')
   .controller('ServiceRequestFormCtrl', ['$scope', '$stateParams', '$rootScope', 'ServiceRequestModel', 'Alerts', function ($scope, $stateParams, $rootScope, ServiceRequestModel, Alerts) {
@@ -7,7 +8,7 @@ angular.module('sedApp')
     $scope.newAccessory = null;
     $scope.datepicker   = {
 			openedBoughtAt : false
-		}
+		};
 		$scope.alerts         = [];
 		$scope.format         = 'longDate';
 	  $scope.maxDate        = new Date();
@@ -47,21 +48,20 @@ angular.module('sedApp')
 		$scope.closeAlert = Alerts.closeAlert;
   	// Private
   	// -------
-  	var defaults = ServiceRequestModel.empty();
     function addAccessory(){
   		if (_.isNull($scope.newAccessory) || $scope.newAccessory === ''){ return; }
-      if ($scope.newAccessory === null || $scope.newAccessory === ''){ return; };
-  		if (_.find($scope.model.accessories, function(acc){return acc === $scope.newAccessory})){
+      if ($scope.newAccessory === null || $scope.newAccessory === ''){ return; }
+  		if (_.find($scope.model.accessories, function(acc){return acc === $scope.newAccessory;})){
   			return $scope.newAccessory = null;
   		}
   		$scope.model.accessories.push($scope.newAccessory);
   		$scope.newAccessory = null;
-    };
-    function errorHandler(error){
+    }
+    function errorHandler(){
       Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Ya existe un cliente con este "documento" o se ha producido un error en el servidor'});
-    };
+    }
     function create(){
-      var success = function(data){
+      var success = function(){
         Alerts.pushAlert($scope.alerts, {type: 'success', msg: 'Orden de Servicio creada con exito!'}); 
         $scope.serviceRequestNewForm.$setPristine();
       };
@@ -69,7 +69,7 @@ angular.module('sedApp')
       ServiceRequestModel.create($scope.model).then(success, errorHandler);
     }
     function update(){
-      var success = function(data){
+      var success = function(){
         Alerts.pushAlert($scope.alerts, {type: 'success', msg: 'Orden de Servicio actualizada con exito!'});
         $scope.serviceRequestNewForm.$setPristine();
       };

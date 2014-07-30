@@ -19,7 +19,7 @@ angular.module('sedApp')
 			}
 			var index = DeviceCollection.data.indexOf(model);
 			if (index > -1){ DeviceCollection.data.splice(index, 1); } 
-		};
+		}
 		function findModel(id){
 			return _.find(DeviceCollection.data, function(m){
 				return m._id === id;
@@ -30,19 +30,19 @@ angular.module('sedApp')
 		}
 		function mergeModels(_model, model){
 			if (!_.isObject(_model) || !_.isObject(model)) { return; }
-			_.merge(_model, model)
+			_.merge(_model, model);
 		}
 		function addModel(model){
 			if (_.isUndefined(model) || _.isUndefined(model._id)){ return; }
 			var _model = findModel(model._id);
 			if (_model) { mergeModels(_model, model); }
 			else        { pushModel(model); }
-		};
+		}
 		function addModels(data){
 			if (!_.isArray(data)){ return; } 
 			if (DeviceCollection.data.length === 0){ DeviceCollection.data = data; }
 			_.each(data, addModel);
-		};
+		}
 		/*
 		** Public
 		*/  	

@@ -6,7 +6,7 @@ angular.module('sedApp')
 		/*
 		** Public
 		*/
-		ClientCollection.empty = function(){ return []; }
+		ClientCollection.empty = function(){ return []; };
 		ClientCollection.index = function(){ return Sync.from('Client', 'index'); };
 		/*
 		** Return

@@ -8,7 +8,7 @@ angular.module('sedApp')
 		$scope.isLoggedIn = Auth.isLoggedIn;
 		$scope.userName   = function(){
       return Auth.getCurrentUser().name;
-    }
+    };
 		$scope.user    = {};
 		$scope.errors  = {};
 		$scope.pattern = new RegExp(/@/);

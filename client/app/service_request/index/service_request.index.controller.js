@@ -8,7 +8,7 @@ angular.module('sedApp')
 			sortField    : '_id',
 			searchString : null,
 			modelsPerPage: 10
-    }
+    };
     $scope.closeAlerts = Alerts.closeAlerts;
     $scope.isAdmin     = Auth.isAdmin;
     $scope.columns        = {
@@ -39,10 +39,10 @@ angular.module('sedApp')
     	var success = function(){
     		remove(model);
     		Alerts.pushAlert($scope.alerts, {type: 'info', msg: 'La Orden de Servicio fue eliminada con exito'});		
-    	}
+    	};
     	var error = function(error){
     		Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Hubo un problema al intentar elminar la Orden de Servicio'});
-    	}
+    	};
     	ServiceRequestModel.delete(model).then(success, error);
     };
     function remove(model){

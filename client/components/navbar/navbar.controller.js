@@ -28,7 +28,7 @@ angular.module('sedApp')
     };
 
     $scope.isActive = function(route) {
-      route = route.split(/(\/[a-z_\-\.0-9]+)/g)[1]
+      route = route.split(/(\/[a-z_\-\.0-9]+)/g)[1];
       return ($location.path().search(route) > -1);
     };
   });

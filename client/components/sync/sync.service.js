@@ -22,6 +22,6 @@ angular.module('sedApp')
       }
       Api[endpoint][method].apply(this, args);
       return deferred.promise;
-    }
+    };
   }]
 );

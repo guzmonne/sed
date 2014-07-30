@@ -8,17 +8,17 @@ angular.module('sedApp')
 			sortField    : '_id',
 			searchString : null,
 			modelsPerPage: 10
-    }
+    };
     $scope.closeAlerts = Alerts.closeAlerts;
     $scope.isAdmin = Auth.isAdmin;
     $scope.delete = function(model){
     	var success = function(){
     		remove(model);
     		Alerts.pushAlert($scope.alerts, {type: 'info', msg: 'El cliente fue eliminado con exito'});		
-    	}
-    	var error = function(error){
+    	};
+    	var error = function(){
     		Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Hubo un problema al intetar elminar al cliente'});
-    	}
+    	};
     	ClientModel.delete(model).then(success, error);
     };
     function remove(model){
@@ -26,5 +26,5 @@ angular.module('sedApp')
   		if (index > -1){
   			$scope.collection.splice(index, 1);
   		}
-    };
+    }
   });

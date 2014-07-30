@@ -21,11 +21,10 @@ angular.module('sedApp')
 				/*
 				** Private
 				*/
-				var defaults = DeviceModel.empty();
       	function errorHandler(error){
       		Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Ha ocurrido un error en el servidor'});
       		if (_.isFunction($scope.error)){ $scope.error(error); }
-      	};
+      	}
       	function successHandler(data){
       		var msg;
       		if ($scope.model._id){ 
@@ -37,12 +36,12 @@ angular.module('sedApp')
       		Alerts.pushAlert($scope.alerts, {type: 'success', msg: msg});
       		$scope.deviceForm.$setPristine();
       		if (_.isFunction($scope.success)){ $scope.success(data); }
-      	};
+      	}
       	function submit(method){
       		DeviceModel[method]($scope.model).then(successHandler, errorHandler);
-      	};
+      	}
       }],
-      link: function(scope, iElement, iAttr){
+      link: function(scope, iElement){
       	var scroll;
       	function bindScroll(){
 					scroll = scope.$watch('model', function(){
