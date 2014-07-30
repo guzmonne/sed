@@ -11,6 +11,7 @@ angular.module('sedApp')
     };
     return {
       'Client': $resource('/api/clients/:id', {id: '@_id'}, restRoutes),
+      'Device': $resource('/api/devices/:id', {id: '@_id'}, restRoutes),
     }
   }]
 );

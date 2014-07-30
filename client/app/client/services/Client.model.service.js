@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sedApp')
-  .factory('ClientModel', ['$q', 'Sync', function($q, Sync){
+  .factory('ClientModel', ['Sync', function(Sync){
   	var ClientModel = {};
   	/*
   	** Public

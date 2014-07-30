@@ -1,20 +1,22 @@
 'use strict';
 
 angular.module('sedApp')
-  .service('Sync', ['$q', 'Api', function($q, Api){
+  .service('Sync', ['$rootScope', '$q', 'Api', function($rootScope, $q, Api){
 
     this.from = function(endpoint, method, params){
       var args;
       if (!_.isString(method)){ return; }
+      params  = (params)  ? params  : {};
       var deferred = $q.defer();
       function resolved(data){
-        deferred.resolve(data);  
+        var eventName = endpoint.toLowerCase() + ':' + method;
+        $rootScope.$broadcast(eventName, data, params);
+        deferred.resolve(data);
       }
       function rejected(error){
         deferred.reject(error);
       }
       args   = [resolved, rejected];
-      params = (params) ? params : {};
       if (method !== 'index'){
         args.unshift(params);
       }

@@ -2,9 +2,6 @@
 
 angular.module('sedApp')
   .controller('DeviceIndexCtrl', function ($scope, $rootScope, DeviceCollection, Alerts, Auth) {
-    // Events
-    // ------
-    //$rootScope.$on('device:create', function(){$scope.model = DeviceCollection.empty();})
     // Public
     $scope.model      = DeviceCollection.empty();
     $scope.collection = DeviceCollection.data;
@@ -33,10 +30,10 @@ angular.module('sedApp')
     };
     $scope.delete = function(model){
     	var success = function(){
-    		Alerts.pushAlert($scope.alerts, {type: 'info', msg: 'El cliente fue eliminado con exito'});		
+    		Alerts.pushAlert($scope.alerts, {type: 'info', msg: 'El equipo fue eliminado con exito'});		
     	}
     	var error = function(error){
-    		Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Hubo un problema al intetar elminar al cliente'});
+    		Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Hubo un problema al intetar elminar al equipo'});
     	}
     	DeviceCollection.delete(model).then(success, error);
     };
