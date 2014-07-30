@@ -6,9 +6,9 @@ angular.module('sedApp')
       .state('service_request', {
         url: '/service_request',
         template: [
-          '<div ng-include="'+"'components/navbar/navbar.html'"+'"></div>',
+          '<div ng-include="\'components/navbar/navbar.html\'"></div>',
           '<div ui-view></div>',
-          '<footer class="footer" ng-include="'+"'components/footer/footer.html'"+'"></footer>'
+          '<footer class="footer" ng-include="\'components/footer/footer.html\'"></footer>'
         ].join(''),
       })
       .state('service_request.index', {

@@ -28,7 +28,7 @@ angular.module('sedApp', [
     datepickerConfig.closeText              = 'Cerrar';
   })
 
-  .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
+  .factory('authInterceptor', function ($rootScope, $q, $cookieStore) {
     return {
       // Add authorization token to headers
       request: function (config) {
