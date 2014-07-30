@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('sedApp')
-  .factory('ClientModel', ['$q', 'Sync', 'Api', function($q, Sync, Api){
+  .factory('ClientModel', ['$q', 'Sync', function($q, Sync){
   	var ClientModel = {};
-		// Public
-		// ------
+  	/*
+  	** Public
+  	*/
 		ClientModel.defaults = { docType  : 'C.I.' };
 		ClientModel.docTypes = ['C.I.', 'R.U.T'];
 		ClientModel.empty    = function(){ return _.cloneDeep(ClientModel.defaults); }
@@ -28,6 +29,9 @@ angular.module('sedApp')
 			return Sync.from('Client', 'delete', {id: id});
 		}
 		ClientModel.show = ClientModel.get;
+		/*
+		** Return
+		*/
 		return ClientModel;
 	}]
 );
