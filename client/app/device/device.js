@@ -16,9 +16,9 @@ angular.module('sedApp')
         templateUrl: 'app/device/index/device.index.html',
         controller: 'DeviceIndexCtrl',
         resolve: {
-          collection: function(DeviceCollection){
+          collection: ['DeviceCollection', function(DeviceCollection){
             return DeviceCollection.index();
-          }
+          }]
         }
       })
       .state('device.new', {
@@ -26,9 +26,9 @@ angular.module('sedApp')
         templateUrl: 'app/device/new/device.new.html',
         controller: 'DeviceNewCtrl',
         resolve: {
-          model: function(DeviceModel){
+          model: ['DeviceModel', function(DeviceModel){
             return DeviceModel.empty();
-          }
+          }]
         }
       })
       .state('device.edit',{
@@ -36,9 +36,9 @@ angular.module('sedApp')
         templateUrl: 'app/device/edit/device.edit.html',
         controller: 'DeviceEditCtrl',
         resolve: {
-          model: function($stateParams, DeviceModel){
+          model: ['$stateParams', 'DeviceModel', function($stateParams, DeviceModel){
             return DeviceModel.get($stateParams.id);
-          }
+          }]
         } 
       })
       .state('device.show', {
@@ -46,9 +46,9 @@ angular.module('sedApp')
         templateUrl: 'app/device/show/device.show.html',
         controller: 'DeviceShowCtrl',
         resolve: {
-          model: function($stateParams, DeviceModel){
+          model: ['$stateParams', 'DeviceModel', function($stateParams, DeviceModel){
             return DeviceModel.show($stateParams.id);
-          }
+          }]
         }
       });
   });

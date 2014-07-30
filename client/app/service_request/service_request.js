@@ -16,13 +16,13 @@ angular.module('sedApp')
         templateUrl: 'app/service_request/index/service_request.index.html',
         controller: 'ServiceRequestIndexCtrl',
         resolve: {
-          clients: function(ClientCollection){
+          clients: ['ClientCollection', function(ClientCollection){
             return ClientCollection.index();
-          },
-          devices: function(DeviceCollection){
+          }],
+          devices: ['DeviceCollection', function(DeviceCollection){
             return DeviceCollection.index();
-          },
-          collection: function(clients, devices, ServiceRequestCollection){
+          }],
+          collection: ['clients', 'devices', 'ServiceRequestCollection', function(clients, devices, ServiceRequestCollection){
             return ServiceRequestCollection.index().then(function(services){
               _.each(services, function(service){
                 var client = _.find(clients, function(client){return client._id === service.client_id});
@@ -34,8 +34,7 @@ angular.module('sedApp')
               });
               return services;
             });
-
-          }
+          }]
         }
       })
       .state('service_request.new', {
@@ -43,15 +42,15 @@ angular.module('sedApp')
         templateUrl: 'app/service_request/new/service_request.new.html',
         controller: 'ServiceRequestNewCtrl',
         resolve: {
-          model: function(ServiceRequestModel){
+          model: ['ServiceRequestModel', function(ServiceRequestModel){
             return ServiceRequestModel.empty();
-          },
-          clients: function(ClientCollection){
+          }],
+          clients: ['ClientCollection', function(ClientCollection){
             return ClientCollection.index();
-          },
-          devices: function(DeviceCollection){
+          }],
+          devices: ['DeviceCollection', function(DeviceCollection){
             return DeviceCollection.index();
-          }
+          }]
         }
       })
       .state('service_request.edit',{
@@ -59,15 +58,15 @@ angular.module('sedApp')
         templateUrl: 'app/service_request/edit/service_request.edit.html',
         controller: 'ServiceRequestEditCtrl',
         resolve: {
-          model: function($stateParams, ServiceRequestModel){
+          model: ['$stateParams', 'ServiceRequestModel', function($stateParams, ServiceRequestModel){
             return ServiceRequestModel.get($stateParams.id);
-          },
-          clients: function(ClientCollection){
+          }],
+          clients: ['ClientCollection', function(ClientCollection){
             return ClientCollection.index();
-          },
-          devices: function(DeviceCollection){
+          }],
+          devices: ['DeviceCollection', function(DeviceCollection){
             return DeviceCollection.index();
-          }
+          }]
         } 
       })
       .state('service_request.show', {
@@ -75,9 +74,9 @@ angular.module('sedApp')
         templateUrl: 'app/service_request/show/service_request.show.html',
         controller: 'ServiceRequestShowCtrl',
         resolve: {
-          model: function($stateParams, ServiceRequestModel){
+          model: ['$stateParams', 'ServiceRequestModel', function($stateParams, ServiceRequestModel){
             return ServiceRequestModel.show($stateParams.id);
-          }
+          }]
         }
       });
   });
