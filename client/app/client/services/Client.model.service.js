@@ -1,21 +1,8 @@
 'use strict';
 
 angular.module('sedApp')
-  .factory('ClientModel', ['$q', 'Api', function($q, Api){
+  .factory('ClientModel', ['$q', 'Sync', 'Api', function($q, Sync, Api){
   	var ClientModel = {};
-		// Private
-		// -------
-		function sync (method, params){
-			if (!_.isString(method)){ return; }
-			params = (params) ? params : {};
-			var deferred = $q.defer();
-			Api['Client'][method](params, function(data){
-				deferred.resolve(data);
-			}, function(error){
-				deferred.reject(error);
-			});
-			return deferred.promise;
-		};
 		// Public
 		// ------
 		ClientModel.defaults = { docType  : 'C.I.' };
@@ -23,22 +10,22 @@ angular.module('sedApp')
 		ClientModel.empty    = function(){ return _.cloneDeep(ClientModel.defaults); }
 		ClientModel.get      = function(id){
 			if (!_.isString(id)) { return; }
-			return sync('show', {id: id});
+			return Sync.from('Client', 'show', {id:id});
 		};
 		ClientModel.create = function(model){
 			if (!_.isObject(model)){ return; }
-			return sync('create', model);
+			return Sync.from('Client', 'create', model);
 		}
 		ClientModel.update = function(model){
 			if (!_.isObject(model)){ return; }
-			return sync('update', model);
+			return Sync.from('Client', 'update', model);
 		};
 		ClientModel.delete = function(model){
-			if (_.isUndefined(model)) {return;}
 			var id; 
+			if (_.isUndefined(model)) {return;}
 			if (_.isObject(model) && !_.isUndefined(model._id)){id = model._id;}
 			if (_.isString(model)){id = model;}
-			return sync('delete', {id: id});
+			return Sync.from('Client', 'delete', {id: id});
 		}
 		ClientModel.show = ClientModel.get;
 		return ClientModel;
