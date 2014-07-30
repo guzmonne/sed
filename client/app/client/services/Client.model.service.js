@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sedApp')
-  .factory('ClientModel', ['$q', 'Client', function($q, Client){
+  .factory('ClientModel', ['$q', 'Api', function($q, Api){
   	var ClientModel = {};
 		// Private
 		// -------
@@ -9,7 +9,7 @@ angular.module('sedApp')
 			if (!_.isString(method)){ return; }
 			params = (params) ? params : {};
 			var deferred = $q.defer();
-			Client[method](params, function(data){
+			Api['Client'][method](params, function(data){
 				deferred.resolve(data);
 			}, function(error){
 				deferred.reject(error);

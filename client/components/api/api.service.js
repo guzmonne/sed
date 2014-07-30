@@ -10,7 +10,7 @@ angular.module('sedApp')
       'destroy': { method: 'DELETE' }
     };
     return {
-      'Client': $resource('/api/clients/:id', {id: '@_id'}, restRoutes);
+      'Client': $resource('/api/clients/:id', {id: '@_id'}, restRoutes),
     }
   }]
 );
