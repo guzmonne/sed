@@ -46,7 +46,7 @@ angular.module('sedApp')
       	function bindScroll(){
 					scroll = scope.$watch('model', function(){
 	      		var target = iElement.find('[name=brand]');
-	      		$("body").animate({scrollTop: target.offset().top - 100}, "slow");
+	      		$('body').animate({scrollTop: target.offset().top - 100}, 'slow');
 	      		target.focus();
 	      	});
       	}

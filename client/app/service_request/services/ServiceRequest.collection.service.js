@@ -20,7 +20,7 @@ angular.module('sedApp')
 				}
 				var index = ServiceRequestCollection.data.indexOf(model);
 				if (index > -1){ ServiceRequestCollection.data.splice(index, 1); } 
-			};
+			}
 			function findModel(id){
 				return _.find(ServiceRequestCollection.data, function(m){
 					return m._id === id;
@@ -31,21 +31,21 @@ angular.module('sedApp')
 			}
 			function mergeModels(_model, model){
 				if (!_.isObject(_model) || !_.isObject(model)) { return; }
-				_.merge(_model, model)
+				_.merge(_model, model);
 			}
 			function addModel(model){
 				if (_.isUndefined(model) || _.isUndefined(model._id)){ return; }
 				var _model = findModel(model._id);
 				if (_model) { mergeModels(_model, model); }
 				else        { pushModel(model); }
-			};
+			}
 			function addModels(data){
 				if (!_.isArray(data)){ return; } 
 				if (ServiceRequestCollection.data.length === 0){
 					ServiceRequestCollection.data = data;
 				}
 				_.each(data, addModel);
-			};
+			}
 			/*
 			** Public
 			*/

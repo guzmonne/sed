@@ -4,7 +4,7 @@ angular.module('sedApp')
   .controller('ServiceRequestNewCtrl', function ($scope, $rootScope, ServiceRequestModel, model, clients, devices) {
 		// Events
 		// ------
-		$rootScope.$on('servicerequest:create', function(event){
+		$rootScope.$on('servicerequest:create', function(){
 			$scope.client = {};
 			$scope.device = {};
 			$scope.model  = ServiceRequestModel.empty();

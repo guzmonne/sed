@@ -1,4 +1,5 @@
 'use strict';
+/*jshint camelcase: false */
 
 angular.module('sedApp')
   .config(function ($stateProvider) {
@@ -25,8 +26,8 @@ angular.module('sedApp')
           collection: ['clients', 'devices', 'ServiceRequestCollection', function(clients, devices, ServiceRequestCollection){
             return ServiceRequestCollection.index().then(function(services){
               _.each(services, function(service){
-                var client = _.find(clients, function(client){return client._id === service.client_id});
-                var device = _.find(devices, function(device){return device._id === service.device_id});
+                var client = _.find(clients, function(client){ return client._id === service.client_id; });
+                var device = _.find(devices, function(device){ return device._id === service.device_id; });
                 service.clientName        = client.name;
                 service.deviceBrand       = device.brand;
                 service.deviceModel       = device.model;

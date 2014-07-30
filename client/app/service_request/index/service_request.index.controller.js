@@ -40,7 +40,7 @@ angular.module('sedApp')
     		remove(model);
     		Alerts.pushAlert($scope.alerts, {type: 'info', msg: 'La Orden de Servicio fue eliminada con exito'});		
     	};
-    	var error = function(error){
+    	var error = function(){
     		Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Hubo un problema al intentar elminar la Orden de Servicio'});
     	};
     	ServiceRequestModel.delete(model).then(success, error);
@@ -50,5 +50,5 @@ angular.module('sedApp')
   		if (index > -1){
   			$scope.collection.splice(index, 1);
   		}
-    };
+    }
   });

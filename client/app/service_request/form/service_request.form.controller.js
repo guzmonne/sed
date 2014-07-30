@@ -38,7 +38,7 @@ angular.module('sedApp')
     $scope.onSelectDevice = function(item){
       $rootScope.$broadcast('servicerequest:form:device:update', item);
 			$scope.model.device_id = item._id;
-  	}
+  	};
   	$scope.openBoughtAt = function($event) {
     	$event.preventDefault();
     	$event.stopPropagation();
@@ -52,7 +52,8 @@ angular.module('sedApp')
   		if (_.isNull($scope.newAccessory) || $scope.newAccessory === ''){ return; }
       if ($scope.newAccessory === null || $scope.newAccessory === ''){ return; }
   		if (_.find($scope.model.accessories, function(acc){return acc === $scope.newAccessory;})){
-  			return $scope.newAccessory = null;
+  			$scope.newAccessory = null;
+        return;
   		}
   		$scope.model.accessories.push($scope.newAccessory);
   		$scope.newAccessory = null;
