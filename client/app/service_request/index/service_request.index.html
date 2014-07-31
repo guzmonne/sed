@@ -36,10 +36,10 @@
 					| filter:tableOpts.searchString
 					| limitTo:tableOpts.modelsPerPage">
 						<td ng-show="columns['01'].show">{{model.id}}</td>
-						<td ng-show="columns['02'].show">{{model.clientName}}</td>
-						<td ng-show="columns['03'].show">{{model.deviceBrand}}</td>
-						<td ng-show="columns['04'].show">{{model.deviceModel}}</td>
-						<td ng-show="columns['05'].show">{{model.deviceDescription}}</td>
+						<td ng-show="columns['02'].show">{{model.name}}</td>
+						<td ng-show="columns['03'].show">{{model.brand}}</td>
+						<td ng-show="columns['04'].show">{{model.model}}</td>
+						<td ng-show="columns['05'].show">{{model.description}}</td>
 						<td ng-show="columns['06'].show">{{model.serial}}</td>
 						<td ng-show="columns['07'].show">{{model.status}}</td>
 						<td ng-show="columns['08'].show" class="text-center"><i class="fa fa-check" ng-if="model.withWarranty === true"></i></td>
