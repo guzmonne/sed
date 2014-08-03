@@ -40,7 +40,7 @@ angular.module('sedApp')
 		        Alerts.pushAlert($scope.alerts, {type: 'success', msg: 'Orden de Servicio creada con exito!'}); 
 		        $scope.serviceRequestForm.$setPristine();
 		        $scope.client = {name: null};
-		        $scope.device = {device: null};
+		        $scope.device = {model: null};
 		      };
 		      addAccessory();
 		      ServiceRequestModel.create($scope.model).then(success, errorHandler);
@@ -60,10 +60,10 @@ angular.module('sedApp')
 				$scope.client       = {name: null};
 				$scope.device       = {model: null};
       	$scope.onSelectClient = function(item){ 
-					$scope.model.client_id = item._id; 
+					$scope.model._client = item._id; 
       	};
 		    $scope.onSelectDevice = function(item){ 
-					$scope.model.device_id = item._id; 
+					$scope.model._device = item._id; 
 		    };
 				// Accessories
 				$scope.newAccessory = null;
@@ -103,11 +103,11 @@ angular.module('sedApp')
 				function find(collection, id){
 					return _.find(collection, function(m){ if(m._id){ return m._id === id; } });
 				}
-      	if (scope.model.client_id){
-      		scope.client = find(scope.clients, scope.model.client_id);
+      	if (scope.model._client && scope.model._client._id){
+      		scope.client = find(scope.clients, scope.model._client._id);
       	}
-      	if (scope.model.device_id){
-      		scope.device = find(scope.devices, scope.model.device_id);
+      	if (scope.model._device && scope.model._device._id){
+      		scope.device = find(scope.devices, scope.model._device._id);
       	}
       	iElement.find('[required]').each(function(){
       		var template = '<span tooltip-placement="bottom" tooltip="Obligatorio" >&nbsp;<i style="color: #e79411;" class="fa fa-asterisk"></i></span>';

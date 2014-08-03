@@ -7,6 +7,7 @@ angular.module('sedApp')
       'index':   { method: 'GET', isArray: true },
       'show':    { method: 'GET', isArray: false },
       'update':  { method: 'PUT' },
+      'patch':   { method: 'PATCH' },
       'destroy': { method: 'DELETE' }
     };
     return {

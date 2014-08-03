@@ -2,3 +2,31 @@ a.text-success:hover {
     color: #2b542c;
     text-decoration: none;
 }
+
+a.link-undecorated {
+	text-decoration: none;
+}
+
+a.text-hover-warning:hover {
+	color: #f39c12;
+	text-decoration: none;
+}
+
+a.text-danger:hover {
+	color: #AD3023;
+	text-decoration: none;
+}
+
+a.text-success:hover {
+	color: #0F8069;
+	text-decoration: none;
+}
+
+.text-warning-hover:hover {
+	color: #f39c12;
+	text-decoration: none;
+}
+
+.pointer {
+	cursor: pointer;
+}

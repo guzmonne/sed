@@ -7,7 +7,8 @@ var Log            = require('../log/log.model');
 
 // Get list of service_requests
 exports.index = function(req, res) {
-  ServiceRequest.find(function (err, service_requests) {
+  //ServiceRequest.find(function (err, service_requests) {
+  ServiceRequest.index(function (err, service_requests) {
     if(err) { return handleError(res, err); }
     return res.json(200, service_requests);
   });
@@ -15,7 +16,8 @@ exports.index = function(req, res) {
 
 // Get a single service_request
 exports.show = function(req, res) {
-  ServiceRequest.findById(req.params.id, function (err, service_request) {
+  //ServiceRequest.findById(req.params.id, function (err, service_request) {
+  ServiceRequest.show(req.params.id, function (err, service_request) {
     if(err) { return handleError(res, err); }
     if(!service_request) { return res.send(404); }
     return res.json(service_request);
@@ -40,11 +42,32 @@ exports.update = function(req, res) {
     if (err) { return handleError(err); }
     if(!service_request) { return res.send(404); }
     var updated = _.merge(service_request, req.body, function(a, b){return b});
-    console.log('pre', service_request.updatedAt);
     updated.save(function (err) {
-      console.log('post', service_request.updatedAt);
       if (err) { return handleError(res, err); }
       createLog(req.user._id, service_request._id, 'update');
+      return res.json(200, service_request);
+    });
+  });
+};
+
+// Patches an existing service_request in the DB.
+exports.patch = function(req, res) {
+  req.body = helper.addUser(req.body, req.user);
+  if(req.body._id) { delete req.body._id; }
+  ServiceRequest.findById(req.params.id, function (err, service_request) {
+    if (err) { return handleError(err); }
+    if(!service_request) { return res.send(404); }
+    var updated = _.merge(service_request, req.body, function(a, b){return b});
+    updated.save(function (err) {
+      if (err) { return handleError(res, err); }
+      createLog(req.user._id, service_request._id, 'patch');
+      if (req.body.cost){ 
+        createLog(req.user._id, service_request._id, 'patch:cost:' + req.body.cost); 
+      }
+      if (!_.isUndefined(req.body.costAccepted)) { 
+        var msg = (req.body.costAccepted === true) ? "patch:costAccepted" : "patch:costAccepted:cancelled";
+        createLog(req.user._id, service_request._id, msg); 
+      }
       return res.json(200, service_request);
     });
   });
@@ -75,7 +98,7 @@ function createLog(usr, doc, msg){
   log.save(function(err){
     if (err) { return handleError(err); }
   });
-};
+}
 
 function handleError(res, err) {
   return res.send(500, err);

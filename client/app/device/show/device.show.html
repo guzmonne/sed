@@ -1,0 +1,28 @@
+<div class="container">
+	<div class="row">
+		<div class="col-lg-8">
+			<h2 ng-class="{'text-default': showEdit === false, 'text-warning': showEdit === true }" ng-mouseenter="mouseOverTitle()" ng-mouseleave="mouseLeaveTitle()" >
+				{{model.description}}&nbsp;{{model.brand}}&nbsp;{{model.model}}&nbsp;
+				<button ng-show="showEdit && !showForm" class="btn btn-sm btn-warning" ng-click="showForm = true">
+					<i class="fa fa-pencil fa-fw"></i>
+				</button>
+				<button class="btn btn-sm btn-danger" ng-show="showForm" ng-click="showForm = false">
+					<i class="fa fa-times fa-fw"></i>
+				</button>
+			</h2>
+			<button class="btn btn-success">
+				Nueva Orden de Servicio
+			</button>
+		</div><!-- /.col-lg-8 -->
+		<div class="col-lg-4">
+			<img ng-src="{{model.image}}" alt="{{model.model + ' image'}}" width="200" />
+		</div><!-- /.col-lg-4 -->
+		<div class="col-lg-12 air-top" ng-show="showForm">
+			<hr />
+			<div device-form model="model"></div>
+		</div><!-- /.col-lg-12 -->
+		<div class="col-lg-12 air-top">
+			<hr />
+		</div><!-- /.col-lg-12 -->
+	</div><!-- /.row -->
+</div><!-- /.container -->

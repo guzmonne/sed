@@ -17,21 +17,8 @@ angular.module('sedApp')
         templateUrl: 'app/service_request/index/service_request.index.html',
         controller: 'ServiceRequestIndexCtrl',
         resolve: {
-          clients: ['ClientCollection', function(ClientCollection){
-            return ClientCollection.index();
-          }],
-          devices: ['DeviceCollection', function(DeviceCollection){
-            return DeviceCollection.index();
-          }],
-          collection: ['clients', 'devices', 'ServiceRequestCollection', function(clients, devices, ServiceRequestCollection){
-            return ServiceRequestCollection.index().then(function(services){
-              _.each(services, function(service){
-                var client = _.find(clients, function(client){ return client._id === service.client_id; });
-                var device = _.find(devices, function(device){ return device._id === service.device_id; });
-                _.extend(service, _.pick(client, 'name'), _.pick(device, 'brand', 'model', 'description'));
-              });
-              return services;
-            });
+          collection: ['ServiceRequestCollection', function(ServiceRequestCollection){
+            return ServiceRequestCollection.index();
           }]
         }
       })

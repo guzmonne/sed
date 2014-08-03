@@ -1,0 +1,93 @@
+<div class="container-fluid">
+	<div class="row  panel panel-default">
+		<div class="panel-body">
+			<div class="col-sm-8">
+				<h2>Orden de Servicio <span class="text-success">#&nbsp;{{model.id}}</span></h2>
+				<h3>Cliente:&nbsp;<a ui-sref="client.show({id: model._client._id})" class="text-success text-hover-warning">{{model._client.name}}</a></h3>
+			</div><!-- /.col-sm-6 -->
+			<div class="col-sm-4">
+				<div client-details-list="model._client"></div>
+			</div><!-- /.col-sm-6 -->
+		</div><!-- /.row panel-bpdy -->
+	</div><!-- /.row -->
+	<div class="row panel panel-default">
+		<div class="panel-heading">
+			<h3>
+				{{model._device.description}}&nbsp;{{model._device.brand}}&nbsp;<a ui-sref="device.show({id: model._device._id})" class="text-success text-hover-warning">{{model._device.model}}</a>&nbsp;
+				<div class="label label-primary pull-right">{{model.status}}</div><!-- /.label label-primary -->
+			</h3>
+		</div><!-- /.panel-heading -->
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-sm-3">
+					<img ng-src="{{model._device.image}}" alt="{{model._device + ' image'}}" />
+					<div class="row">
+						<div class="col-xs-6">
+							<a ui-sref="service_request.edit({id: model._id})" class="btn btn-warning btn-block">
+								<i class="fa fa-fw fa-pencil"></i>&nbsp;Editar
+							</a>
+						</div><!-- /.col-xs-6 -->
+					</div><!-- /.row -->
+				</div><!-- /.col-sm-6 -->
+				<div class="col-sm-9">
+					<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert(alerts, $index)">{{alert.msg}}</alert>
+					<table class="table table-striped table-hover table-bordered">
+						 	<col width="30%" />
+   						<col width="70%" />
+						<tbody>
+							<tr>
+								<td><label for="serial">Serie</label></td>
+								<td>&nbsp;{{model.serial}}</td>
+							</tr>
+							<tr>
+								<td><label for="withWarranty">Garantía</label></td>
+								<td>
+									<input type="checkbox" ng-model="model.withWarranty" disabled class="form-control form-control-in-cell" >
+								</td>
+							</tr>
+							<tr ng-show="model.withWarranty">
+								<td><label for="invoiceNumber">N° Boleta</label></td>
+								<td>&nbsp;{{model.invoiceNumber}}</td>
+							</tr>
+							<tr ng-show="model.withWarranty">
+								<td><label for="boughtAt">Fecha de Compra</label></td>
+								<td>&nbsp;{{model.boughtAt | date:'dd MMMM yyyy'}}</td>
+							</tr>
+							<tr cost-row-form 
+								model="model.cost" 
+								show="{{!model.withWarranty}}" 
+								form="controls.showCostForm"
+								done="patchCost(cost)"
+							></tr>
+							<tr  ng-mouseenter="controls.acceptedButton = true" ng-mouseleave="controls.acceptedButton = false" ng-show="!model.withWarranty">
+								<td>
+									<label for="costAccepted">Presupuesto Aceptado</label>
+								</td>
+								<td>
+									<input ng-change="patchCostAccepted()" type="checkbox" ng-model="model.costAccepted" class="form-control form-control-in-cell" >
+								</td>
+							</tr>
+							<tr ng-show="model.costAccepted">
+								<td><label for="costAcceptedAt">Fecha de Aceptado</label></td>
+								<td>{{model.costAcceptedAt | date:'dd MMMM yyyy'}}</td>
+							</tr>
+						</tbody>
+					</table>
+					<dt for="accessories">Accesorios</dt>
+					<dd ng-show="model.accessories.length !== 0">
+						<ul>
+							<li ng-repeat="value in model.accessories">{{value}}</li>
+						</ul>
+					</dd>
+					<dd ng-show="model.accessories.length === 0">Sin accesorios</dd>
+					<dt>Defecto</dt>
+					<dd>{{model.defect}}</dd>
+					<div diagnose-dd-form model="model.diagnose" 
+						form="controls.showDiagnoseForm"
+						done="patchDiagnose(diagnose)" 
+					></div>	
+				</div><!-- /.col-sm-6 -->
+			</div><!-- /.row -->
+		</div><!-- /.panel-body -->
+	</div><!-- /.row -->
+</div><!-- /.container-fluid -->

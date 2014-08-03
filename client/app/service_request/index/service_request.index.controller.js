@@ -11,7 +11,7 @@ angular.module('sedApp')
     };
     $scope.closeAlerts = Alerts.closeAlerts;
     $scope.isAdmin     = Auth.isAdmin;
-    $scope.columns        = {
+    $scope.columns     = {
       '01': { name: 'ID', show: true }, 
       '02': { name: 'Cliente', show: true },
       '03': { name: 'Marca', show: true },  

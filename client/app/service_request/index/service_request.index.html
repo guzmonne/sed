@@ -11,11 +11,24 @@
 	        Mostrar Columnas
 	      </a>
 	      <ul class="dropdown-menu">
-	        <li ng-repeat="(index, column) in columns">
-	        	<a href="javascript:void(0);">
-	      			<input name="{{column.name}}" type="checkbox" ng-model="column.show" />&nbsp;<label>{{column.name}}</label>
-	        	</a>
-	        </li>
+	      	<li>
+	      		<div class="row" style="padding: 10px;width:450px">
+	      			<ul class="list-unstyled col-md-6">
+	      				<li ng-repeat="(index, column) in columns | objectAsArray | limitTo: 11">
+				        	<a ng-class="{'text-danger': !column.show, 'text-success': column.show}" class="link-undecorated" href="javascript:void(0);">
+				      			<input name="{{column.name}}" type="checkbox" ng-model="column.show" />&nbsp;<label>{{column.name}}</label>
+				        	</a>
+				        </li>	
+	      			</ul><!-- /.list-unstyled -->
+	      			<ul class="list-unstyled col-md-6">
+	      				<li ng-repeat="(index, column) in columns | objectAsArray | limitTo: -11">
+				        	<a ng-class="{'text-danger': !column.show, 'text-success': column.show}" href="javascript:void(0); class="link-undecorated>
+				      			<input name="{{column.name}}" type="checkbox" ng-model="column.show" />&nbsp;<label>{{column.name}}</label>
+				        	</a>
+				        </li>	
+	      			</ul><!-- /.list-unstyled -->
+	      		</div><!-- /.row -->
+	      	</li>
 	      </ul>
     </span>
 		</div><!-- /.col-lg-12 -->
@@ -36,10 +49,10 @@
 					| filter:tableOpts.searchString
 					| limitTo:tableOpts.modelsPerPage">
 						<td ng-show="columns['01'].show">{{model.id}}</td>
-						<td ng-show="columns['02'].show">{{model.name}}</td>
-						<td ng-show="columns['03'].show">{{model.brand}}</td>
-						<td ng-show="columns['04'].show">{{model.model}}</td>
-						<td ng-show="columns['05'].show">{{model.description}}</td>
+						<td ng-show="columns['02'].show">{{model._client.name}}</td>
+						<td ng-show="columns['03'].show">{{model._device.brand}}</td>
+						<td ng-show="columns['04'].show">{{model._device.model}}</td>
+						<td ng-show="columns['05'].show">{{model._device.description}}</td>
 						<td ng-show="columns['06'].show">{{model.serial}}</td>
 						<td ng-show="columns['07'].show">{{model.status}}</td>
 						<td ng-show="columns['08'].show" class="text-center"><i class="fa fa-check" ng-if="model.withWarranty === true"></i></td>
@@ -53,10 +66,10 @@
 						<td ng-show="columns['12'].show" ng-show="cols.defect">{{model.defect}}</td>
 						<td ng-show="columns['13'].show" class="text-center">{{model.priority}}</td>
 						<td ng-show="columns['14'].show">{{model.technician}}</td>
-						<td ng-show="columns['15'].show">{{model.cost}}</td>
+						<td ng-show="columns['15'].show">{{model.cost | currency}}</td>
 						<td ng-show="columns['16'].show">{{model.authorizedBy}}</td>
 						<td ng-show="columns['17'].show">{{model.authorizedAt}}</td>
-						<td ng-show="columns['18'].show">{{model.costAccepted}}</td>
+						<td ng-show="columns['18'].show" class="text-center"><i class="fa fa-check" ng-if="model.costAccepted === true"></i></td>
 						<td ng-show="columns['19'].show">{{model.costAcceptedAt}}</td>
 						<td ng-show="columns['20'].show">{{model.createdAt | date:'dd MMMM yyyy'}}</td>
 						<td ng-show="columns['21'].show">{{model.updatedAt | date:'dd MMMM yyyy'}}</td>

@@ -1,0 +1,32 @@
+<dt 
+	ng-click="form = true"
+	ng-mouseenter="button = true" 
+	ng-mouseleave="button = false" 
+	class="text-warning-hover pointer"
+>
+	Diagnostico&nbsp;<i ng-show="button" class="fa fa-pencil text-warning"></i>
+</dt>
+<dd ng-show="model && !form">{{model}}</dd>		
+<dd ng-show="!model && !form">Sin revisar</dd>
+<dd ng-show="form && !spinner">
+	<form role="form">
+		<div class="form-group">
+			<textarea class="form-control" ng-model="model" placeholder="Diagnostico"></textarea>
+		</div><!-- /.form-group -->
+		<div class="form-group">
+			<div class="btn-toolbar">
+				<div class="btn-group">
+					<button ng-click="ok()" class="btn btn-sm btn-primary">
+						Aceptar
+					</button>
+				</div><!-- /.btn-group -->
+				<div class="btn-group">
+					<button ng-click="form = false" class="btn btn-sm btn-inverse">
+						Cancelar
+					</button>
+				</div><!-- /.btn-group -->
+			</div><!-- /.btn-toolbar -->
+		</div><!-- /.form-group -->
+	</form>
+</dd>	
+<dd class="text-success" ng-show="form && spinner"><i class="fa fa-spinner fa-2x fa-spin"></i></dd>

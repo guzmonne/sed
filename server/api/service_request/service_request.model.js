@@ -7,11 +7,11 @@ var mongoose = require('mongoose'),
     Schema   = mongoose.Schema;
 
 var ServiceRequestSchema = new Schema({
-	'client_id': {
+	'_client': {
 		type: Schema.Types.ObjectId,
 		ref : 'Client'
 	},
-	'device_id': {
+	'_device': {
 		type: Schema.Types.ObjectId,
 		ref : 'Device'
 	},
@@ -25,6 +25,7 @@ var ServiceRequestSchema = new Schema({
 	'boughtAt'      : Date,
 	'accessories'   : [String],
 	'defect'        : String,
+	'diagnose'      : String,
 	'priority'      : Number,
 	'technician'    : String,
 	'cost'          : Number,
@@ -48,5 +49,37 @@ var ServiceRequestSchema = new Schema({
 ServiceRequestSchema.plugin(autoInc.plugin, { model: 'ServiceRequest', field: 'id' });
 
 ServiceRequestSchema.pre('save', helper.addTimestamps);
+
+// Set the cost accepted date or set it to null
+ServiceRequestSchema.pre('save', function(next){
+	if (!this.costAccepted){ return next(); }
+	if (this.costAccepted === true && !this.costAcceptedAt){
+		this.costAcceptedAt = new Date();
+	} else if (this.costAccepted === false && this.costAcceptedAt){
+		this.costAcceptedAt = null;
+	}
+	next();
+});
+
+// Change the status if its 
+
+ServiceRequestSchema.statics.index = function(callback){
+	if (!_.isFunction(callback)){ return; }
+	this
+		.find()
+		.populate('_client', 'name')
+		.populate('_device', 'brand model description')
+		.exec(callback);
+};
+
+ServiceRequestSchema.statics.show = function(id, callback){
+	if (!_.isFunction(callback)){ return; }
+	if (!_.isString(id)){ callback({msg: '"ID" must be a string'}); }
+	this
+		.findOne({_id: id})
+		.populate('_client', 'name docType docNumber phone address email')
+		.populate('_device', 'brand model description image')
+		.exec(callback);
+}
 
 module.exports = mongoose.model('ServiceRequest', ServiceRequestSchema);

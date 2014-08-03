@@ -2,8 +2,13 @@
 /* Angular Fullstack Styles */
 /* ------------------------ */
 body { 
-    padding-bottom: 70px; 
-    font-size: 16px;
+    //padding-bottom: 70px;
+    margin-bottom: 100px; 
+    font-size: 14px;
+}
+
+body > .container {
+  padding: 60px 15px 0;
 }
 
 #banner {
@@ -30,11 +35,48 @@ body {
     background: #e74c3c;
 }
 
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 100px;
+  background-color: #2c3e50;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+.container .text-muted {
+  margin: 20px 0;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
 /* --------------- */
 /* Padding helpers */
 /* --------------- */
 $air: 20px;
 $padding: 40px;
+
+.air-top-1-2 {
+  margin-top: $air/2;
+}
 
 .air-top {
     margin-top: $air;
@@ -52,7 +94,25 @@ $padding: 40px;
     margin-top: ($air*3);
 }
 
+.air-bottom {
+    margin-bottom: $air;
+}
+
 .half-left-padding {
     padding-left: $padding/2;
+}
+
+
+/* --------------- */
+/* Form helpers */
+/* --------------- */
+.form-control-in-cell {
+  height: 33px;
+  padding: 0 15px;
+}
+
+.form-control-in-cell[type=checkbox] {
+  width: 23px;
+  height: 23px;
 }
 
