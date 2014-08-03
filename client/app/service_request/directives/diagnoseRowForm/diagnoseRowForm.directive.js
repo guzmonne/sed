@@ -5,9 +5,10 @@ angular.module('sedApp')
 		return {
       templateUrl: 'app/service_request/directives/diagnoseRowForm/diagnoseRowForm.html',
       scope: {
-      	model: '=',
-      	form : '=',
-      	done : '&',
+        model   : '=',
+        form    : '=',
+        done    : '&',
+        disabled: '@'
       },
       controller: ['$scope', function($scope){
       	$scope.ok             = ok;
@@ -25,14 +26,25 @@ angular.module('sedApp')
 		    }
       }],
       link: function (scope, element) {
-      	element.bind('mouseenter', function(){
-      		scope.$apply(function(){ scope.button = true; });
-      	});
-      	element.bind('mouseleave', function(){
-      		scope.$apply(function(){ scope.button = false; });
-      	});
-      	element.find('.btn-warning').click(function(){ element.find('.form-control').focus(); });
-      	scope.$watch('form', function(n){
+      	function bind(){
+          element.bind('mouseenter', function(){
+            scope.$apply(function(){ scope.button = true; });
+          });
+          element.bind('mouseleave', function(){
+            scope.$apply(function(){ scope.button = false; });
+          });
+          element.find('.btn-warning').click(function(){ element.find('.form-control').focus(); });  
+        }
+        function disable(){
+          var status = scope.$eval(scope.disabled);
+          if (status === true){
+            element.unbind();
+          } else {
+            bind();
+          }
+        }
+        scope.$watch('disabled', disable);
+        scope.$watch('form', function(n){
       		if (n === true){ scope.spinner = false; }
       	});
       }
