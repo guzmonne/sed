@@ -71,21 +71,26 @@
 								<td><label for="costAcceptedAt">Fecha de Aceptado</label></td>
 								<td>{{model.costAcceptedAt | date:'dd MMMM yyyy'}}</td>
 							</tr>
+							<tr>
+								<td><label>Accesorios</label></td>
+								<td>
+									<ul style="margin-left: -20px" ng-show="model.accessories.length !== 0">
+										<li ng-repeat="value in model.accessories">{{value}}</li>
+									</ul>
+									<span ng-show="model.accessories.length === 0">Sin accesorios</span>
+								</td>
+							</tr>
+							<tr>
+								<td><label>Defecto</label></td>
+								<td>{{model.defect}}</td>
+							</tr>
+							<tr diagnose-row-form
+								model="model.diagnose"
+								form="controls.showDiagnoseForm"
+								done="patchDiagnose(diagnose)"
+							></tr>
 						</tbody>
 					</table>
-					<dt for="accessories">Accesorios</dt>
-					<dd ng-show="model.accessories.length !== 0">
-						<ul>
-							<li ng-repeat="value in model.accessories">{{value}}</li>
-						</ul>
-					</dd>
-					<dd ng-show="model.accessories.length === 0">Sin accesorios</dd>
-					<dt>Defecto</dt>
-					<dd>{{model.defect}}</dd>
-					<div diagnose-dd-form model="model.diagnose" 
-						form="controls.showDiagnoseForm"
-						done="patchDiagnose(diagnose)" 
-					></div>	
 				</div><!-- /.col-sm-6 -->
 			</div><!-- /.row -->
 		</div><!-- /.panel-body -->
