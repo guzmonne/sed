@@ -30,3 +30,15 @@ a.text-success:hover {
 .pointer {
 	cursor: pointer;
 }
+
+.form-control-feedback {
+	top: 0px;
+}
+
+.pagination > .disabled > a, .pagination > .disabled > a:hover, .pagination > .disabled > a:focus {
+	background-color: #5DB6AF;
+}
+
+.form-search {
+	border-radius: 25px;
+}
