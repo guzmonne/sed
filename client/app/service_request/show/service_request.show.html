@@ -14,7 +14,7 @@
 		<div class="panel-heading">
 			<h3>
 				{{model._device.description}}&nbsp;{{model._device.brand}}&nbsp;<a ui-sref="device.show({id: model._device._id})" class="text-success text-hover-warning">{{model._device.model}}</a>&nbsp;
-				<span class="pull-right" service-request-status-label></span>
+				<span class="pull-right" service-request-status-label="{{model.status}}"></span>
 			</h3>
 		</div><!-- /.panel-heading -->
 		<div class="panel-body">

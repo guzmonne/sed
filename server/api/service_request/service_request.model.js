@@ -51,12 +51,15 @@ ServiceRequestSchema.plugin(autoInc.plugin, { model: 'ServiceRequest', field: 'i
 ServiceRequestSchema.pre('save', helper.addTimestamps);
 
 // Set the cost accepted date or set it to null
+// Also change the status to 'En Reparación' or 'Esperando Aprobación'
 ServiceRequestSchema.pre('save', function(next){
-	if (!this.costAccepted){ return next(); }
-	if (this.costAccepted === true && !this.costAcceptedAt){
-		this.costAcceptedAt = new Date();
-	} else if (this.costAccepted === false && this.costAcceptedAt){
-		this.costAcceptedAt = null;
+	if (_.isUndefined(this.costAccepted)){ return; }
+	if (this.costAccepted === true){
+		if (!this.costAcceptedAt){ this.costAcceptedAt = new Date(); }
+		if (this.status !== 'En Reparación'){ this.status = 'En Reparación'; } 
+	} else if (this.costAccepted === false) {
+		if (this.costAcceptedAt){ this.costAcceptedAt = null; }
+		if (this.status !== 'Esperando Aprobación'){ this.status = 'Esperando Aprobación'; } 
 	}
 	next();
 });

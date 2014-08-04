@@ -50,7 +50,7 @@ angular.module('sedApp')
       $scope.controls.showDiagnoseForm = false;
       $scope.model.diagnose = data.diagnose;
       Alerts.pushAlert($scope.alerts, {type: 'success', msg: DIAGNOSE_SUCCESS});
-      checkCost();
+      if (!$scope.model.withWarranty){ checkCost(); }
     }
     function statusSuccess(data){
       $scope.model.status = data.status;
@@ -75,14 +75,13 @@ angular.module('sedApp')
       }
     }
     function patchCostAccepted(){
-      ServiceRequestModel.patch(model._id, {
-        costAccepted: $scope.model.costAccepted
-      }).then(costAcceptedSuccess, costAcceptedError);
+      ServiceRequestModel.patch(model._id, { costAccepted: $scope.model.costAccepted}).then(costAcceptedSuccess, costAcceptedError);
     }
     function costAcceptedSuccess(data){
       var msg = (data.costAccepted) ? COST_ACCEPTED : COST_CANCELLED;
       $scope.model.costAccepted   = data.costAccepted;
       $scope.model.costAcceptedAt = data.costAcceptedAt; 
+      $scope.model.status         = data.status;
       Alerts.pushAlert($scope.alerts, {type: 'success', msg: msg});
     }
     function costAcceptedError(){

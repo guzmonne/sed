@@ -54,7 +54,7 @@
 						<td ng-show="columns['04'].show">{{model._device.model}}</td>
 						<td ng-show="columns['05'].show">{{model._device.description}}</td>
 						<td ng-show="columns['06'].show">{{model.serial}}</td>
-						<td ng-show="columns['07'].show">{{model.status}}</td>
+						<td class="text-center" ng-show="columns['07'].show"><span service-request-status-label="{{model.status}}"></span></td>
 						<td ng-show="columns['08'].show" class="text-center"><i class="fa fa-check" ng-if="model.withWarranty === true"></i></td>
 						<td ng-show="columns['09'].show">{{model.invoiceNumber}}</td>
 						<td ng-show="columns['10'].show">{{model.boughtAt | date: 'dd MMMM yyyy'}}</td>
@@ -68,9 +68,9 @@
 						<td ng-show="columns['14'].show">{{model.technician}}</td>
 						<td ng-show="columns['15'].show">{{model.cost | currency}}</td>
 						<td ng-show="columns['16'].show">{{model.authorizedBy}}</td>
-						<td ng-show="columns['17'].show">{{model.authorizedAt}}</td>
+						<td ng-show="columns['17'].show">{{model.authorizedAt | date: 'dd MMMM yyyy'}}</td>
 						<td ng-show="columns['18'].show" class="text-center"><i class="fa fa-check" ng-if="model.costAccepted === true"></i></td>
-						<td ng-show="columns['19'].show">{{model.costAcceptedAt}}</td>
+						<td ng-show="columns['19'].show">{{model.costAcceptedAt | date: 'dd MMMM yyyy'}}</td>
 						<td ng-show="columns['20'].show">{{model.createdAt | date:'dd MMMM yyyy'}}</td>
 						<td ng-show="columns['21'].show">{{model.updatedAt | date:'dd MMMM yyyy'}}</td>
 						<td ng-show="columns['22'].show">{{model.closedAt  | date:'dd MMMM yyyy'}}</td>
