@@ -19,6 +19,12 @@ var DeviceSchema = new Schema({
 		required: 'El campo de "descripción" no puede quedar vacío'
 	},
 	"image": String,
+	'serviceRequests': [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'ServiceRequest'
+		}
+	],
 	'createdBy': {
 		type: Schema.Types.ObjectId,
 		ref : 'User'

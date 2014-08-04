@@ -26,6 +26,12 @@ var ClientSchema = new Schema({
 		type: String,
 		lowercase: true
 	},
+	'serviceRequests': [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'ServiceRequest'
+		}
+	],
 	'createdBy': {
 		type: Schema.Types.ObjectId,
 		ref : 'User'

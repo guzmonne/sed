@@ -37,6 +37,7 @@ exports.create = function(req, res) {
 // Updates an existing service_request in the DB.
 exports.update = function(req, res) {
   req.body = helper.addUser(req.body, req.user);
+  req.body = justDeviceAndClientIds(req.body);
   if(req.body._id) { delete req.body._id; }
   ServiceRequest.findById(req.params.id, function (err, service_request) {
     if (err) { return handleError(err); }
@@ -85,6 +86,12 @@ exports.destroy = function(req, res) {
     });
   });
 };
+
+function justDeviceAndClientIds(body){
+  if (_.isObject(body._device) && body._device._id){ body._device = body._device._id; }
+  if (_.isObject(body._client) && body._client._id){ body._client = body._client._id; }
+  return body;
+}
 
 function createLog(usr, doc, msg){
   var log = new Log({

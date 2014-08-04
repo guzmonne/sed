@@ -26,6 +26,7 @@ var ServiceRequestSchema = new Schema({
 	'accessories'   : [String],
 	'defect'        : String,
 	'diagnose'      : String,
+	'solution'      : String,
 	'priority'      : Number,
 	'technician'    : String,
 	'cost'          : Number,
@@ -48,12 +49,13 @@ var ServiceRequestSchema = new Schema({
 
 ServiceRequestSchema.plugin(autoInc.plugin, { model: 'ServiceRequest', field: 'id' });
 
+// Set timestamps
 ServiceRequestSchema.pre('save', helper.addTimestamps);
 
 // Set the cost accepted date or set it to null
 // Also change the status to 'En Reparación' or 'Esperando Aprobación'
 ServiceRequestSchema.pre('save', function(next){
-	if (_.isUndefined(this.costAccepted)){ return; }
+	if (_.isUndefined(this.costAccepted)){ return next(); }
 	if (this.costAccepted === true){
 		if (!this.costAcceptedAt){ this.costAcceptedAt = new Date(); }
 		if (this.status !== 'En Reparación'){ this.status = 'En Reparación'; } 
@@ -64,7 +66,15 @@ ServiceRequestSchema.pre('save', function(next){
 	next();
 });
 
-// Change the status if its 
+// If the status is closed then we set the closedAt date
+ServiceRequestSchema.pre('save', function(next){
+	if (_.isUndefined(this.status)){ return next(); }
+	if (this.status === "Cerrado"){
+		this.closedAt = new Date();
+	}
+	next();
+});
+
 
 ServiceRequestSchema.statics.index = function(callback){
 	if (!_.isFunction(callback)){ return; }
