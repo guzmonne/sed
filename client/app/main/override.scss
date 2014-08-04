@@ -42,3 +42,14 @@ a.text-success:hover {
 .form-search {
 	border-radius: 25px;
 }
+
+.input-group-addon-success {
+	color: #ffffff;
+	background-color: #18bc9c;
+	border-color: #18bc9c;
+	border: 1px solid #dce4ec;
+}
+
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+	background-color: #346291;
+}

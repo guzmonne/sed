@@ -15,14 +15,18 @@ angular.module('sedApp')
       	*/
       	$scope.table = [];
       	$scope.options = {
-					sortField    : '',
-					sortReverse  : false,
-					searchString : '',
-					modelsPerPage: 10,
-					totalItems   : 0,
-					currentPage  : 1,
+					sortField      : '',
+					sortReverse    : false,
+					searchString   : '',
+					filterField    : '',
+					filterFieldName: null,
+					modelsPerPage  : 10,
+					totalItems     : 0,
+					currentPage    : 1,
       	};
-      	$scope.sort = sort;
+				$scope.sort              = sort;
+				$scope.search            = search;
+				$scope.selectFilterField = selectFilterField;
       	/*
       	** Private
       	*/
@@ -84,6 +88,30 @@ angular.module('sedApp')
 					$scope.options.sortField = table.sortField;
 					$scope.table             = table.data;
       	}
+      	function search(){
+      		var obj = {};
+      		var arr = [];
+      		if ($scope.options.filterField === ''){ return $scope.options.searchString; }
+      		arr = $scope.options.filterField.split('.');
+      		if (arr.length > 1){
+      			for (var i = 0; i < arr.length; i++){
+      				if (i === 0){ obj[arr[0]] = {};	
+      				} else if ( i === arr.length - 1 ){
+      					obj[arr[i-1]][arr[i]] = $scope.options.searchString;
+      				} else {
+      					obj[arr[i-1]][arr[i]] = {};
+      				}
+      			}
+      			return obj;
+      		}
+      		obj[$scope.options.filterField] = $scope.options.searchString;
+      		return obj;
+      	}
+      	function selectFilterField(column){
+      		if (_.isUndefined(column)){ column = { name: null, attribute: '' }; } 
+      		$scope.options.filterFieldName = column.name;
+      		$scope.options.filterField     = column.attribute;
+      	}
       	/*
       	** Initialize
       	*/
@@ -135,7 +163,7 @@ angular.module('sedApp')
 	        body.attr('ng-repeat', [
 		        	'model in collection ',
 							'| orderBy:options.sortField:options.sortReverse',
-							'| filter:options.searchString',
+							'| filter:search()',
 							'| startFrom:(options.currentPage-1) * options.modelsPerPage',
 							'| limitTo:options.modelsPerPage',
 	        	].join('') 
