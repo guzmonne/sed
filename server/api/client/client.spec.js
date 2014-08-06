@@ -4,6 +4,7 @@ var should  = require('should');
 var app     = require('../../app');
 var request = require('supertest');
 var Client  = require('./client.model');
+var async   = require('async');
 
 var model;
 

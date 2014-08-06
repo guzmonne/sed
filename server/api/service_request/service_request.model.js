@@ -75,7 +75,6 @@ ServiceRequestSchema.pre('save', function(next){
 	next();
 });
 
-
 ServiceRequestSchema.statics.index = function(callback){
 	if (!_.isFunction(callback)){ return; }
 	this

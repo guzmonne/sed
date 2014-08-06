@@ -4,6 +4,8 @@ var _              = require('lodash');
 var helper         = require('../../utils/controller.helper');
 var ServiceRequest = require('./service_request.model');
 var Log            = require('../log/log.model');
+var Device         = require('../device/device.model');
+var Client         = require('../client/client.model');
 
 // Get list of service_requests
 exports.index = function(req, res) {
@@ -29,7 +31,11 @@ exports.create = function(req, res) {
   req.body = helper.addUser(req.body, req.user);
   ServiceRequest.create(req.body, function(err, service_request) {
     if(err) { return handleError(res, err); }
+    // Create Log
     createLog(req.user._id, service_request._id, 'create');
+    // Add service_request to client and device
+    helper.addServiceRequest('Client', service_request._id, service_request._client);
+    helper.addServiceRequest('Device', service_request._id, service_request._device);
     return res.json(201, service_request);
   });
 };
@@ -40,12 +46,14 @@ exports.update = function(req, res) {
   req.body = justDeviceAndClientIds(req.body);
   if(req.body._id) { delete req.body._id; }
   ServiceRequest.findById(req.params.id, function (err, service_request) {
-    if (err) { return handleError(err); }
+    if (err) { return handleError(res, err); }
     if(!service_request) { return res.send(404); }
+    var clone   = _.pick(service_request, '_id', '_client', '_device');
     var updated = _.merge(service_request, req.body, function(a, b){return b});
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       createLog(req.user._id, service_request._id, 'update');
+      checkUpdateLogClientAndDevice(clone, updated);
       return res.json(200, service_request);
     });
   });
@@ -56,22 +64,17 @@ exports.patch = function(req, res) {
   req.body = helper.addUser(req.body, req.user);
   if(req.body._id) { delete req.body._id; }
   ServiceRequest.findById(req.params.id, function (err, service_request) {
-    if (err) { return handleError(err); }
+    if (err) { return handleError(res, err); }
     if(!service_request) { return res.send(404); }
     var updated = _.merge(service_request, req.body, function(a, b){return b});
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       createLog(req.user._id, service_request._id, 'patch');
-      if (req.body.cost){ 
-        createLog(req.user._id, service_request._id, 'patch:cost:' + req.body.cost); 
-      }
-      if (!_.isUndefined(req.body.costAccepted)) { 
-        var msg = (req.body.costAccepted === true) ? "patch:costAccepted" : "patch:costAccepted:cancelled";
-        createLog(req.user._id, service_request._id, msg); 
-      }
+      checkAndLogCost(req, service_request._id);
+      checkAndLogCostAccepted(req, service_request._id);
       return res.json(200, service_request);
     });
-  });
+  });//
 };
 
 // Deletes a service_request from the DB.
@@ -82,10 +85,39 @@ exports.destroy = function(req, res) {
     service_request.remove(function(err) {
       if(err) { return handleError(res, err); }
       createLog(req.user._id, service_request._id, 'delete');
+      helper.removeServiceRequest('Client', service_request._id, service_request._client);
+      helper.removeServiceRequest('Device', service_request._id, service_request._device);
       return res.send(204);
     });
   });
 };
+
+function checkUpdateLogClientAndDevice(oldModel, newModel){
+  var id = oldModel._id;
+  if (!_.isUndefined(oldModel._client) && oldModel._client !== newModel._client){
+    helper.swapServiceRequest('Client', id, oldModel._client, newModel._client, function(){
+      createLog(newModel.updatedBy, id, 'update:client:' + newModel._client); 
+    });
+  }
+  if (_.isUndefined(oldModel._device) && oldModel._device !== newModel._device){
+    helper.swapServiceRequest('Device', id, oldModel._device, newModel._device, function(){
+      createLog(newModel.updatedBy, id, 'update:device:' + newModel._device); 
+    });
+  }
+}
+
+function checkAndLogCost(req, id){
+  if (req.body.cost){ 
+    createLog(req.user._id, id, 'patch:cost:' + req.body.cost); 
+  }
+}
+
+function checkAndLogCostAccepted(req, id){
+  if (!_.isUndefined(req.body.costAccepted)) { 
+    var msg = (req.body.costAccepted === true) ? "patch:costAccepted" : "patch:costAccepted:cancelled";
+    createLog(req.user._id, id, msg); 
+  }
+}
 
 function justDeviceAndClientIds(body){
   if (_.isObject(body._device) && body._device._id){ body._device = body._device._id; }

@@ -35,38 +35,42 @@ function createClient(callback){
   });
 }
 
+function setup(done){
+  async.parallel([
+    function(cb){
+      Client.remove({}, function(){
+        client = null;
+        createClient(cb);
+      });
+    },
+    function(cb){
+      Device.remove({}, function(){
+        device = null;
+        createDevice(cb);
+      });
+    },
+    function(cb){
+      ServiceRequest.remove({}, function(){
+        model = null;
+        cb(null);
+      });
+    },
+  ], function(err){
+    if (err) {console.log(err);}
+    model = new ServiceRequest({
+      _client : client._id,
+      _device : device._id,
+      accessories : ['ac1', 'ac2'],
+      serial: '123',
+      defect: 'Test'
+    });
+    done();
+  });
+}
+
 describe('Service Request Model', function() {
   before(function(done){
-    async.parallel([
-      function(cb){
-        Client.remove({}, function(){
-          client = null;
-          createClient(cb);
-        });
-      },
-      function(cb){
-        Device.remove({}, function(){
-          device = null;
-          createDevice(cb);
-        });
-      },
-      function(cb){
-        ServiceRequest.remove({}, function(){
-          model = null;
-          cb(null);
-        });
-      },
-    ], function(err){
-      if (err) {console.log(err);}
-      model = new ServiceRequest({
-        _client : client._id,
-        _device : device._id,
-        accessories : ['ac1', 'ac2'],
-        serial: '123',
-        defect: 'Test'
-      });
-      done();
-    });
+    setup(done);
   });
 
   beforeEach(function(){

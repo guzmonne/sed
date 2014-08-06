@@ -6,10 +6,11 @@ angular.module('sedApp')
       templateUrl: 'components/templates/defaultTable.html',
       restrict: 'AE',
       scope: {
-      	collection: '=',
-      	type:'@'
+				collection: '=',
+				type      : '@',
+				delete    : '&'
       },
-      controller: ['$scope', function($scope){
+      controller: ['$scope', 'Auth', function($scope, Auth){
       	/*
       	** Public
       	*/
@@ -27,6 +28,8 @@ angular.module('sedApp')
 				$scope.sort              = sort;
 				$scope.search            = search;
 				$scope.selectFilterField = selectFilterField;
+      	$scope.isAdmin           = Auth.isAdmin;
+      	$scope.remove            = remove;
       	/*
       	** Private
       	*/
@@ -112,6 +115,9 @@ angular.module('sedApp')
       		$scope.options.filterFieldName = column.name;
       		$scope.options.filterField     = column.attribute;
       	}
+      	function remove(model){
+      		$scope.delete({model: model});
+      	}
       	/*
       	** Initialize
       	*/
@@ -140,7 +146,9 @@ angular.module('sedApp')
 									'<a ui-sref="'+type+'.edit({id: model._id})" class="btn btn-warning btn-xs">',
 										'<i class="fa fa-pencil fa-fw"></i>',
 									'</a>',
-									'<button class="btn btn-danger btn-xs" ng-if="isAdmin()" ng-click="delete(model)">',
+								'</div>',
+								'<div class="btn-group">',
+									'<button class="btn btn-danger btn-xs" ng-if="isAdmin()" ng-click="remove(model)">',
 										'<i class="fa fa-trash-o fa-fw"></i>',
 									'</button>',
 								'</div>',
