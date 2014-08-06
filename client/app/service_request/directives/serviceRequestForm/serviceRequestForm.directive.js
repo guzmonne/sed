@@ -7,11 +7,12 @@ angular.module('sedApp')
       templateUrl: 'app/service_request/directives/serviceRequestForm/serviceRequestForm.html',
       restrict: 'AE',
       scope: {
-				model  : '=',
-				clients: '=',
-				devices: '=',
-				success: '&',
-				error  : '&'
+				model   : '=',
+				clients : '=',
+				devices : '=',
+				success : '&',
+				error   : '&',
+				disabled: '@'
       },
       controller: ['$scope', 'ServiceRequestModel', 'Alerts', function($scope, ServiceRequestModel, Alerts){
       	/*
@@ -39,8 +40,7 @@ angular.module('sedApp')
 		      var success = function(){
 		        Alerts.pushAlert($scope.alerts, {type: 'success', msg: 'Orden de Servicio creada con exito!'}); 
 		        $scope.serviceRequestForm.$setPristine();
-		        $scope.client = {name: null};
-		        $scope.device = {model: null};
+		        $scope.setClientAndDevice();
 		      };
 		      addAccessory();
 		      ServiceRequestModel.create($scope.model).then(success, errorHandler);
@@ -53,12 +53,22 @@ angular.module('sedApp')
 		      addAccessory();
 		      ServiceRequestModel.update($scope.model).then(success, errorHandler);
 		    }
+		    function setClientAndDevice(){
+      		if (_.isObject($scope.model._client)){
+      			$scope.client = $scope.model._client;
+      		} else {
+      			$scope.client = {name: null};
+      		}
+      		if (_.isObject($scope.model._device)){
+      			$scope.device = $scope.model._device;
+      		} else {
+      			$scope.device = {model: null};
+      		}
+      	}
       	/*
       	** Public
       	*/
       	// Typeahead
-				$scope.client       = {name: null};
-				$scope.device       = {model: null};
       	$scope.onSelectClient = function(item){ 
 					$scope.model._client = item._id; 
       	};
@@ -97,24 +107,35 @@ angular.module('sedApp')
 		    	$scope.datepicker.openedBoughtAt = true;
 		  	};
 		  	// Form
+		  	$scope.setClientAndDevice = setClientAndDevice;
 		  	$scope.submit = function(){	if ($scope.model._id){ update(); } else { create(); } };
       }],
       link: function(scope, iElement){
+				scope.$watch('disabled', function(disabled){
+					disabled = scope.$eval(disabled);
+					if (disabled === true){
+						iElement.find('input').attr('disabled', true);
+						iElement.find('button').attr('disabled', true);
+					} else {
+						iElement.find('input').attr('disabled', false);
+						iElement.find('button').attr('disabled', false);
+						scope.setClientAndDevice();
+					}
+				});
+				//scope.$watch('model._client', scope.setClientAndDevice());
 				function find(collection, id){
 					return _.find(collection, function(m){ if(m._id){ return m._id === id; } });
 				}
-      	if (scope.model._client && scope.model._client._id){
-      		scope.client = find(scope.clients, scope.model._client._id);
-      	}
-      	if (scope.model._device && scope.model._device._id){
-      		scope.device = find(scope.devices, scope.model._device._id);
-      	}
+      	/*
+      	** Initialization
+      	*/
       	iElement.find('[required]').each(function(){
       		var template = '<span tooltip-placement="bottom" tooltip="Obligatorio" >&nbsp;<i style="color: #e79411;" class="fa fa-asterisk"></i></span>';
       		$(this).parent().parent().find('label').each(function(){
       			$(this).append($compile(template)(scope));
       		});
       	});
+      	//scope.setClientAndDevice()
       }
     };
   });

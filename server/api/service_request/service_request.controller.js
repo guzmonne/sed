@@ -1,6 +1,7 @@
 'use strict';
 
 var _              = require('lodash');
+var async          = require('async');
 var helper         = require('../../utils/controller.helper');
 var ServiceRequest = require('./service_request.model');
 var Log            = require('../log/log.model');
@@ -28,22 +29,41 @@ exports.show = function(req, res) {
 
 // Creates a new service_request in the DB.
 exports.create = function(req, res) {
-  req.body = helper.addUser(req.body, req.user);
+  setBody(req);
   ServiceRequest.create(req.body, function(err, service_request) {
     if(err) { return handleError(res, err); }
-    // Create Log
-    createLog(req.user._id, service_request._id, 'create');
-    // Add service_request to client and device
-    helper.addServiceRequest('Client', service_request._id, service_request._client);
-    helper.addServiceRequest('Device', service_request._id, service_request._device);
-    return res.json(201, service_request);
+    async.parallel([
+      function(callback){
+        var options = {
+          path: '_device', 
+          model: 'Device',
+          select: '_id brand model description'
+        };
+        ServiceRequest.populate(service_request, options, function(err){
+          if (err) {callback(err);} else { callback(); }
+        });
+      },
+      // Create Log
+      function(callback){
+        createLog(req.user._id, service_request._id, 'create');
+        callback();
+      },
+      // Add service_request to client and device
+      function(callback){
+        helper.addServiceRequest('Client', service_request._id, service_request._client);
+        helper.addServiceRequest('Device', service_request._id, service_request._device);
+        callback();
+      }
+    ], function(err){
+      if (err){ handleError(res, err); }
+      return res.json(201, service_request);
+    });
   });
 };
 
 // Updates an existing service_request in the DB.
 exports.update = function(req, res) {
-  req.body = helper.addUser(req.body, req.user);
-  req.body = justDeviceAndClientIds(req.body);
+  setBody(req);
   if(req.body._id) { delete req.body._id; }
   ServiceRequest.findById(req.params.id, function (err, service_request) {
     if (err) { return handleError(res, err); }
@@ -61,7 +81,7 @@ exports.update = function(req, res) {
 
 // Patches an existing service_request in the DB.
 exports.patch = function(req, res) {
-  req.body = helper.addUser(req.body, req.user);
+  setBody(req);
   if(req.body._id) { delete req.body._id; }
   ServiceRequest.findById(req.params.id, function (err, service_request) {
     if (err) { return handleError(res, err); }
@@ -91,6 +111,11 @@ exports.destroy = function(req, res) {
     });
   });
 };
+
+function setBody(req){
+  req.body = helper.addUser(req.body, req.user);
+  req.body = justDeviceAndClientIds(req.body);
+}
 
 function checkUpdateLogClientAndDevice(oldModel, newModel){
   var id = oldModel._id;

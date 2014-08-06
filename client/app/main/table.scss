@@ -14,3 +14,15 @@
 }
 
 .no-wrap { white-space:nowrap; }
+
+.table > tbody > tr > td.vertical-align-middle {
+	vertical-align: middle;
+}
+
+.table > tbody > tr > td.row-controls {
+	padding-right: 0;
+	padding-left: 0;
+	.btn-toolbar {
+		width: 68px;
+	}
+}
