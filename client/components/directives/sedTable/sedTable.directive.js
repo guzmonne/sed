@@ -6,9 +6,9 @@ angular.module('sedApp')
       templateUrl: 'components/templates/defaultTable.html',
       restrict: 'AE',
       scope: {
-				collection: '=',
-				type      : '@',
-				delete    : '&'
+				collection : '=',
+				type       : '@',
+				delete     : '&',
       },
       controller: ['$scope', 'Auth', function($scope, Auth){
       	/*
@@ -182,10 +182,18 @@ angular.module('sedApp')
 					element.find('thead').html(head);
 					element.find('tbody').html(body);
       	}
+      	function hideColumns(){
+      		var hideColumns = scope.$eval(attrs.hideColumns);
+      		_.forEach(hideColumns, function(columnName){
+      			var column = _.find(scope.table, function(column){return column.attribute === columnName});
+      			if (column) { column.show = false; }
+      		});
+      	}
       	/*
       	** Initialize
       	*/
       	buildTable();
+      	hideColumns();
       }
     };
   });

@@ -37,7 +37,7 @@ angular.module('sedApp')
         controller: 'ClientEditCtrl',
         resolve: {
           model: ['$stateParams', 'ClientModel', function($stateParams, ClientModel){
-            return ClientModel.get($stateParams.id);
+            return ClientModel.show($stateParams.id);
           }]
         } 
       })
@@ -47,8 +47,17 @@ angular.module('sedApp')
         controller: 'ClientShowCtrl',
         resolve: {
           model: ['$stateParams', 'ClientModel', function($stateParams, ClientModel){
-            return ClientModel.show($stateParams.id);
-          }]
+            function addNameToServiceRequests(client){
+              _.forEach(client.serviceRequests, function(model){
+                model._client = { _id: model._client, name: client.name };
+              });
+              return client;
+            }
+            return ClientModel.get($stateParams.id)
+              .then(function(client){
+                return addNameToServiceRequests(client);
+              });
+          }],
         }
       });
   });

@@ -1,9 +1,10 @@
 'use strict';
 
-var _ = require('lodash');
-var Device = require('./device.model');
-var helper = require('../../utils/controller.helper');
-var Log    = require('../log/log.model');
+var _              = require('lodash');
+var Device         = require('./device.model');
+var ServiceRequest = require('../service_request/service_request.model');
+var helper         = require('../../utils/controller.helper');
+var Log            = require('../log/log.model');
 
 // Get list of devices
 exports.index = function(req, res) {
@@ -15,11 +16,24 @@ exports.index = function(req, res) {
 
 // Get a single device
 exports.show = function(req, res) {
-  Device.findById(req.params.id, function (err, device) {
-    if(err) { return handleError(res, err); }
-    if(!device) { return res.send(404); }
+  function checkErrors(err, result){
+    if (err) { return handleError(res, err); }
+    if (!result) { return res.send(404); }
+  }
+  function populateServiceRequests(err, device){
+    checkErrors(err, device);
+    var options = {
+      path: 'serviceRequests._client',
+      model: 'Client',
+      select: '_id name',
+    };
+    ServiceRequest.populate(device, options, send);
+  }
+  function send(err, device){
+    checkErrors(err, device);
     return res.json(device);
-  });
+  }
+  Device.findById(req.params.id).populate('serviceRequests').exec(populateServiceRequests);
 };
 
 // Creates a new device in the DB.

@@ -47,7 +47,16 @@ angular.module('sedApp')
         controller: 'DeviceShowCtrl',
         resolve: {
           model: ['$stateParams', 'DeviceModel', function($stateParams, DeviceModel){
-            return DeviceModel.show($stateParams.id);
+            function addDetailsToServiceRequests(device){
+              _.forEach(device.serviceRequests, function(model){
+                model._device = { _id: model._device, brand: device.brand, model: device.model, description: device.description };
+              });
+              return device;
+            }
+            return DeviceModel.get($stateParams.id)
+              .then(function(device){
+                return addDetailsToServiceRequests(device);
+              });
           }]
         }
       });

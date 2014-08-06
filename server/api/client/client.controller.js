@@ -1,9 +1,10 @@
 'use strict';
 
-var _      = require('lodash');
-var Client = require('./client.model');
-var helper = require('../../utils/controller.helper');
-var Log    = require('../log/log.model');
+var _              = require('lodash');
+var Client         = require('./client.model');
+var ServiceRequest = require('../service_request/service_request.model');
+var helper         = require('../../utils/controller.helper');
+var Log            = require('../log/log.model');
 
 // Get list of clients
 exports.index = function(req, res) {
@@ -15,11 +16,24 @@ exports.index = function(req, res) {
 
 // Get a single client
 exports.show = function(req, res) {
-  Client.findById(req.params.id, function (err, client) {
-    if(err) { return handleError(res, err); }
-    if(!client) { return res.send(404); }
+  function checkErrors(err, result){
+    if (err) { return handleError(res, err); }
+    if (!result) { return res.send(404); }
+  }
+  function populateServiceRequests(err, client){
+    checkErrors(err, client);
+    var options = {
+      path: 'serviceRequests._device',
+      model: 'Device',
+      select: '_id brand model description',
+    };
+    ServiceRequest.populate(client, options, send);
+  }
+  function send(err, client){
+    checkErrors(err, client);
     return res.json(client);
-  });
+  }
+  Client.findById(req.params.id).populate('serviceRequests').exec(populateServiceRequests);
 };
 
 // Creates a new client in the DB.
