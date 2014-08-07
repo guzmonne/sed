@@ -16,13 +16,15 @@ angular.module('sedApp')
         */
       	$scope.docTypes   = ClientModel.docTypes;
       	$scope.alerts     = [];
-      	$scope.closeAlert = Alerts.closeAlert; 
+      	$scope.closeAlert = Alerts.closeAlert;
+        $scope.submiting  = false;
       	$scope.submit     = function(){ if ($scope.model._id){ submit('update'); } else { submit('create'); } };
       	/*
       	** Private
       	*/
       	function errorHandler(error){
           Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Ya existe un cliente con este documento o ha ocurrido un error en el servidor'});
+          $scope.submiting = false;
           if (_.isFunction($scope.error)){ $scope.error(error); }
         }
         function successHandler(data){
@@ -39,7 +41,8 @@ angular.module('sedApp')
       		if (_.isFunction($scope.success)){ $scope.success(data); }
       	}
       	function submit(method){
-      		ClientModel[method]($scope.model).then(successHandler, errorHandler);
+          $scope.submiting = true;
+          ClientModel[method]($scope.model).then(successHandler, errorHandler);
       	}
       }],
     };

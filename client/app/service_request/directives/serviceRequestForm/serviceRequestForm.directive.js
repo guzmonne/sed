@@ -35,6 +35,7 @@ angular.module('sedApp')
 		    }
 		    function errorHandler(){
 		      Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Se ha producido un error en el servidor'});
+		    	$scope.success = false;
 		    }
 		    function create(){
 		      var success = function(data){
@@ -43,6 +44,7 @@ angular.module('sedApp')
 		        $scope.setClientAndDevice();
             Flash.set(msg);
             return $state.go('service_request.show', {id: data._id});
+		      	$scope.submiting = false;
 		      };
 		      addAccessory();
 		      ServiceRequestModel.create($scope.model).then(success, errorHandler);
@@ -51,6 +53,7 @@ angular.module('sedApp')
 		      var success = function(){
 		        Alerts.pushAlert($scope.alerts, {type: 'success', msg: 'Orden de Servicio actualizada con exito!'});
 		        $scope.serviceRequestForm.$setPristine();
+		      	$scope.success = false;
 		      };
 		      addAccessory();
 		      ServiceRequestModel.update($scope.model).then(success, errorHandler);
@@ -110,7 +113,11 @@ angular.module('sedApp')
 		  	};
 		  	// Form
 		  	$scope.setClientAndDevice = setClientAndDevice;
-		  	$scope.submit = function(){	if ($scope.model._id){ update(); } else { create(); } };
+		  	$scope.submit = function(){	
+		  		$scope.submiting = true;
+		  		if ($scope.model._id){ update(); } else { create(); } 
+		  	};
+      	$scope.submiting = false;
       }],
       link: function(scope, iElement){
 				scope.$watch('disabled', function(disabled){

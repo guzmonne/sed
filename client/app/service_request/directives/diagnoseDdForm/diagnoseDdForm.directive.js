@@ -5,9 +5,11 @@ angular.module('sedApp')
     return {
       templateUrl: 'app/service_request/directives/diagnoseDdForm/diagnoseDdForm.html',
       scope: {
-				model: '=',
-        form : '=',
-        done : '&',
+        model   : '=',
+        form    : '=',
+        done    : '&',
+        disabled: '@',
+        show    : '='
       },
       controller: ['$scope', function($scope){
         $scope.button  = false;

@@ -8,15 +8,16 @@ angular.module('sedApp')
         model   : '=',
         form    : '=',
         done    : '&',
-        disabled: '@'
+        disabled: '@',
+        show    : '='
       },
       controller: ['$scope', function($scope){
       	$scope.ok             = ok;
 				$scope.diagnose       = null;
 				$scope.button         = false;
 				$scope.spinner        = false;
-				$scope.toggleCostForm = toggleCostForm;
-		    function toggleCostForm(){
+				$scope.toggleForm = toggleForm;
+		    function toggleForm(){
 		      $scope.form = true;
 		      if ($scope.model){ $scope.diagnose = $scope.model; }
 		    }
@@ -43,6 +44,14 @@ angular.module('sedApp')
             bind();
           }
         }
+        function show(){
+          if (scope.show === true){
+            element.show();
+          } else {
+            element.hide();
+          }
+        }
+        scope.$watch('show', show);
         scope.$watch('disabled', disable);
         scope.$watch('form', function(n){
       		if (n === true){ scope.spinner = false; }

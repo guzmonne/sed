@@ -81,9 +81,15 @@
 							<tr>
 								<td><label>Accesorios</label></td>
 								<td>
+									<!--
 									<ul style="margin-left: -20px" ng-show="model.accessories.length !== 0">
 										<li ng-repeat="value in model.accessories">{{value}}</li>
 									</ul>
+									/!-->
+									<span ng-repeat="accessory in model.accessories">
+										<span class="label label-primary">{{accessory}}</span>
+										&nbsp;
+									</span>
 									<span ng-show="model.accessories.length === 0">Sin accesorios</span>
 								</td>
 							</tr>
@@ -103,16 +109,17 @@
 								form="controls.showDiagnoseForm"
 								done="patchDiagnose(diagnose)"
 								disabled="{{model.status === 'Cerrado'}}"
+								show="!model.withWarranty && (model._technician !== undefined)"
 							></tr>
 							<tr solution-row-form
 								model="model.solution"
 								form="controls.showSolutionForm"
 								done="patchSolution(solution)"
-								show="model.withWarranty || model.costAccepted"
+								show="(model.withWarranty && (model._technician !== undefined)) || model.costAccepted"
 								disabled="{{model.status === 'Cerrado'}}"
 							></tr>
 							<tr ng-show="model.status === 'Cerrado'">
-								<td>Cerrado</td>
+								<td><label>Cerrado</label></td>
 								<td>{{model.closedAt | date:'dd MMMM yyyy'}}</td>
 							</tr>
 						</tbody>

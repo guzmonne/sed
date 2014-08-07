@@ -111,8 +111,11 @@
 	<hr />
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
-			<input ng-if="!model._id" type="submit" class="btn btn-primary" value="Crear" ng-disabled="!serviceRequestForm.$valid"/>
-			<input ng-if="model._id" type="submit" class="btn btn-warning" value="Actualizar" ng-disabled="!serviceRequestForm.$valid"/>
+			<input ng-if="!model._id && !submiting" type="submit" class="btn btn-primary" value="Crear" ng-disabled="!serviceRequestForm.$valid"/>
+			<input ng-if="model._id && !submiting" type="submit" class="btn btn-warning" value="Actualizar" ng-disabled="!serviceRequestForm.$valid"/>
+			<button  ng-show="submiting" class="btn btn-primary" disabled>
+				Espere&nbsp;<i class="fa fa-spinner fa-spin"></i>
+			</button>
 		</div><!-- /.col-sm-5 -->
 	</div><!-- /.form-group -->
 </form>

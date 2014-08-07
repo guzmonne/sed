@@ -12,12 +12,12 @@ angular.module('sedApp')
         show    : '='
       },
       controller: ['$scope', function($scope){
-      	$scope.ok             = ok;
-				$scope.solution       = null;
-				$scope.button         = false;
-				$scope.spinner        = false;
-				$scope.toggleCostForm = toggleCostForm;
-		    function toggleCostForm(){
+        $scope.ok         = ok;
+        $scope.solution   = null;
+        $scope.button     = false;
+        $scope.spinner    = false;
+        $scope.toggleForm = toggleForm;
+		    function toggleForm(){
 		      $scope.form = true;
 		      if ($scope.model){ $scope.solution = $scope.model; }
 		    }

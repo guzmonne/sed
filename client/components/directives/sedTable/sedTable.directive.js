@@ -71,7 +71,7 @@ angular.module('sedApp')
               { attribute: 'withWarranty'        , name: 'Garantía'             , show: false, content: '<i class="fa fa-check" ng-if="model.withWarranty === true"></i>', columnClass: 'text-center'},
               { attribute: 'invoiceNumber'       , name: 'N° Boleta'            , show: false, content: '{{model.invoiceNumber}}' },
               { attribute: 'boughtAt'            , name: 'Comprado'             , show: true, content: '{{model.boughtAt | date:\'dd MMM yyyy\'}}', columnClass: 'no-wrap' },
-              { attribute: 'accessories'         , name: 'Accesorios'           , show: false, content: '<ul class="half-left-padding"><li ng-repeat="accessory in model.accessories">{{accessory}}</li></ul>', columnClass: 'no-wrap'},
+              { attribute: 'accessories'         , name: 'Accesorios'           , show: false, content: '<span ng-repeat="accessory in model.accessories"><span class="label label-primary">{{accessory}}</span><br /></span><span ng-show="model.accessories.length === 0">Sin accesorios</span>', columnClass: 'no-wrap'},
               { attribute: 'defect'              , name: 'Defecto'              , show: false, content: '{{model.defect}}' },
               { attribute: 'priority'            , name: 'Prioridad'            , show: true, content: '{{model.priority}}', columnClass: "text-center" },
               { attribute: '_technician.name'    , name: 'Servicio Tecnico'     , show: true, content: '{{model._technician.name}}' },
