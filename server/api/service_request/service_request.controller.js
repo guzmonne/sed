@@ -7,6 +7,7 @@ var ServiceRequest = require('./service_request.model');
 var Log            = require('../log/log.model');
 var Device         = require('../device/device.model');
 var Client         = require('../client/client.model');
+var Technician     = require('../technician/technician.model');
 
 // Get list of service_requests
 exports.index = function(req, res) {
@@ -35,8 +36,9 @@ exports.create = function(req, res) {
     async.parallel([
       function(callback){
         var options = [
-          { path: '_device', select: '_id brand model description' },
-          { path: '_client', select: '_id name' },
+          { path: '_device'    , select: '_id brand model description' },
+          { path: '_client'    , select: '_id name' },
+          { path: '_technician', select: 'name' }
         ];
         ServiceRequest.populate(service_request, options, function(err){
           if (err) {callback(err);} else { callback(); }
@@ -47,11 +49,22 @@ exports.create = function(req, res) {
         createLog(req.user._id, service_request._id, 'create');
         callback();
       },
-      // Add service_request to client and device
+      // Add service_request to client
       function(callback){
         helper.addServiceRequest('Client', service_request._id, service_request._client);
+        callback();
+      },
+      // Add service_request to device
+      function(callback){
         helper.addServiceRequest('Device', service_request._id, service_request._device);
         callback();
+      },
+      // Add service_request to technician if a technician_id exists
+      function(callback){
+        if(service_request._technician){
+          helper.addServiceRequest('Technician', service_request._id, service_request._technician);
+          callback();
+        }
       }
     ], function(err){
       if (err){ handleError(res, err); }
@@ -67,12 +80,12 @@ exports.update = function(req, res) {
   ServiceRequest.findById(req.params.id, function (err, service_request) {
     if (err) { return handleError(res, err); }
     if(!service_request) { return res.send(404); }
-    var clone   = _.pick(service_request, '_id', '_client', '_device');
+    var clone   = _.pick(service_request, '_id', '_client', '_device', '_technician');
     var updated = _.merge(service_request, req.body, function(a, b){return b});
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       createLog(req.user._id, service_request._id, 'update');
-      checkUpdateLogClientAndDevice(clone, updated);
+      handleServiceRequestRefs(clone, updated);
       return res.json(200, service_request);
     });
   });
@@ -85,13 +98,22 @@ exports.patch = function(req, res) {
   ServiceRequest.findById(req.params.id, function (err, service_request) {
     if (err) { return handleError(res, err); }
     if(!service_request) { return res.send(404); }
-    var updated = _.merge(service_request, req.body, function(a, b){return b});
+    var _technician = _.pick(service_request, '_id', '_technician'); 
+    var updated     = _.merge(service_request, req.body, function(a, b){return b});
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       createLog(req.user._id, service_request._id, 'patch');
       checkAndLogCost(req, service_request._id);
       checkAndLogCostAccepted(req, service_request._id);
-      return res.json(200, service_request);
+      if (req.body._technician) {
+        checkUpdateAndLogTechnician(_technician, updated);
+        updated.populate('_technician', 'name', function(err, result){
+          if (err){ handleError(res, err); }
+          res.json(200, updated);
+        });
+      } else {
+        return res.json(200, service_request);
+      }
     });
   });//
 };
@@ -104,8 +126,9 @@ exports.destroy = function(req, res) {
     service_request.remove(function(err) {
       if(err) { return handleError(res, err); }
       createLog(req.user._id, service_request._id, 'delete');
-      helper.removeServiceRequest('Client', service_request._id, service_request._client);
-      helper.removeServiceRequest('Device', service_request._id, service_request._device);
+      helper.removeServiceRequest('Client'    , service_request._id, service_request._client);
+      helper.removeServiceRequest('Device'    , service_request._id, service_request._device);
+      helper.removeServiceRequest('Technician', service_request._id, service_request._technician);
       return res.send(204);
     });
   });
@@ -113,19 +136,39 @@ exports.destroy = function(req, res) {
 
 function setBody(req){
   req.body = helper.addUser(req.body, req.user);
-  req.body = justDeviceAndClientIds(req.body);
+  req.body = justIds(req.body);
 }
 
-function checkUpdateLogClientAndDevice(oldModel, newModel){
+function handleServiceRequestRefs(oldModel, newModel){
+  var id = oldModel._id;
+  checkUpdateAndLogClient(oldModel, newModel);
+  checkUpdateAndLogDevice(oldModel, newModel);
+  checkUpdateAndLogTechnician(oldModel, newModel);
+}
+
+function checkUpdateAndLogClient(oldModel, newModel){
   var id = oldModel._id;
   if (!_.isUndefined(oldModel._client) && oldModel._client !== newModel._client){
     helper.swapServiceRequest('Client', id, oldModel._client, newModel._client, function(){
       createLog(newModel.updatedBy, id, 'update:client:' + newModel._client); 
     });
   }
+}
+
+function checkUpdateAndLogDevice(oldModel, newModel){
+  var id = oldModel._id;
   if (_.isUndefined(oldModel._device) && oldModel._device !== newModel._device){
     helper.swapServiceRequest('Device', id, oldModel._device, newModel._device, function(){
       createLog(newModel.updatedBy, id, 'update:device:' + newModel._device); 
+    });
+  }
+}
+
+function checkUpdateAndLogTechnician(oldModel, newModel){
+  var id = oldModel._id;
+  if (_.isUndefined(oldModel._technician) && oldModel._technician !== newModel._technician){
+    helper.swapServiceRequest('Technician', id, oldModel._technician, newModel._technician, function(){
+      createLog(newModel.updatedBy, id, 'update:technician:' + newModel._technician); 
     });
   }
 }
@@ -143,9 +186,10 @@ function checkAndLogCostAccepted(req, id){
   }
 }
 
-function justDeviceAndClientIds(body){
-  if (_.isObject(body._device) && body._device._id){ body._device = body._device._id; }
-  if (_.isObject(body._client) && body._client._id){ body._client = body._client._id; }
+function justIds(body){
+  if (_.isObject(body._device)     && body._device._id)    { body._device     = body._device._id; }
+  if (_.isObject(body._client)     && body._client._id)    { body._client     = body._client._id; }
+  if (_.isObject(body._technician) && body._technician._id){ body._technician = body._technician._id; }
   return body;
 }
 

@@ -1,0 +1,44 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-6">
+			<h2 class="text-success">
+				{{model.name}}
+			</h2>
+			<button class="btn btn-success" ng-click="selectNewServiceRequestTab()">
+				Nueva Orden de Servicio
+			</button>
+		</div><!-- /.col-lg-6 -->
+		<div class="col-lg-6">
+			<div technician-details-list="model"></div>
+		</div><!-- /.col-lg-6 -->
+		<div class="col-lg-12">
+			<tabset class="air-bottom air-top">
+				<div tab heading="Ordenes de Servicio" class="pointer">
+					<div class="air-top" sed-table collection="model.serviceRequests" type="service_request" hide-columns="{{hideColumns}}"></div>
+				</div>
+				<div tab class="pointer" active="newServiceRequest" select="selectNewServiceRequestTab()" deselect="deselectNewServiceRequestTab()">
+					<div tab-heading tooltip="Nueva Orden de Servicio" tooltip-placement="right">
+						<i class="fa fa-fw" ng-class="{'fa-plus': serviceRequestFormDisabled === false || newServiceRequest === false, 'fa-spinner fa-spin': serviceRequestFormDisabled === true && newServiceRequest === true}"></i>
+					</div>
+					<div class="container air-top">
+						<div class="col-lg-12">
+							<h3>Nueva Orden de Servicio</h3>
+							<div service-request-form model="serviceRequest" clients="clients" devices="devices" disabled="{{serviceRequestFormDisabled}}"></div>
+						</div><!-- /.col-lg-12 -->
+					</div><!-- /.container air-bottom -->
+				</div>
+				<div tab class="pull-right" active="editClient">
+					<div tab-heading class="pointer" tooltip="Editar Servicio Tecnico">
+						<i class="fa fa-fw fa-pencil text-warning"></i>
+					</div>
+					<div class="container air-top">
+						<div class="col-lg-12">
+							<h3>Editar Servicio Tecnico</h3>
+							<div technician-form model="model"></div>
+						</div><!-- /.col-lg-12 -->
+					</div><!-- /.container -->
+				</div>
+			</tabset>
+		</div><!-- /.col-lg-12 -->
+	</div><!-- /.row -->
+</div><!-- /.container -->

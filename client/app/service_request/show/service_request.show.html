@@ -1,14 +1,12 @@
 <div class="container-fluid">
-	<div class="row  panel panel-default">
-		<div class="panel-body">
-			<div class="col-sm-8">
-				<h2>Orden de Servicio <span class="text-success">#&nbsp;{{model.id}}</span></h2>
-				<h3>Cliente:&nbsp;<a ui-sref="client.show({id: model._client._id})" class="text-success text-hover-warning">{{model._client.name}}</a></h3>
-			</div><!-- /.col-sm-6 -->
-			<div class="col-sm-4">
-				<div client-details-list="model._client"></div>
-			</div><!-- /.col-sm-6 -->
-		</div><!-- /.row panel-bpdy -->
+	<div class="row">
+		<div class="col-sm-8">
+			<h2>Orden de Servicio <span class="text-success">#&nbsp;{{model.id}}</span></h2>
+			<h3>Cliente:&nbsp;<a ui-sref="client.show({id: model._client._id})" class="text-success text-hover-warning">{{model._client.name}}</a></h3>
+		</div><!-- /.col-sm-6 -->
+		<div class="col-sm-4">
+			<div client-details-list="model._client"></div>
+		</div><!-- /.col-sm-6 -->
 	</div><!-- /.row -->
 	<div class="row panel panel-default">
 		<div class="panel-heading">
@@ -36,7 +34,7 @@
 				</div><!-- /.col-sm-6 -->
 				<div class="col-sm-9">
 					<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert(alerts, $index)">{{alert.msg}}</alert>
-					<table class="table table-striped table-hover table-bordered">
+					<table class="table table-hover table-bordered">
 						 	<col width="30%" />
    						<col width="70%" />
 						<tbody>
@@ -60,12 +58,12 @@
 							</tr>
 							<tr cost-row-form 
 								model="model.cost" 
-								show="{{!model.withWarranty}}" 
+								show="{{!model.withWarranty && model._technician}}" 
 								form="controls.showCostForm"
 								done="patchCost(cost)"
 								disabled="{{model.status === 'Cerrado'}}"
 							></tr>
-							<tr  ng-mouseenter="controls.acceptedButton = true" ng-mouseleave="controls.acceptedButton = false" ng-show="!model.withWarranty">
+							<tr  ng-mouseenter="controls.acceptedButton = true" ng-mouseleave="controls.acceptedButton = false" ng-show="!model.withWarranty  && model._technician && model.cost">
 								<td>
 									<label for="costAccepted">Presupuesto Aceptado</label>
 								</td>
@@ -90,12 +88,30 @@
 								<td><label>Defecto</label></td>
 								<td>{{model.defect}}</td>
 							</tr>
+							<tr technician-row-form
+								model="model._technician"
+								collection="collection"
+								form="controls.showTechnicianForm"
+								done="patchTechnician(technician)"
+								disabled="{{model.status === 'Cerrado'}}"
+							></tr>
 							<tr diagnose-row-form
 								model="model.diagnose"
 								form="controls.showDiagnoseForm"
 								done="patchDiagnose(diagnose)"
 								disabled="{{model.status === 'Cerrado'}}"
 							></tr>
+							<tr solution-row-form
+								model="model.solution"
+								form="controls.showSolutionForm"
+								done="patchSolution(solution)"
+								show="model.withWarranty || model.costAccepted"
+								disabled="{{model.status === 'Cerrado'}}"
+							></tr>
+							<tr ng-show="model.status === 'Cerrado'">
+								<td>Cerrado</td>
+								<td>{{model.closedAt | date:'dd MMMM yyyy'}}</td>
+							</tr>
 						</tbody>
 					</table>
 				</div><!-- /.col-sm-6 -->

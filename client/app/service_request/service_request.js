@@ -61,6 +61,9 @@ angular.module('sedApp')
         resolve: {
           model: ['$stateParams', 'ServiceRequestModel', function($stateParams, ServiceRequestModel){
             return ServiceRequestModel.show($stateParams.id);
+          }],
+          collection: ['TechnicianCollection', function(TechnicianCollection){
+            return TechnicianCollection.index();
           }]
         }
       });

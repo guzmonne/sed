@@ -14,6 +14,10 @@ angular.module('sedApp')
       {
         title: 'Ordenes de Servicio',
         link: '/service_request/index'
+      },
+      {
+        title: 'Servicio Tecnico',
+        link: '/technician/index'
       }
     ];
 

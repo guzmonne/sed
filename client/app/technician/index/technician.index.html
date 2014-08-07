@@ -1,0 +1,16 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12">
+			<h2>Servicio Tecnico</h2>
+			<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert(alerts, $index)">{{alert.msg}}</alert>
+			<a ui-sref="technician.new" class="btn btn-success">
+				Nuevo Servicio Tecnico
+			</a>
+		</div><!-- /.col-lg-12 -->
+	</div><!-- /.row -->
+	<div class="row air-top">
+		<div class="col-lg-12">
+			<div sed-table collection="collection" type="technician"></div>	
+		</div><!-- /.col-lg-12 -->
+	</div><!-- /.row -->
+</div><!-- /.container -->

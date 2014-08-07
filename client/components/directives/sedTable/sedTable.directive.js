@@ -71,7 +71,7 @@ angular.module('sedApp')
               { attribute: 'accessories'         , name: 'Accesorios'           , show: false, content: '<ul class="half-left-padding"><li ng-repeat="accessory in model.accessories">{{accessory}}</li></ul>', columnClass: 'no-wrap'},
               { attribute: 'defect'              , name: 'Defecto'              , show: false, content: '{{model.defect}}' },
               { attribute: 'priority'            , name: 'Prioridad'            , show: true, content: '{{model.priority}}', columnClass: "text-center" },
-              { attribute: 'technician'          , name: 'Tecnico'              , show: true, content: '{{model.technician}}' },
+              { attribute: '_technician.name'    , name: 'Servicio Tecnico'     , show: true, content: '{{model._technician.name}}' },
               { attribute: 'cost'                , name: 'Presupuesto'          , show: true, content: '{{model.cost | currency}}' },
               { attribute: 'costAccepted'        , name: 'Presupuesto Aceptado' , show: false, content: '<i class="fa fa-check" ng-if="model.costAccepted === true"></i>', columnClass: 'text-center' },
               { attribute: 'costAcceptedAt'      , name: 'Aceptado'             , show: true, content: '{{model.costAcceptedAt | date:\'dd MMM yyyy\'}}', columnClass: 'no-wrap' },
@@ -81,7 +81,16 @@ angular.module('sedApp')
               { attribute: 'updatedAt'           , name: 'Actualizado'          , show: false, content: '{{model.updatedAt | date:\'dd MMM yyyy\'}}', columnClass: 'no-wrap' },
               { attribute: 'closedAt'            , name: 'Cerrado'              , show: true, content: '{{model.closedAt | date:\'dd MMM yyyy\'}}', columnClass: 'no-wrap' },
             ]
-          }
+          },
+          technician: {
+            sortField: 'name',
+            data : [
+              { attribute: 'name'     , name: 'Nombre'      , show: true, content: '{{model.name}}' },
+              { attribute: 'phone'    , name: 'Telefono'    , show: true, content: '{{model.phone}}' },
+              { attribute: 'address'  , name: 'Dirección'   , show: true, content: '{{model.address}}' },
+              { attribute: 'email'    , name: 'Email'       , show: true, content: '{{model.email}}' },
+            ]
+          },
         }
         function sort(attribute){
           $scope.options.sortReverse = ($scope.options.sortField === attribute) ? !$scope.options.sortReverse : false;
@@ -144,12 +153,7 @@ angular.module('sedApp')
                     '<i class="fa fa-ellipsis-h fa-fw"></i>',
                   '</a>',
                 '</div>',
-                '<div class="btn-group">',
-                  '<a ui-sref="'+type+'.edit({id: model._id})" class="btn btn-warning btn-xs">',
-                    '<i class="fa fa-pencil fa-fw"></i>',
-                  '</a>',
-                '</div>',
-                '<div class="btn-group pull-right" style="margin-top: 5px">',
+                '<div class="btn-group pull-right">',
                   '<button class="btn btn-danger btn-xs" ng-if="isAdmin()" ng-click="remove(model)">',
                     '<i class="fa fa-trash-o fa-fw"></i>',
                   '</button>',

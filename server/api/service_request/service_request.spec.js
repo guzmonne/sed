@@ -4,53 +4,81 @@ var should         = require('should');
 var ServiceRequest = require('./service_request.model');
 var Device         = require('../device/device.model');
 var Client         = require('../client/client.model');
+var Technician     = require('../technician/technician.model');
 var async          = require('async');
 
-var model, device, client;
+var model, device, client, technician;
+
+function handleError(err, callback){
+  if (err) { callback(err); }
+};
 
 function createDevice(callback){
-  device = new Device({
+  Device.create({
     brand      : "Marca",
     model      : "Modelo",
     description: "Descripición"
+  }, function(err, _device){
+    handleError(err, callback);
+    device = _device;
+    callback();
   });
-  device.save(function(err){
-    if (err){console.log(err);}
-    callback(null);
+}
+
+function createTechnician(callback){
+  Technician.create({
+    name   : 'Test',
+    phone  : '6666666',
+    address: 'Adress 123',
+    email  : 'test@test.com'
+  }, function(err, _technician){
+    handleError(err, callback);
+    technician = _technician;
+    callback();
   });
 }
 
 function createClient(callback){
-  client = new Client({
+  Client.create({
     name     : "Test",
     docType  : "C.I.",
     docNumber: "123",
     phone    : "123",
     address  : "Test 123",
     email    : "test@example.com"
-  });
-  client.save(function(err){
-    if (err){console.log(err);}
-    callback(null);
+  }, function(err, _client){
+    handleError(err, callback);
+    client = _client;
+    callback();
   });
 }
 
 function setup(done){
   async.parallel([
     function(cb){
-      Client.remove({}, function(){
+      Client.remove({}, function(err){
+        handleError(err, cb);
         client = null;
         createClient(cb);
       });
     },
     function(cb){
-      Device.remove({}, function(){
+      Device.remove({}, function(err){
+        handleError(err, cb);
         device = null;
         createDevice(cb);
       });
     },
     function(cb){
-      ServiceRequest.remove({}, function(){
+      Technician.remove({}, function(err){
+        handleError(err, cb);
+        technician = null;
+        createTechnician(cb)
+      });
+    },
+    function(cb){
+      ServiceRequest.remove({}, function(err){
+        handleError(err, cb);
         model = null;
         cb(null);
       });
@@ -130,7 +158,7 @@ describe('Service Request Model', function() {
     model._device = 1;
     model.save(function(err){
       should.exist(err);
-      done();    
+      done();
     });
   });
 
@@ -148,55 +176,7 @@ describe('Service Request Model', function() {
       done();
     }); 
   });
-
-  it('should set the status to "En Reparación" if costAccepted is true', function(done){
-    model.costAccepted = true;
-    model.save(function(err, result){
-      result.status.should.equal("En Reparación");
-      done();
-    });
-  });
-
-  it('should remove the "costAcceptedAt" date if "costAccepted" is false', function(done){
-    model.costAccepted = true;
-    model.save(function(){
-      model.costAccepted = false;
-      model.save(function(err, result){
-        (result.costAcceptedAt === null).should.be.true;
-        done();
-      });
-    });
-  });
-
-
-  it('should set the "status" to "Esperando Aprobación" if "costAccepted" is false', function(done){
-    model.costAccepted = true;
-    model.save(function(){
-      model.costAccepted = false;
-      model.save(function(err, result){
-        result.status.should.equal("Esperando Aprobación");
-        done();
-      });
-    });
-  });
-
-  it('should set the status to "Pendiente" by default', function(done){
-    model.save(function(err, result){
-      result.status.should.equal('Pendiente');
-      done();
-    });
-  });
-
-  it('should set the "closedAt" date if status equals "Cerrado"', function(done){
-    model.status = "Cerrado";
-    model.save(function(err, result){
-      (result.closedAt === undefined).should.not.be.true;
-      var date = new Date(result.closedAt);
-      date.should.be.instanceOf(Date);
-      done();
-    });
-  });
-  
+ 
   it('should have a createdAt date', function(done){
     model.save(function(err, result){
       should.exist(result.createdAt);
@@ -212,6 +192,175 @@ describe('Service Request Model', function() {
       var date = new Date(result.updatedAt);
       date.should.be.instanceOf(Date);
       done();
+    });
+  });
+
+  describe('Status cycle', function(){
+    it('should have a "Pendiente" status if the service_request is new', function(done){
+      model.save(function(err, model){
+        handleError(err, done);
+        model.status.should.equal('Pendiente');
+        done();
+      });
+    });
+
+    it('should change from "Pendiente" to "En Reparación" if model has warranty and a technician is assigned', function(done){
+      model.withWarranty = true;
+      model._technician = technician._id;
+      model.save(function(err){
+        handleError(err, done);
+        model.status.should.equal('En Reparación');
+        done();
+      });
+    });
+    
+    it('should change from "Pendiente" to "Esperando Presupuesto" if model does not has warranty and a technician is assigned', function(done){
+      model.withWarranty = false;
+      model._technician = technician._id;
+      model.save(function(err){
+        handleError(err, done);
+        model.status.should.equal('Esperando Presupuesto');
+        done();
+      });
+    });
+
+    it('should change from "Esperando Presupuesto" to "Esperando Aprobación" if it does not has warranty, a technician is assigned and a cost is set', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.save(function(err){
+        handleError(err);
+        model.status.should.equal('Esperando Aprobación');
+        done();
+      });
+    });
+
+    it('should change from "Esperando Presupuesto" to "Esperando Aprobación" if it does not has warranty, a technician is assigned and a diagnose is set', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.diagnose     = 'This is a test';
+      model.save(function(err){
+        handleError(err);
+        model.status.should.equal('Esperando Aprobación');
+        done();
+      });
+    });
+
+    it('should change from "Esperando Aprobación" to "En Reparación" if it does not has warranty, a technician is assigned, a cost is set, and costAccepted is true', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = true;
+      model.save(function(err){
+        handleError(err);
+        model.status.should.equal('En Reparación');
+        done();
+      });
+    });
+
+    it('should change from "Esperando Aprobación" to "En Reparación" if it does not has warranty, a technician is assigned, a diagnose is set, and costAccepted is true', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.diagnose     = 'This is a test';
+      model.costAccepted = true;
+      model.save(function(err){
+        handleError(err);
+        model.status.should.equal('En Reparación');
+        done();
+      });
+    });
+
+    it('should change from "En Reparación" to "Esperando Aprobación" if it does not has warranty, a technician is assigned, a cost is set, and costAccepted is false', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = false;
+      model.save(function(err){
+        handleError(err);
+        model.status.should.equal('Esperando Aprobación');
+        done();
+      });
+    });
+
+    it('should change from "En Reparación" to "Esperando Aprobación" if it does not has warranty, a technician is assigned, a diagnose is set, and costAccepted is false', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.diagnose     = 'This is a test';
+      model.costAccepted = false;
+      model.save(function(err){
+        handleError(err);
+        model.status.should.equal('Esperando Aprobación');
+        done();
+      });
+    });
+
+    it('should change from "En Reparación" to "Reparado" if it does not has warranty, a technician is assigned, a cost is set, costAccepted is true, and a solution is defined', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = true;
+      model.solution     = 'This is a solution'
+      model.save(function(err){
+        handleError(err);
+        model.status.should.equal('Reparado');
+        done();
+      });
+    });
+
+    it('should change from "En Reparación" to "Reparado" if it does not has warranty, a technician is assigned, a diagnose is set, costAccepted is true, and a solution is defined', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.diagnose     = 'This is a diagnose';
+      model.costAccepted = true;
+      model.solution     = 'This is a solution'
+      model.save(function(err){
+        handleError(err);
+        model.status.should.equal('Reparado');
+        done();
+      });
+    });
+
+    it('should change from "En Reparación" to "Reparado" if it has warranty, a technician is assigned, and a solution is defined', function(done){
+      model.withWarranty = true;
+      model._technician  = technician._id;
+      model.solution     = 'This is a solution'
+      model.save(function(err){
+        handleError(err);
+        model.status.should.equal('Reparado');
+        done();
+      });
+    });
+
+    it('should change from any status to "Cerrado" if a "closedAt" date is passed', function(done){
+      model.closedAt = new Date();
+      model.save(function(err){
+        handleError(err);
+        model.status.should.equal('Cerrado');
+        done();
+      });
+    });
+
+    it('should store the previous status in "previousStatus" when setting the status to "Cerrado"', function(done){
+      model.closedAt = new Date();
+      model.save(function(err){
+        handleError(err);
+        model.previousStatus.should.equal('Pendiente');
+        done();
+      });
+    });
+
+    it('should revert back to "previousState" if the status is "Cerrado" and a "closedAt" is passed as null', function(done){
+      model.closedAt = new Date();
+      model.save(function(err){
+        handleError(err);
+        model.closedAt = null;
+        model.save(function(err){
+          handleError(err);
+          model.status.should.equal('Pendiente');
+          (model.previousStatus === null).should.be.true;
+          done();
+        });
+      });
     });
   });
 });

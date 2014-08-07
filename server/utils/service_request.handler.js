@@ -10,6 +10,7 @@ function end(err, callback){
 function removeServiceRequest(modelName , service_request_id, model_id, callback){
 	mongoose.models[modelName].findOne({_id: model_id}, function(err, model){
 		if (err) { return end(err, callback); }
+		if (!model){ return(null, callback); }
 		var index = model.serviceRequests.indexOf(service_request_id);
 		if (index > -1){ 
 			model.serviceRequests.splice(index, 1); 
@@ -23,6 +24,7 @@ function removeServiceRequest(modelName , service_request_id, model_id, callback
 function addServiceRequest(modelName , service_request_id, model_id, callback){
 	mongoose.models[modelName].findOne({_id: model_id}, function(err, model){
 		if (err) { return end(err, callback); }
+		if (!model){ return(null, callback); }
 		var index = model.serviceRequests.indexOf(service_request_id);
 		if (index === -1){ 
 			model.serviceRequests.push(service_request_id);

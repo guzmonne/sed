@@ -1,0 +1,32 @@
+<td>
+	<label>Solución</label>
+	<button ng-click="toggleCostForm()" ng-show="button && !form" class="btn btn-xs btn-warning pull-right"><i class="fa fa-fw fa-pencil"></i></button>
+</td>
+<td>
+	<span ng-show="!form && model">{{model}}</span>
+	<span ng-show="!form && !model"></span>
+	<span ng-show="form && spinner" class="text-success">
+			<i class="fa fa-2x fa-spinner fa-spin"></i>
+	</span>
+	<div ng-show="form && !spinner">
+		<form ng-submit="ok()">
+			<div class="col-sm-8" style="margin-left: -15px">
+				<textarea class="form-control form-control-in-cell" placeholder="Solución" ng-model="solution"></textarea>
+			</div><!-- /.col-xs-10 -->
+			<div class="col-sm-4">
+				<div class="btn-toolbar">
+					<div class="btn-group">
+						<button class="btn btn-primary btn-sm">
+							Aceptar
+						</button>
+					</div><!-- /.btn-group -->
+					<div class="btn-group">
+						<button ng-click="$event.preventDefault(); form = false" class="btn  btn-inverse btn-sm">
+							Cancelar
+						</button>
+					</div><!-- /.btn-group -->
+				</div><!-- /.btn-toolbar -->
+			</div><!-- /.col-xs-2 -->
+		</form>
+	</div>
+</td>
