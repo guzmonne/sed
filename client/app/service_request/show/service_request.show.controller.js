@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sedApp')
-  .controller('ServiceRequestShowCtrl', function ($scope, $modal, ServiceRequestModel, Alerts, model, collection) {
+  .controller('ServiceRequestShowCtrl', function ($scope, $modal, Flash, ServiceRequestModel, Alerts, model, collection) {
   	/*
   	** Public
   	*/
@@ -11,6 +11,7 @@ angular.module('sedApp')
       showCostForm      : false,
       showTechnicianForm: false,
     };
+    $scope.flash             = Flash;
     $scope.model             = model;
     $scope.collection        = collection;
     $scope.diagnose          = null;

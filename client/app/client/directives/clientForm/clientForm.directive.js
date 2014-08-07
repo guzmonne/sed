@@ -10,7 +10,7 @@ angular.module('sedApp')
 				success: '&',
 				error  : '&',
       },
-      controller : ['$scope', 'ClientModel', 'Alerts', function($scope, ClientModel, Alerts){
+      controller : ['$scope', '$state', 'Flash', 'ClientModel', 'Alerts', function($scope, $state, Flash, ClientModel, Alerts){
       	/*
       	** Public
         */
@@ -30,8 +30,9 @@ angular.module('sedApp')
           if ($scope.model._id){ 
             msg = 'Cliente actualizado con exito!'; 
           } else { 
-            msg = 'Cliente creado con exito!'; 
-            $scope.model = ClientModel.empty();
+            msg = 'Cliente creado con exito!';
+            Flash.set(msg);
+            return $state.go('client.show', {id: data._id});
           }
       		Alerts.pushAlert($scope.alerts, {type: 'success', msg: msg});
       		$scope.clientForm.$setPristine();

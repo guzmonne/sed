@@ -64,6 +64,8 @@ exports.create = function(req, res) {
         if(service_request._technician){
           helper.addServiceRequest('Technician', service_request._id, service_request._technician);
           callback();
+        } else {
+          callback();
         }
       }
     ], function(err){

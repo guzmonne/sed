@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('sedApp')
-  .controller('DeviceShowCtrl', function ($scope, $rootScope, ServiceRequestHandler, model) {
+  .controller('DeviceShowCtrl', function ($scope, $rootScope, Flash, ServiceRequestHandler, model) {
 		/*
 		** Public
 		*/
+		$scope.flash                        = Flash;
 		$scope.model                        = model;
 		$scope.hideColumns                  = ['_device.brand', '_device.model', '_device.description'];
 		$scope.serviceRequest               = setServiceRequest();

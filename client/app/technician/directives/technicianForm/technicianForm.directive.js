@@ -10,7 +10,7 @@ angular.module('sedApp')
 				success: '&',
 				error  : '&',
       },
-      controller : ['$scope', 'TechnicianModel', 'Alerts', function($scope, TechnicianModel, Alerts){
+      controller : ['$scope', '$state', 'Flash', 'TechnicianModel', 'Alerts', function($scope, $state, Flash, TechnicianModel, Alerts){
       	/*
       	** Public
         */
@@ -31,7 +31,8 @@ angular.module('sedApp')
             msg = 'Servicio Tecnico actualizado con exito!'; 
           } else { 
             msg = 'Servicio Tecnico creado con exito!'; 
-            $scope.model = TechnicianModel.empty();
+            Flash.set(msg);
+            return $state.go('client.show', {id: data._id});
           }
       		Alerts.pushAlert($scope.alerts, {type: 'success', msg: msg});
       		$scope.technicianForm.$setPristine();

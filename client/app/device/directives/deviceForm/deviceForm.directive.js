@@ -11,7 +11,7 @@ angular.module('sedApp')
 				error  : '&',
 				scroll : '@',
       },
-      controller: [ '$scope', 'DeviceModel', 'Alerts', function($scope, DeviceModel, Alerts){
+      controller: [ '$scope', '$state', 'Flash', 'DeviceModel', 'Alerts', function($scope, $state, Flash, DeviceModel, Alerts){
       	/*
       	** Public
       	*/
@@ -22,7 +22,7 @@ angular.module('sedApp')
 				** Private
 				*/
       	function errorHandler(error){
-      		Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Ha ocurrido un error en el servidor'});
+      		Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'El modelo ya existe o ha ocurrido un error en el servidor'});
       		if (_.isFunction($scope.error)){ $scope.error(error); }
       	}
       	function successHandler(data){
@@ -31,7 +31,8 @@ angular.module('sedApp')
       			msg = 'Equipo actualizado con exito!'; 
       		} else { 
       			msg = 'Equipo creado con exito!'; 
-      			$scope.model = DeviceModel.empty();
+      			Flash.set(msg);
+                        return $state.go('device.show', {id: data._id});
       		}
       		Alerts.pushAlert($scope.alerts, {type: 'success', msg: msg});
       		$scope.deviceForm.$setPristine();

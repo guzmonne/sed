@@ -14,7 +14,7 @@ angular.module('sedApp')
 				error   : '&',
 				disabled: '@'
       },
-      controller: ['$scope', 'ServiceRequestModel', 'Alerts', function($scope, ServiceRequestModel, Alerts){
+      controller: ['$scope', '$state', 'Flash', 'ServiceRequestModel', 'Alerts', function($scope, $state, Flash, ServiceRequestModel, Alerts){
       	/*
       	** Private
       	*/
@@ -37,10 +37,12 @@ angular.module('sedApp')
 		      Alerts.pushAlert($scope.alerts, {type: 'danger', msg: 'Se ha producido un error en el servidor'});
 		    }
 		    function create(){
-		      var success = function(){
-		        Alerts.pushAlert($scope.alerts, {type: 'success', msg: 'Orden de Servicio creada con exito!'}); 
+		      var success = function(data){
+		        var msg = 'Orden de Servicio creada con exito!';
 		        $scope.serviceRequestForm.$setPristine();
 		        $scope.setClientAndDevice();
+            Flash.set(msg);
+            return $state.go('service_request.show', {id: data._id});
 		      };
 		      addAccessory();
 		      ServiceRequestModel.create($scope.model).then(success, errorHandler);

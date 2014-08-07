@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('sedApp')
-  .controller('ClientShowCtrl', function ($scope, $rootScope, ServiceRequestHandler, ClientCollection, model) {
+  .controller('ClientShowCtrl', function ($scope, $rootScope, Flash, ServiceRequestHandler, model) {
 		/*
 		** Public
 		*/
+		$scope.flash                        = Flash;
 		$scope.model                        = model;
 		$scope.hideColumns                  = ['_client.name'];
 		$scope.serviceRequest               = setServiceRequest();
