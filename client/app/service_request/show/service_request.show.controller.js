@@ -58,55 +58,55 @@ angular.module('sedApp')
       $scope.controls.showCostForm = false;
       $scope.model.cost   = data.cost;
       $scope.model.status = data.status;
-      Alerts.pushAlert($scope.alerts, { type: 'success', msg: COST_SUCCESS });
+      Alerts.pushAlert($scope.alerts, { type: 'success', msg: COST_SUCCESS }, 0);
       checkDiagnose();
     }
     function diagnoseSuccess(data){
       $scope.controls.showDiagnoseForm = false;
       $scope.model.diagnose = data.diagnose;
-      Alerts.pushAlert($scope.alerts, {type: 'success', msg: DIAGNOSE_SUCCESS});
+      Alerts.pushAlert($scope.alerts, {type: 'success', msg: DIAGNOSE_SUCCESS}, 0);
       if (!$scope.model.withWarranty){ checkCost(); }
     }
     function statusSuccess(data){
       $scope.model.status = data.status;
-      Alerts.pushAlert($scope.alerts, {type: 'success', msg: STATUS_SUCCESS});
+      Alerts.pushAlert($scope.alerts, {type: 'success', msg: STATUS_SUCCESS}, 0);
     }
     function technicianSuccess(data){
       $scope.controls.showTechnicianForm = false;
       $scope.model._technician           = data._technician;
       $scope.model.status                = data.status;
-      Alerts.pushAlert($scope.alerts, {type: 'success', msg: TECHNICIAN_SUCCESS});
+      Alerts.pushAlert($scope.alerts, {type: 'success', msg: TECHNICIAN_SUCCESS}, 0);
     }
     function solutionSuccess(data){
       $scope.controls.showSolutionForm = false;
       $scope.model.solution            = data.solution;
       $scope.model.status              = data.status;
-      Alerts.pushAlert($scope.alerts, {type: 'success', msg: SOLUTION_SUCCESS});
+      Alerts.pushAlert($scope.alerts, {type: 'success', msg: SOLUTION_SUCCESS}, 0);
     }
     function costAcceptedSuccess(data){
       var msg = (data.costAccepted) ? COST_ACCEPTED : COST_CANCELLED;
       $scope.model.costAccepted   = data.costAccepted;
       $scope.model.costAcceptedAt = data.costAcceptedAt; 
       $scope.model.status         = data.status;
-      Alerts.pushAlert($scope.alerts, {type: 'success', msg: msg});
+      Alerts.pushAlert($scope.alerts, {type: 'success', msg: msg}, 0);
     }
     function closedAtSuccess(data){
       $scope.model.closedAt = data.closedAt;
       $scope.model.status   = data.status;
-      Alerts.pushAlert($scope.alerts, {type: 'success', msg: CLOSEDAT_SUCCESS});
+      Alerts.pushAlert($scope.alerts, {type: 'success', msg: CLOSEDAT_SUCCESS}, 0);
     }
     function costAcceptedError(){
       $scope.model.costAccepted = !$scope.model.costAccepted;
       handleError();
     }
     function checkDiagnose(){
-      if (!model.diagnose){ Alerts.pushAlert($scope.alerts, { type: 'info', msg: CHECK_DIAGNOSE });
+      if (!model.diagnose){ Alerts.pushAlert($scope.alerts, { type: 'info', msg: CHECK_DIAGNOSE }, 0);
         $scope.controls.showDiagnoseForm = true;
       }
     }
     function checkCost(){
       if (!model.cost){
-        Alerts.pushAlert($scope.alerts, { type: 'info', msg: CHECK_COST });
+        Alerts.pushAlert($scope.alerts, { type: 'info', msg: CHECK_COST }, 0);
         $scope.controls.showCostForm = true;
       }
     }

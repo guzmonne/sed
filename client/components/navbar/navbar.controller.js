@@ -8,7 +8,7 @@ angular.module('sedApp')
         link: '/client/index'
       },
       {
-        title: 'Modelos',
+        title: 'Equipos',
         link: '/device/index'
       },
       {
