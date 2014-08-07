@@ -1,29 +1,44 @@
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-lg-8">
-			<h2 ng-class="{'text-default': showEdit === false, 'text-warning': showEdit === true }" ng-mouseenter="mouseOverTitle()" ng-mouseleave="mouseLeaveTitle()" >
-				{{model.description}}&nbsp;{{model.brand}}&nbsp;{{model.model}}&nbsp;
-				<button ng-show="showEdit && !showForm" class="btn btn-sm btn-warning" ng-click="showForm = true">
-					<i class="fa fa-pencil fa-fw"></i>
-				</button>
-				<button class="btn btn-sm btn-danger" ng-show="showForm" ng-click="showForm = false">
-					<i class="fa fa-times fa-fw"></i>
-				</button>
+		<div class="col-lg-6">
+			<h2 class="text-success">
+				{{model.description}} {{model.brand}} {{model.model}}
 			</h2>
-			<button class="btn btn-success">
+			<button class="btn btn-success" ng-click="selectNewServiceRequestTab()">
 				Nueva Orden de Servicio
 			</button>
-		</div><!-- /.col-lg-8 -->
-		<div class="col-lg-4">
-			<img ng-src="{{model.image}}" alt="{{model.model + ' image'}}" width="200" />
-		</div><!-- /.col-lg-4 -->
-		<div class="col-lg-12 air-top" ng-show="showForm">
-			<hr />
-			<div device-form model="model"></div>
-		</div><!-- /.col-lg-12 -->
-		<div class="col-lg-12 air-top">
-			<hr />
-			<div sed-table collection="model.serviceRequests" type="service_request" hide-columns="{{hideColumns}}"></div>
+		</div><!-- /.col-lg-6 -->
+		<div class="col-lg-6">
+			<img class="pull-right" ng-src="{{model.image}}" alt="{{model.model + ' image'}}" width="200"/>
+		</div><!-- /.col-lg-6 -->
+		<div class="col-lg-12">
+			<tabset class="air-bottom air-top">
+				<div tab heading="Ordenes de Servicio" class="pointer">
+					<div class="air-top" sed-table collection="model.serviceRequests" type="service_request" hide-columns="{{hideColumns}}"></div>
+				</div>
+				<div tab class="pointer" active="newServiceRequest" select="selectNewServiceRequestTab()" deselect="deselectNewServiceRequestTab()">
+					<div tab-heading tooltip="Nueva Orden de Servicio" tooltip-placement="right">
+						<i class="fa fa-fw" ng-class="{'fa-plus': serviceRequestFormDisabled === false || newServiceRequest === false, 'fa-spinner fa-spin': serviceRequestFormDisabled === true && newServiceRequest === true}"></i>
+					</div>
+					<div class="container air-top">
+						<div class="col-lg-12">
+							<h3>Nueva Orden de Servicio</h3>
+							<div service-request-form model="serviceRequest" clients="clients" devices="devices" disabled="{{serviceRequestFormDisabled}}"></div>
+						</div><!-- /.col-lg-12 -->
+					</div><!-- /.container air-bottom -->
+				</div>
+				<div tab class="pull-right" active="editClient">
+					<div tab-heading class="pointer" tooltip="Editar Equipo">
+						<i class="fa fa-fw fa-pencil text-warning"></i>
+					</div>
+					<div class="container air-top">
+						<div class="col-lg-12">
+							<h3>Editar Equipo</h3>
+							<div device-form model="model"></div>
+						</div><!-- /.col-lg-12 -->
+					</div><!-- /.container -->
+				</div>
+			</tabset>
 		</div><!-- /.col-lg-12 -->
 	</div><!-- /.row -->
 </div><!-- /.container -->

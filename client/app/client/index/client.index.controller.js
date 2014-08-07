@@ -1,15 +1,12 @@
 'use strict';
 
 angular.module('sedApp')
-  .controller('ClientIndexCtrl', function ($scope, ClientModel, Alerts, Auth, collection) {
-    $scope.collection = collection;
+  .controller('ClientIndexCtrl', function ($scope, ClientCollection, Alerts, Auth) {
+    $scope.collection = ClientCollection.data;
+    // Alerts
     $scope.alerts = [];
-    $scope.tableOpts = {
-			sortField    : '_id',
-			searchString : null,
-			modelsPerPage: 10
-    };
     $scope.closeAlerts = Alerts.closeAlerts;
+    // Auth
     $scope.isAdmin = Auth.isAdmin;
     $scope.delete = function(model){
     	var success = function(){
@@ -21,10 +18,4 @@ angular.module('sedApp')
     	};
     	ClientModel.delete(model).then(success, error);
     };
-    function remove(model){
-    	var index = $scope.collection.indexOf(model);
-  		if (index > -1){
-  			$scope.collection.splice(index, 1);
-  		}
-    }
   });

@@ -34,11 +34,10 @@ exports.create = function(req, res) {
     if(err) { return handleError(res, err); }
     async.parallel([
       function(callback){
-        var options = {
-          path: '_device', 
-          model: 'Device',
-          select: '_id brand model description'
-        };
+        var options = [
+          { path: '_device', select: '_id brand model description' },
+          { path: '_client', select: '_id name' },
+        ];
         ServiceRequest.populate(service_request, options, function(err){
           if (err) {callback(err);} else { callback(); }
         });

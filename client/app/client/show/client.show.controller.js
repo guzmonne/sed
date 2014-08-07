@@ -1,60 +1,46 @@
 'use strict';
 
 angular.module('sedApp')
-  .controller('ClientShowCtrl', function ($scope, $rootScope, ClientCollection, DeviceCollection, ServiceRequestModel, model) {
-		/*
-		** Events
-		*/
-		$rootScope.$on('servicerequest:create', function(event, model){
-			$scope.serviceRequest  = setServiceRequest();
-			model._client = {_id: model._client, name: $scope.model.name};
-			$scope.model.serviceRequests.push(model);
-		});
+  .controller('ClientShowCtrl', function ($scope, $rootScope, ServiceRequestHandler, ClientCollection, model) {
 		/*
 		** Public
 		*/
 		$scope.model                        = model;
 		$scope.hideColumns                  = ['_client.name'];
 		$scope.serviceRequest               = setServiceRequest();
-		$scope.clients                      = [];
-		$scope.devices                      = [];
+		$scope.clients                      = ServiceRequestHandler.clients;
+		$scope.devices                      = ServiceRequestHandler.devices;
 		$scope.newServiceRequest            = false;
-		$scope.selectNewServiceRequestTab   = selectNewServiceRequestTab;
 		$scope.serviceRequestFormDisabled   = true;
+		$scope.selectNewServiceRequestTab   = selectNewServiceRequestTab;
 		$scope.deselectNewServiceRequestTab = deselectNewServiceRequestTab;
+		/*
+		** Events
+		*/
+		$rootScope.$on('servicerequest:create', function(event, model){
+			$scope.serviceRequest = setServiceRequest();
+			$scope.model.serviceRequests.push(model);
+		});
 		/*
 		** Private
 		*/
-		var getCollections = _.once(function(){
-			async.parallel([getClients, getDevices], function(err){
-				if (err) { console.log(err); }
-				$scope.serviceRequestFormDisabled = false; 
-			});
-		});
-		function getClients(callback){
-			ClientCollection.index().then(function(data){
-				$scope.clients = data;
-				if(_.isFunction(callback)){ callback(); }
-			});
-		}
-		function getDevices(callback){
-			DeviceCollection.index().then(function(data){
-				$scope.devices = data;
-				if(_.isFunction(callback)){ callback(); }
-			});
-		}
 		function selectNewServiceRequestTab(){
 			$scope.newServiceRequest = true;
 			if ($scope.clients.length === 0 || $scope.devices.length === 0){
-				getCollections();
+				ServiceRequestHandler.getCollections(function(){
+					$scope.serviceRequestFormDisabled = false;					
+					$scope.clients = ServiceRequestHandler.clients;
+					$scope.devices = ServiceRequestHandler.devices;
+				});
+			} else {
+				$scope.serviceRequestFormDisabled = false;
+				ServiceRequestHandler.getCollections();
 			}
 		}
 		function deselectNewServiceRequestTab(){
 			$scope.newServiceRequest = false;
 		}
 		function setServiceRequest(){
-			var result = ServiceRequestModel.empty();
-			result._client = model;
-			return result;
+			return ServiceRequestHandler.setServiceRequest('_client', $scope.model);
 		}
   });

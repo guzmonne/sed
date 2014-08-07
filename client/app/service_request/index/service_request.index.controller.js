@@ -1,10 +1,13 @@
 'use strict';
 
 angular.module('sedApp')
-  .controller('ServiceRequestIndexCtrl', function ($scope, ServiceRequestModel, Alerts, Auth, collection) {
-    $scope.collection = collection;
+  .controller('ServiceRequestIndexCtrl', function ($scope, ServiceRequestCollection, Alerts, Auth) {
+    $scope.collection = ServiceRequestCollection.data;
+    // Alerts
     $scope.alerts = [];
     $scope.closeAlerts = Alerts.closeAlerts;
+    // Auth
+    $scope.isAdmin = Auth.isAdmin;
     $scope.delete = function(model){
       var success = function(){
     		remove(model);
@@ -15,10 +18,4 @@ angular.module('sedApp')
     	};
     	ServiceRequestModel.delete(model).then(success, error);
     };
-    function remove(model){
-    	var index = $scope.collection.indexOf(model);
-  		if (index > -1){
-  			$scope.collection.splice(index, 1);
-  		}
-    }
   });
