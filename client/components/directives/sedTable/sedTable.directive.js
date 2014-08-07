@@ -30,6 +30,9 @@ angular.module('sedApp')
         $scope.selectFilterField = selectFilterField;
         $scope.isAdmin           = Auth.isAdmin;
         $scope.remove            = remove;
+        $scope.selectRow         = selectRow;
+        $scope.selectedModel     = null;
+        $scope.detailsState      = detailsState;
         /*
         ** Private
         */
@@ -99,7 +102,7 @@ angular.module('sedApp')
         function setTable(type){
           var table                  = tables[type];
           $scope.options.sortField   = table.sortField;
-                              $scope.options.sortReverse = (table.sortReverse) ? table.sortReverse : false;  
+          $scope.options.sortReverse = (table.sortReverse) ? table.sortReverse : false;  
           $scope.table               = table.data;
         }
         function search(){
@@ -128,6 +131,14 @@ angular.module('sedApp')
         }
         function remove(model){
           $scope.delete({model: model});
+        }
+        function selectRow(model){
+          if ($scope.selectedModel && $scope.selectedModel._id === model._id){ return $scope.selectedModel = null; }
+          $scope.selectedModel = model;
+        }
+        function detailsState(){
+          if (!$scope.selectedModel){ return '/'; }
+          return $scope.type + '/' + $scope.selectedModel._id;
         }
         /*
         ** Initialize
@@ -182,6 +193,8 @@ angular.module('sedApp')
               '| limitTo:options.modelsPerPage',
             ].join('') 
           );
+          body.attr('ng-click', 'selectRow(model)');
+          body.attr('ng-class', '{ \'row-selected\': selectedModel._id === model._id }');
           // Compilation
           head = $compile(head)(scope);
           body = $compile(body)(scope);

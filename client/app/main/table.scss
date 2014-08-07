@@ -26,3 +26,14 @@
 		width: 68px;
 	}
 }
+
+.table > tbody > tr.row-selected > td {
+	background-color: #346291;
+	color: #fff;
+}
+
+.table > tbody > tr.row-selected:hover > td {
+	background-color: #4077AF;
+	color: #fff;
+}
+
