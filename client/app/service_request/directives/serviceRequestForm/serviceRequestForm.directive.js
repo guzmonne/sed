@@ -43,8 +43,8 @@ angular.module('sedApp')
 		        $scope.serviceRequestForm.$setPristine();
 		        $scope.setClientAndDevice();
             Flash.set(msg);
-            return $state.go('service_request.show', {id: data._id});
 		      	$scope.submiting = false;
+            return $state.go('service_request.show', {id: data._id});
 		      };
 		      addAccessory();
 		      ServiceRequestModel.create($scope.model).then(success, errorHandler);
@@ -131,10 +131,6 @@ angular.module('sedApp')
 						scope.setClientAndDevice();
 					}
 				});
-				//scope.$watch('model._client', scope.setClientAndDevice());
-				function find(collection, id){
-					return _.find(collection, function(m){ if(m._id){ return m._id === id; } });
-				}
       	/*
       	** Initialization
       	*/

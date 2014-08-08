@@ -8,5 +8,5 @@ angular.module('sedApp')
         array.push(object[item]);
       }
       return array;
-    }
+    };
   });

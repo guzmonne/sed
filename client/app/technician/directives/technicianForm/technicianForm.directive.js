@@ -35,7 +35,7 @@ angular.module('sedApp')
           } else { 
             msg = 'Servicio Tecnico creado con exito!'; 
             Flash.set(msg);
-            return $state.go('client.show', {id: data._id});
+            return $state.go('technician.show', {id: data._id});
           }
       		Alerts.pushAlert($scope.alerts, {type: 'success', msg: msg});
       		$scope.technicianForm.$setPristine();

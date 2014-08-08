@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sedApp')
-  .factory('Collection', ['$rootScope', function($rootScope){
+  .factory('Collection', function(){
 		/*
 		** Private
 		*/
@@ -45,11 +45,11 @@ angular.module('sedApp')
 			mergeModels: mergeModels,
 			addModel   : addModel,
 			addModels  : addModels
-		}
+		};
 		/*
 		** Return
 		*/
 		return Collection;
-  }]
+  }
 );
 

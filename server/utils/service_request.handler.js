@@ -19,7 +19,7 @@ function removeServiceRequest(modelName , service_request_id, model_id, callback
 			end(null, callback);
 		}
 	});
-};
+}
 
 function addServiceRequest(modelName , service_request_id, model_id, callback){
 	mongoose.models[modelName].findOne({_id: model_id}, function(err, model){
@@ -33,7 +33,7 @@ function addServiceRequest(modelName , service_request_id, model_id, callback){
 			end(null, callback);
 		}
 	});
-};
+}
 
 function swapServiceRequest(modelName , service_request_id, old_model_id, new_model_id, callback){
 	async.parallel([
@@ -50,7 +50,7 @@ function swapServiceRequest(modelName , service_request_id, old_model_id, new_mo
 	], function(err){
 		end(err, callback);
 	});
-};
+}
 
 exports.removeServiceRequest = removeServiceRequest;
 

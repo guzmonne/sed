@@ -1,4 +1,5 @@
 'use strict';
+/* global async */
 
 angular.module('sedApp')
   .service('ServiceRequestHandler', function ServiceRequestHandler(ClientCollection, DeviceCollection, ServiceRequestModel) {
@@ -32,7 +33,7 @@ angular.module('sedApp')
 			if (err) { console.log(err); }
             self.clients = results[0];
             self.devices = results[1];
-            if (_.isFunction(done)){done();};
+            if (_.isFunction(done)){done();}
 		});
     }, 2000, { 'trailing': false });
     self.setServiceRequest = function(attribute, model){

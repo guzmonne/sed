@@ -6,7 +6,7 @@ angular.module('sedApp')
 		** Public
 		*/
 		$scope.model                        = model;
-		$scope.flash                        = flash;
+		$scope.flash                        = Flash;
 		$scope.hideColumns                  = ['_technician.name'];
 		$scope.serviceRequest               = setServiceRequest();
 		$scope.clients                      = ServiceRequestHandler.clients;

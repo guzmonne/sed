@@ -1,5 +1,7 @@
 'use strict';
-
+/*global describe */
+/*global it */
+/*global before */
 var should         = require('should');
 var request        = require('supertest');
 var app            = require('../app');

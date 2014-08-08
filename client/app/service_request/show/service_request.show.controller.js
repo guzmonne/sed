@@ -1,4 +1,5 @@
 'use strict';
+/* global confirm */
 
 angular.module('sedApp')
   .controller('ServiceRequestShowCtrl', function ($scope, $modal, Flash, ServiceRequestModel, Alerts, model, collection) {
@@ -20,21 +21,18 @@ angular.module('sedApp')
     $scope.patchSolution     = patchSolution;
     $scope.patchCost         = patchCost;
     $scope.patchCostAccepted = patchCostAccepted;
-    $scope.close             = close;
+    $scope.close             = closeServiceReques;
 		// Alerts
 		$scope.alerts     = [];
 		$scope.closeAlert = Alerts.closeAlert;
   	/*
   	** Private
   	*/
-    function close(){
+    function closeServiceReques(){
       if (confirm(CONFIRM_CLOSE)){ patchClosedAt(); }
     }
     function handleError(){
       Alerts.pushAlert($scope.alerts, {type: 'danger', msg: ERROR});
-    }
-    function patchStatus (status){
-      ServiceRequestModel.patch(model._id, {status: status}).then(statusSuccess, handleError);
     }
     function patchClosedAt(){
       ServiceRequestModel.patch(model._id, {closedAt: new Date()}).then(closedAtSuccess, handleError);
@@ -66,10 +64,6 @@ angular.module('sedApp')
       $scope.model.diagnose = data.diagnose;
       Alerts.pushAlert($scope.alerts, {type: 'success', msg: DIAGNOSE_SUCCESS}, 0);
       if (!$scope.model.withWarranty){ checkCost(); }
-    }
-    function statusSuccess(data){
-      $scope.model.status = data.status;
-      Alerts.pushAlert($scope.alerts, {type: 'success', msg: STATUS_SUCCESS}, 0);
     }
     function technicianSuccess(data){
       $scope.controls.showTechnicianForm = false;
@@ -119,9 +113,8 @@ angular.module('sedApp')
     var CHECK_COST         = 'Es recomendable que ingrese el presupuesto de la reparación.';
     var CHECK_DIAGNOSE     = 'Es recomendable que ingrese el detalle del presupuesto en el campo diagnostico.';
     var DIAGNOSE_SUCCESS   = 'Diagnostico guardado.';
-    var STATUS_SUCCESS     = 'La Orden de Servicio ha sido cerrada con exito';
     var ERROR              = 'Ha ocurrido un error en el servidor';
-    var CONFIRM_CLOSE      = 'Esta acción cerrara esta orden de servicio. Desea continuar?'
+    var CONFIRM_CLOSE      = 'Esta acción cerrara esta orden de servicio. Desea continuar?';
     var TECHNICIAN_SUCCESS = 'Servicio Tecnico Asignado Correctamente';
     var SOLUTION_SUCCESS   = 'Solución guardada.';
     var CLOSEDAT_SUCCESS   = 'La Orden de Servicio se ha Cerrado con exito';

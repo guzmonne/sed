@@ -20,7 +20,7 @@ angular.module('sedApp').factory('Flash', function ($rootScope) {
       return currentMessage;
     }
     function shift(){
-      currentMessage = queue.shift() || "";
+      currentMessage = queue.shift() || '';
     }
     // Public
     return {

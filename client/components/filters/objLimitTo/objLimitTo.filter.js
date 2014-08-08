@@ -7,9 +7,9 @@ angular.module('sedApp')
       if(keys.length < 1){
           return [];
       }
-      var ret = new Object,
+      var ret = {},
           count = 0;
-      angular.forEach(keys, function(key, arrayIndex){
+      angular.forEach(keys, function(key){
           if(count >= limit){
               return false;
           }

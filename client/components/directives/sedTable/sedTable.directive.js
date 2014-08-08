@@ -1,4 +1,5 @@
 'use strict';
+ /*jshint camelcase: false */
 
 angular.module('sedApp')
   .directive('sedTable', function ($compile) {
@@ -73,7 +74,7 @@ angular.module('sedApp')
               { attribute: 'boughtAt'            , name: 'Comprado'             , show: true, content: '{{model.boughtAt | date:\'dd MMM yyyy\'}}', columnClass: 'no-wrap' },
               { attribute: 'accessories'         , name: 'Accesorios'           , show: false, content: '<span ng-repeat="accessory in model.accessories"><span class="label label-primary">{{accessory}}</span><br /></span><span ng-show="model.accessories.length === 0">Sin accesorios</span>', columnClass: 'no-wrap'},
               { attribute: 'defect'              , name: 'Defecto'              , show: false, content: '{{model.defect}}' },
-              { attribute: 'priority'            , name: 'Prioridad'            , show: true, content: '{{model.priority}}', columnClass: "text-center" },
+              { attribute: 'priority'            , name: 'Prioridad'            , show: true, content: '{{model.priority}}', columnClass: 'text-center' },
               { attribute: '_technician.name'    , name: 'Servicio Tecnico'     , show: true, content: '{{model._technician.name}}' },
               { attribute: 'cost'                , name: 'Presupuesto'          , show: true, content: '{{model.cost | currency}}' },
               { attribute: 'costAccepted'        , name: 'Presupuesto Aceptado' , show: false, content: '<i class="fa fa-check" ng-if="model.costAccepted === true"></i>', columnClass: 'text-center' },
@@ -94,7 +95,7 @@ angular.module('sedApp')
               { attribute: 'email'    , name: 'Email'       , show: true, content: '{{model.email}}' },
             ]
           },
-        }
+        };
         function sort(attribute){
           $scope.options.sortReverse = ($scope.options.sortField === attribute) ? !$scope.options.sortReverse : false;
           $scope.options.sortField   = attribute;
@@ -133,7 +134,7 @@ angular.module('sedApp')
           $scope.delete({model: model});
         }
         function selectRow(model){
-          if ($scope.selectedModel && $scope.selectedModel._id === model._id){ return $scope.selectedModel = null; }
+          if ($scope.selectedModel && $scope.selectedModel._id === model._id){ $scope.selectedModel = null; return; }
           $scope.selectedModel = model;
         }
         function detailsState(){
@@ -202,9 +203,9 @@ angular.module('sedApp')
           element.find('tbody').html(body);
         }
         function hideColumns(){
-          var hideColumns = scope.$eval(attrs.hideColumns);
-          _.forEach(hideColumns, function(columnName){
-            var column = _.find(scope.table, function(column){return column.attribute === columnName});
+          var hideColumnsArray = scope.$eval(attrs.hideColumnsArray);
+          _.forEach(hideColumnsArray, function(columnName){
+            var column = _.find(scope.table, function(column){return column.attribute === columnName;});
             if (column) { column.show = false; }
           });
         }

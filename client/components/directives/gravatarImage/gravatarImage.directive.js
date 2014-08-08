@@ -1,4 +1,5 @@
 'use strict';
+/*jshint ignore: start */
 /*
  * A simple Gravatar Directive
  * @example
