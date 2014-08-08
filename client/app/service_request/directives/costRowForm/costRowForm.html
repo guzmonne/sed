@@ -11,7 +11,7 @@
 	<div ng-show="form && !spinner">
 		<form ng-submit="ok()">
 			<div class="col-sm-6" style="margin-left: -15px">
-				<input type="number" step="0.01" class="form-control form-control-in-cell" placeholder="0.00" ng-model="cost">
+				<input type="number" step="0.01" class="form-control form-control-in-cell" placeholder="0.00" ng-model="cost" focus-me="{{form}}">
 			</div><!-- /.col-xs-10 -->
 			<div class="col-sm-6">
 				<div class="btn-toolbar">

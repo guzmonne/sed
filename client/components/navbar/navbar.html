@@ -18,7 +18,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li ng-show="isLoggedIn()"><p class="navbar-text">{{ getCurrentUser().name }}</p> </li>
-        <li ng-show="isLoggedIn()"><p><div gravatar-image email="{{email}}" size="40"></div></p></li>
+        <li ng-show="isLoggedIn()"><p><div gravatar-image email="getCurrentUser().email" size="40"></div></p></li>
         <li ng-show="isLoggedIn()" ng-class="{active: isActive('/settings')}"><a href="/settings"><span class="fa fa-cog"></span></a></li>
         <li ng-show="isLoggedIn()" ng-class="{active: isActive('/logout')}"><a href="" ng-click="logout()">Cerrar Sesión</a></li>
       </ul>

@@ -25,7 +25,6 @@ angular.module('sedApp')
     $scope.isLoggedIn     = Auth.isLoggedIn;
     $scope.isAdmin        = Auth.isAdmin;
     $scope.getCurrentUser = Auth.getCurrentUser;
-    $scope.email          = Auth.getCurrentUser().email;
 
     $scope.logout = function() {
       Auth.logout();

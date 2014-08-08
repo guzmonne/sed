@@ -6,7 +6,9 @@
 'use strict';
 var User = require('../api/user/user.model');
 
-User.find({}).remove(function() {
+User.find(function(err, collection){
+  if (err){ return console.log(err); }
+  if (collection.length > 0) { return; }
   User.create({
     provider: 'local',
     name: 'Test User',
@@ -18,6 +20,12 @@ User.find({}).remove(function() {
     name: 'Admin',
     email: 'admin@admin.com',
     password: 'admin'
+  }, {
+    provider: 'local',
+    name: 'Guzmán Monné',
+    role: 'admin',
+    email: 'guzmonne@hotmail.com',
+    password: 'example'
   }, function() {
       console.log('finished populating users');
     }
