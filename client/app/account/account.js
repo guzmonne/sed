@@ -12,12 +12,12 @@ angular.module('sedApp')
         url: '/signup',
         templateUrl: 'app/account/signup/signup.html',
         controller: 'SignupCtrl',
-        authenticate: true,
+        //authenticate: true,
       })
       .state('settings', {
         url: '/settings',
         templateUrl: 'app/account/settings/settings.html',
         controller: 'SettingsCtrl',
-        authenticate: true,
+        //authenticate: true,
       });
   });
