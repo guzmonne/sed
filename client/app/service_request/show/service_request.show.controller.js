@@ -2,7 +2,7 @@
 /* global confirm */
 
 angular.module('sedApp')
-  .controller('ServiceRequestShowCtrl', function ($scope, $modal, Flash, ServiceRequestModel, Alerts, model, collection) {
+  .controller('ServiceRequestShowCtrl', function ($scope, $modal, Flash, ServiceRequestClientInvoice, ServiceRequestTechnicianInvoice, ServiceRequestModel, Alerts, model, collection) {
   	/*
   	** Public
   	*/
@@ -12,16 +12,20 @@ angular.module('sedApp')
       showCostForm      : false,
       showTechnicianForm: false,
     };
-    $scope.flash             = Flash;
-    $scope.model             = model;
-    $scope.collection        = collection;
-    $scope.diagnose          = null;
-    $scope.patchDiagnose     = patchDiagnose;
-    $scope.patchTechnician   = patchTechnician;
-    $scope.patchSolution     = patchSolution;
-    $scope.patchCost         = patchCost;
-    $scope.patchCostAccepted = patchCostAccepted;
-    $scope.close             = closeServiceReques;
+    $scope.flash                     = Flash;
+    $scope.model                     = model;
+    $scope.collection                = collection;
+    $scope.diagnose                  = null;
+    $scope.patchDiagnose             = patchDiagnose;
+    $scope.patchTechnician           = patchTechnician;
+    $scope.patchSolution             = patchSolution;
+    $scope.patchCost                 = patchCost;
+    $scope.patchCostAccepted         = patchCostAccepted;
+    $scope.close                     = closeServiceReques;
+    $scope.printClientInvoice        = ServiceRequestClientInvoice.print;
+    $scope.downloadClientInvoice     = ServiceRequestClientInvoice.download;
+    $scope.printTechnicianInvoice    = ServiceRequestTechnicianInvoice.print;
+    $scope.downloadTechnicianInvoice = ServiceRequestTechnicianInvoice.download;
 		// Alerts
 		$scope.alerts     = [];
 		$scope.closeAlert = Alerts.closeAlert;

@@ -209,6 +209,7 @@ ServiceRequestSchema.statics.show = function(id, callback){
 		.populate('_client'    , 'name docType docNumber phone address email')
 		.populate('_device'    , 'brand model description image')
 		.populate('_technician', 'name')
+		.populate('createdBy'  , 'name')
 		.exec(callback);
 }
 

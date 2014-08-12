@@ -34,6 +34,30 @@
 							</button>
 						</div><!-- /.col-xs-6 -->
 					</div><!-- /.row -->
+					<div class="row air-top">
+						<div class="col-sm-6">
+							<button ng-click="printClientInvoice(model)" class="btn btn-info btn-block">
+								<i class="fa fa-print fa-fw"></i>&nbsp;Comp. Cliente
+							</button>
+						</div><!-- /.col-sm-6 -->
+						<div class="col-sm-6">
+							<button ng-click="printTechnicianInvoice(model)" class="btn btn-info btn-block">
+								<i class="fa fa-print fa-fw"></i>&nbsp;Comp. S. Tecnico
+							</button>
+						</div><!-- /.col-sm-6 -->
+					</div><!-- /.row -->
+					<div class="row air-top">
+						<div class="col-sm-6">
+							<button ng-click="downloadClientInvoice(model)" class="btn btn-info btn-block">
+								<i class="fa fa-download fa-fw"></i>&nbsp;Comp. Cliente
+							</button>
+						</div><!-- /.col-sm-6 -->
+						<div class="col-sm-6">
+							<button ng-click="downloadTechnicianInvoice(model)" class="btn btn-info btn-block">
+								<i class="fa fa-download fa-fw"></i>&nbsp;Comp. S. Tecnico
+							</button>
+						</div><!-- /.col-sm-6 -->
+					</div><!-- /.row -->
 				</div><!-- /.col-sm-6 -->
 				<div class="col-sm-9">
 					<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert(alerts, $index)">{{alert.msg}}</alert>
