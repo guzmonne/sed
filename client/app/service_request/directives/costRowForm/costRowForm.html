@@ -4,7 +4,7 @@
 </td>
 <td>
 	<span ng-show="!form" ng-if="model || model > -1">{{model | currency}}</span>
-	<span ng-show="!form" ng-if="!model">Sin presupuestar</span>
+	<span ng-show="!form" ng-if="model === null || model === undefined">Sin presupuestar</span>
 	<span ng-show="form && spinner" class="text-success">
 			<i class="fa fa-2x fa-spinner fa-spin"></i>
 	</span>

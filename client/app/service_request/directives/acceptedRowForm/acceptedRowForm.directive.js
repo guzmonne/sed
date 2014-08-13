@@ -21,6 +21,7 @@ angular.module('sedApp')
 	  	link: function(scope, element){
 	      function show(){ if (scope.show === true){ element.show(); } else { element.hide(); } }
 	      scope.$watch('show', show);
+	      scope.radioValue = (scope.model === null || scope.model === undefined) ? 'null' : scope.model.toString();
 	  	}
 		};
   });

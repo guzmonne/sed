@@ -24,7 +24,7 @@ angular.module('sedApp')
 		      if (confirm(CONFIRM_CLOSE)){ patchClosedAt(); }
 		    }
         function patchClosedAt(){
-		      ServiceRequestModel.patch(model._id, {closedAt: new Date()}).then(closedAtSuccess, handleError);
+		      ServiceRequestModel.patch($scope.model._id, {closedAt: new Date()}).then(closedAtSuccess, handleError);
 		    }
         function closedAtSuccess(data){
 		      $scope.model.closedAt = data.closedAt;
