@@ -40,33 +40,19 @@ exports.create = function(req, res) {
           { path: '_client'    , select: '_id name' },
           { path: '_technician', select: 'name' }
         ];
-        ServiceRequest.populate(service_request, options, function(err){
-          if (err) {callback(err);} else { callback(); }
-        });
+        ServiceRequest.populate(service_request, options, function(err){ if (err) {callback(err);} else { callback(); } });
       },
       // Create Log
-      function(callback){
-        createLog(req.user._id, service_request._id, 'create');
-        callback();
-      },
+      function(callback){ createLog(req.user._id, service_request._id, 'create'); callback(); },
       // Add service_request to client
-      function(callback){
-        helper.addServiceRequest('Client', service_request._id, service_request._client);
-        callback();
-      },
+      function(callback){ helper.addServiceRequest('Client', service_request._id, service_request._client); callback(); },
       // Add service_request to device
-      function(callback){
-        helper.addServiceRequest('Device', service_request._id, service_request._device);
-        callback();
-      },
+      function(callback){ helper.addServiceRequest('Device', service_request._id, service_request._device); callback(); },
       // Add service_request to technician if a technician_id exists
       function(callback){
         if(service_request._technician){
-          helper.addServiceRequest('Technician', service_request._id, service_request._technician);
-          callback();
-        } else {
-          callback();
-        }
+          helper.addServiceRequest('Technician', service_request._id, service_request._technician); callback();
+        } else { callback(); }
       }
     ], function(err){
       if (err){ handleError(res, err); }
@@ -139,6 +125,7 @@ exports.destroy = function(req, res) {
 function setBody(req){
   req.body = helper.addUser(req.body, req.user);
   req.body = justIds(req.body);
+  req.body = removeUnwantedAttrs(req.body);
 }
 
 function handleServiceRequestRefs(oldModel, newModel){
@@ -192,6 +179,14 @@ function justIds(body){
   if (_.isObject(body._device)     && body._device._id)    { body._device     = body._device._id; }
   if (_.isObject(body._client)     && body._client._id)    { body._client     = body._client._id; }
   if (_.isObject(body._technician) && body._technician._id){ body._technician = body._technician._id; }
+  return body;
+}
+
+function removeUnwantedAttrs(body){
+  if (body.createdBy){ delete body.createdBy; }
+  if (body.createdAt){ delete body.createdAt; }
+  if (body.updatedBy){ delete body.updatedBy; }
+  if (body.updatedBy){ delete body.updatedBy; }
   return body;
 }
 
