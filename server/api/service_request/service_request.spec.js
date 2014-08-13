@@ -195,6 +195,81 @@ describe('Service Request Model', function() {
     });
   });
 
+  describe('costAccepted dates', function(){
+    it('should set the costAcceptedAt date if costAccepted is true', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = true;
+      model.save(function(err){
+        handleError(err);
+        model.costAcceptedAt.should.be.ok
+        done();
+      });
+    });
+    it('should set the costNotAcceptedAt date to null if costAccepted is true', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = true;
+      model.save(function(err){
+        handleError(err);
+        (model.costNotAcceptedAt === undefined || model.costAcceptedAt === null).should.be.true;
+        done();
+      });
+    });
+    it('should set the costAcceptedAt date to null if costAccepted is false', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = false;
+      model.save(function(err){
+        handleError(err);
+        (model.costAcceptedAt === undefined || model.costAcceptedAt === null).should.be.true;
+        done();
+      });
+    });
+    it('should set the costNotAcceptedAt date if costAccepted is false', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = false;
+      model.save(function(err){
+        handleError(err);
+        model.costNotAcceptedAt.should.be.ok;
+        done();
+      });
+    });
+    it('should set the costNotAcceptedAt date to null if costAccepted is null', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = true;
+      model.save(function(err){
+        handleError(err);
+        model.costAccepted = null;
+        model.save(function(err){
+          (model.costNotAcceptedAt === undefined || model.costAcceptedAt === null).should.be.true;
+          done();
+        });
+      });
+    });
+    it('should set the costAcceptedAt date to null if costAccepted is null', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = false;
+      model.save(function(err){
+        handleError(err);
+        model.costAccepted = null;
+        model.save(function(err){
+          (model.costAcceptedAt === undefined || model.costAcceptedAt === null).should.be.true;
+          done();
+        });
+      });
+    });
+  });
+
   describe('Status cycle', function(){
     it('should have a "Pendiente" status if the service_request is new', function(done){
       model.save(function(err, model){
@@ -235,17 +310,7 @@ describe('Service Request Model', function() {
       });
     });
 
-    it('should change from "Esperando Presupuesto" to "Esperando Aprobación" if it does not has warranty, a technician is assigned and a diagnose is set', function(done){
-      model.withWarranty = false;
-      model._technician  = technician._id;
-      model.diagnose     = 'This is a test';
-      model.save(function(err){
-        handleError(err);
-        model.status.should.equal('Esperando Aprobación');
-        done();
-      });
-    });
-
+    // costAccepted === true
     it('should change from "Esperando Aprobación" to "En Reparación" if it does not has warranty, a technician is assigned, a cost is set, and costAccepted is true', function(done){
       model.withWarranty = false;
       model._technician  = technician._id;
@@ -257,40 +322,90 @@ describe('Service Request Model', function() {
         done();
       });
     });
-
-    it('should change from "Esperando Aprobación" to "En Reparación" if it does not has warranty, a technician is assigned, a diagnose is set, and costAccepted is true', function(done){
-      model.withWarranty = false;
-      model._technician  = technician._id;
-      model.diagnose     = 'This is a test';
-      model.costAccepted = true;
-      model.save(function(err){
-        handleError(err);
-        model.status.should.equal('En Reparación');
-        done();
-      });
-    });
-
-    it('should change from "En Reparación" to "Esperando Aprobación" if it does not has warranty, a technician is assigned, a cost is set, and costAccepted is false', function(done){
+    it('should change from "No Aceptado", to "En Reparación" if it  does not has warranty, a technician is assigned, a cost is set, and costAccepted is true', function(done){
       model.withWarranty = false;
       model._technician  = technician._id;
       model.cost         = 100;
       model.costAccepted = false;
       model.save(function(err){
         handleError(err);
-        model.status.should.equal('Esperando Aprobación');
-        done();
+        model.costAccepted = true;
+        model.save(function(err){
+          handleError(err);
+          model.status.should.equal('En Reparación');
+          done();
+        });
       });
     });
-
-    it('should change from "En Reparación" to "Esperando Aprobación" if it does not has warranty, a technician is assigned, a diagnose is set, and costAccepted is false', function(done){
+    // costAccepted === false
+    it('should change from "Esperando Aprobación" to "No Aceptado" if it does not has warranty, a technician is assigned, a cost is set, and costAccepted is false', function(done){
       model.withWarranty = false;
       model._technician  = technician._id;
-      model.diagnose     = 'This is a test';
+      model.cost         = 100;
       model.costAccepted = false;
       model.save(function(err){
         handleError(err);
-        model.status.should.equal('Esperando Aprobación');
+        model.status.should.equal('No Aceptado');
         done();
+      });
+    });
+    it('should change from "En Reparación", to "No Aceptado" if it  does not has warranty, a technician is assigned, a cost is set, and costAccepted is false', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = true;
+      model.save(function(err){
+        handleError(err);
+        model.costAccepted = false
+        model.save(function(err){
+          handleError(err);
+          model.status.should.equal('No Aceptado');
+          done();
+        });
+      });
+    });
+    // costAccepted === null
+    it('should remain at "Esperando Aprobación" if it does not has warranty, a technician is assigned, a cost is set, and costAccepted is null', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.save(function(err){
+        model.costAccepted = null;
+        handleError(err);
+        model.save(function(err){
+          model.status.should.equal('Esperando Aprobación');
+          done();
+        });
+      });
+    });
+    it('should change from "En Reparación", to "Esperando Aprobación" if it  does not has warranty, a technician is assigned, a cost is set, and costAccepted is null', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = true;
+      model.save(function(err){
+        handleError(err);
+        model.costAccepted = null
+        model.save(function(err){
+          handleError(err);
+          model.status.should.equal('Esperando Aprobación');
+          done();
+        });
+      });
+    });
+    it('should change from "No Aceptado", to "Esperando Aprobación" if it  does not has warranty, a technician is assigned, a cost is set, and costAccepted is null', function(done){
+      model.withWarranty = false;
+      model._technician  = technician._id;
+      model.cost         = 100;
+      model.costAccepted = false;
+      model.save(function(err){
+        handleError(err);
+        model.costAccepted = null
+        model.save(function(err){
+          handleError(err);
+          model.status.should.equal('Esperando Aprobación');
+          done();
+        });
       });
     });
 
@@ -298,19 +413,6 @@ describe('Service Request Model', function() {
       model.withWarranty = false;
       model._technician  = technician._id;
       model.cost         = 100;
-      model.costAccepted = true;
-      model.solution     = 'This is a solution'
-      model.save(function(err){
-        handleError(err);
-        model.status.should.equal('Reparado');
-        done();
-      });
-    });
-
-    it('should change from "En Reparación" to "Reparado" if it does not has warranty, a technician is assigned, a diagnose is set, costAccepted is true, and a solution is defined', function(done){
-      model.withWarranty = false;
-      model._technician  = technician._id;
-      model.diagnose     = 'This is a diagnose';
       model.costAccepted = true;
       model.solution     = 'This is a solution'
       model.save(function(err){
@@ -329,7 +431,7 @@ describe('Service Request Model', function() {
         model.status.should.equal('Reparado');
         done();
       });
-    });
+    })
 
     it('should change from any status to "Cerrado" if a "closedAt" date is passed', function(done){
       model.closedAt = new Date();

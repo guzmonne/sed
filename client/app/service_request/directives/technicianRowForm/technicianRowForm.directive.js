@@ -17,7 +17,6 @@ angular.module('sedApp')
 				$scope.button         = false;
 				$scope.spinner        = false;
 				$scope.toggleCostForm = toggleCostForm;
-		    $scope.onSelect       = onSelect;
 		    function toggleCostForm(){
 		      $scope.form = true;
 		      if ($scope.model){ $scope.technician = $scope.model; }
@@ -25,9 +24,6 @@ angular.module('sedApp')
 		    function ok(){
 		    	$scope.spinner = true;
 		    	$scope.done({technician: $scope.technician});
-		    }
-		    function onSelect(item){
-		    	$scope.technician = item;
 		    }
       }],
       link: function (scope, element) {

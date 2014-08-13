@@ -1,0 +1,39 @@
+<div class="col-sm-3 text-center">
+	<img ng-src="{{model._device.image}}" alt="{{model._device + ' image'}}" />
+	<div class="row">
+		<div class="col-xs-12 air-1-4">
+			<a ng-disabled="model.status === 'Cerrado'" ui-sref="service_request.edit({id: model._id})" class="btn btn-warning btn-block">
+				<i class="fa fa-fw fa-pencil"></i>&nbsp;Editar
+			</a>
+		</div><!-- /.col-xs-12 -->
+		<div class="col-xs-12 air-1-4">
+			<button ng-disabled="model.status === 'Cerrado'" ng-click="close()" class="btn btn-primary btn-block">
+				<i class="fa fa-check fa-fw"></i>&nbsp;Entregado
+			</button>
+		</div><!-- /.col-xs-12 -->
+	</div><!-- /.row -->
+	<div class="row">
+		<div class="col-xs-12 air-1-4">
+			<button ng-click="printClientInvoice(model)" class="btn btn-info btn-block">
+				<i class="fa fa-print fa-fw"></i>&nbsp;Comp. Cliente
+			</button>
+		</div><!-- /.col-xs-12 air-1-4 -->
+		<div class="col-xs-12 air-1-4">
+			<button ng-click="printTechnicianInvoice(model)" class="btn btn-info btn-block">
+				<i class="fa fa-print fa-fw"></i>&nbsp;Comp. S. Tecnico
+			</button>
+		</div><!-- /.col-xs-12 air-1-4 -->
+	</div><!-- /.row -->
+	<div class="row">
+		<div class="col-xs-12 air-1-4">
+			<button ng-click="downloadClientInvoice(model)" class="btn btn-info btn-block">
+				<i class="fa fa-download fa-fw"></i>&nbsp;Comp. Cliente
+			</button>
+		</div><!-- /.col-xs-12 air-1-4 -->
+		<div class="col-xs-12 air-1-4">
+			<button ng-click="downloadTechnicianInvoice(model)" class="btn btn-info btn-block">
+				<i class="fa fa-download fa-fw"></i>&nbsp;Comp. S. Tecnico
+			</button>
+		</div><!-- /.col-sm-6 -->
+	</div><!-- /.row -->
+</div><!-- /.col-sm-6 -->

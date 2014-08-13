@@ -20,69 +20,17 @@
 		</div><!-- /.panel-heading -->
 		<div class="panel-body">
 			<div class="row">
-				<div class="col-sm-3 text-center">
-					<img ng-src="{{model._device.image}}" alt="{{model._device + ' image'}}" />
-					<div class="row">
-						<div class="col-xs-6">
-							<a ng-disabled="model.status === 'Cerrado'" ui-sref="service_request.edit({id: model._id})" class="btn btn-warning btn-block">
-								<i class="fa fa-fw fa-pencil"></i>&nbsp;Editar
-							</a>
-						</div><!-- /.col-xs-6 -->
-						<div class="col-xs-6">
-							<button ng-disabled="model.status === 'Cerrado'" ng-click="close()" class="btn btn-primary btn-block">
-								<i class="fa fa-check fa-fw"></i>&nbsp;Entregado
-							</button>
-						</div><!-- /.col-xs-6 -->
-					</div><!-- /.row -->
-					<div class="row air-top">
-						<div class="col-sm-6">
-							<button ng-click="printClientInvoice(model)" class="btn btn-info btn-block">
-								<i class="fa fa-print fa-fw"></i>&nbsp;Comp. Cliente
-							</button>
-						</div><!-- /.col-sm-6 -->
-						<div class="col-sm-6">
-							<button ng-click="printTechnicianInvoice(model)" class="btn btn-info btn-block">
-								<i class="fa fa-print fa-fw"></i>&nbsp;Comp. S. Tecnico
-							</button>
-						</div><!-- /.col-sm-6 -->
-					</div><!-- /.row -->
-					<div class="row air-top">
-						<div class="col-sm-6">
-							<button ng-click="downloadClientInvoice(model)" class="btn btn-info btn-block">
-								<i class="fa fa-download fa-fw"></i>&nbsp;Comp. Cliente
-							</button>
-						</div><!-- /.col-sm-6 -->
-						<div class="col-sm-6">
-							<button ng-click="downloadTechnicianInvoice(model)" class="btn btn-info btn-block">
-								<i class="fa fa-download fa-fw"></i>&nbsp;Comp. S. Tecnico
-							</button>
-						</div><!-- /.col-sm-6 -->
-					</div><!-- /.row -->
-				</div><!-- /.col-sm-6 -->
+				<div service-request-controls="model" alerts="alerts"></div>
 				<div class="col-sm-9">
 					<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert(alerts, $index)">{{alert.msg}}</alert>
 					<table class="table table-hover table-bordered">
 						 	<col width="30%" />
    						<col width="70%" />
 						<tbody>
-							<tr>
-								<td><label for="serial">Serie</label></td>
-								<td>&nbsp;{{model.serial}}</td>
-							</tr>
-							<tr>
-								<td><label for="withWarranty">Garantía</label></td>
-								<td>
-									<input type="checkbox" ng-model="model.withWarranty" disabled class="form-control form-control-in-cell" >
-								</td>
-							</tr>
-							<tr ng-show="model.withWarranty">
-								<td><label for="invoiceNumber">N° Boleta</label></td>
-								<td>&nbsp;{{model.invoiceNumber}}</td>
-							</tr>
-							<tr ng-show="model.withWarranty">
-								<td><label for="boughtAt">Fecha de Compra</label></td>
-								<td>&nbsp;{{model.boughtAt | date:'dd MMMM yyyy'}}</td>
-							</tr>
+							<tr><td><label for="serial">Serie</label></td><td>&nbsp;{{model.serial}}</td></tr>
+							<tr><td><label for="withWarranty">Garantía</label></td><td><input type="checkbox" ng-model="model.withWarranty" disabled class="form-control form-control-in-cell"></td></tr>
+							<tr ng-show="model.withWarranty"><td><label for="invoiceNumber">N° Boleta</label></td><td>&nbsp;{{model.invoiceNumber}}</td></tr>
+							<tr ng-show="model.withWarranty"><td><label for="boughtAt">Fecha de Compra</label></td><td>&nbsp;{{model.boughtAt | date:'dd MMMM yyyy'}}</td></tr>
 							<tr cost-row-form 
 								model="model.cost" 
 								show="{{!model.withWarranty && model._technician}}" 
@@ -90,33 +38,17 @@
 								done="patchCost(cost)"
 								disabled="{{model.status === 'Cerrado'}}"
 							></tr>
-							<tr  ng-mouseenter="controls.acceptedButton = true" ng-mouseleave="controls.acceptedButton = false" ng-show="!model.withWarranty  && model._technician && model.cost">
-								<td>
-									<label for="costAccepted">Presupuesto Aceptado</label>
-								</td>
-								<td>
-									<input ng-disabled="model.status === 'Cerrado'" ng-change="patchCostAccepted()" type="checkbox" ng-model="model.costAccepted" class="form-control form-control-in-cell" >
-								</td>
-							</tr>
+							<tr accepted-row-form
+								model="model.costAccepted"
+								show="!model.withWarranty  && model._technician && model.cost > -1"
+								done="patchCostAccepted(accepted)"
+								disabled="model.status === 'Cerrado'"
+							></tr>
 							<tr ng-show="model.costAccepted">
 								<td><label for="costAcceptedAt">Fecha de Aceptado</label></td>
 								<td>{{model.costAcceptedAt | date:'dd MMMM yyyy'}}</td>
 							</tr>
-							<tr>
-								<td><label>Accesorios</label></td>
-								<td>
-									<!--
-									<ul style="margin-left: -20px" ng-show="model.accessories.length !== 0">
-										<li ng-repeat="value in model.accessories">{{value}}</li>
-									</ul>
-									/!-->
-									<span ng-repeat="accessory in model.accessories">
-										<span class="label label-primary">{{accessory}}</span>
-										&nbsp;
-									</span>
-									<span ng-show="model.accessories.length === 0">Sin accesorios</span>
-								</td>
-							</tr>
+							<tr><td><label>Accesorios</label></td><td><div service-request-accessories-labels-h="model"></div></td></tr>
 							<tr>
 								<td><label>Defecto</label></td>
 								<td>{{model.defect}}</td>
@@ -133,7 +65,7 @@
 								form="controls.showDiagnoseForm"
 								done="patchDiagnose(diagnose)"
 								disabled="{{model.status === 'Cerrado'}}"
-								show="!model.withWarranty && (model._technician !== undefined)"
+								show="!model.withWarranty && (model._technician !== undefined) && model.cost > -1"
 							></tr>
 							<tr solution-row-form
 								model="model.solution"

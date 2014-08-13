@@ -36,14 +36,15 @@ var ServiceRequestSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref : 'Technician'
 	},
-	'cost'          : Number,
-	'authorizedBy'  : String,
-	'authorizedAt'  : Date,
-	'costAccepted'  : Boolean,
-	'costAcceptedAt': Date,
-	'createdAt'     : Date,
-	'updatedAt'     : Date,
-	'closedAt'      : Date,
+	'cost'             : Number,
+	'authorizedBy'     : String,
+	'authorizedAt'     : Date,
+	'costAccepted'     : Boolean,
+	'costAcceptedAt'   : Date,
+	'costNotAcceptedAt': Date,
+	'createdAt'        : Date,
+	'updatedAt'        : Date,
+	'closedAt'         : Date,
 	'createdBy'     : {
 		type: Schema.Types.ObjectId,
 		ref : 'User'
@@ -53,12 +54,17 @@ var ServiceRequestSchema = new Schema({
 		ref : 'User'
 	}
 });
-
+/*
+** AutoIncrement ID
+*/
 ServiceRequestSchema.plugin(autoInc.plugin, { model: 'ServiceRequest', field: 'id' });
-
-// Set timestamps
+/*
+** Timestamps
+*/
 ServiceRequestSchema.pre('save', helper.addTimestamps);
-
+/*
+** Status Lifecycle
+*/
 // should change from 'Pendiente' to 'En Reparación' if model has warranty and a technician is assigned
 ServiceRequestSchema.pre('save', function(next){
 	if (this.status === 'En Reparación'){ return next(); }
@@ -67,7 +73,6 @@ ServiceRequestSchema.pre('save', function(next){
 	}
 	next();
 });
-
 // should change from 'Pendiente' to 'Esperando Presupuesto' if model does not has warranty and a technician is assigned
 ServiceRequestSchema.pre('save', function(next){
 	if (this.status === 'Esperando Presupuesto'){ return next(); }
@@ -76,61 +81,62 @@ ServiceRequestSchema.pre('save', function(next){
 	}
 	next();
 });
-
 // should change from "Esperando Presupuesto" to "Esperando Aprobación" if it does not has warranty, a technician is assigned and a cost is set
 ServiceRequestSchema.pre('save', function(next){
 	if (this.status === 'Esperando Aprobación'){ return next(); }
-	if (this.status === 'Esperando Presupuesto' && this.withWarranty === false && this._technician && this.cost){
+	if (this.status === 'Esperando Presupuesto' && this.withWarranty === false && this._technician && this.cost > -1){
 		this.status = 'Esperando Aprobación';
 	}
 	next();
 });
-
-// should change from "Esperando Presupuesto" to "Esperando Aprobación" if it does not has warranty, a technician is assigned and a diagnose is set
-ServiceRequestSchema.pre('save', function(next){
-	if (this.status === 'Esperando Aprobación'){ return next(); }
-	if (this.status === 'Esperando Presupuesto' && this.withWarranty === false && this._technician && this.diagnose){
-		this.status = 'Esperando Aprobación';
-	}
-	next();
-});
-
 // should change from "Esperando Aprobación" to "En Reparación" if it does not has warranty, a technician is assigned, a cost is set, and costAccepted is true
 ServiceRequestSchema.pre('save', function(next){
 	if (this.status === 'En Reparación'){ return next(); }
-	if (this.status === 'Esperando Aprobación' && this.withWarranty === false && this._technician && this.cost && this.costAccepted === true){
+	if (this.status === 'Esperando Aprobación' && this.withWarranty === false && this._technician && this.cost > -1 && this.costAccepted === true){
 		this.status = 'En Reparación';
 	}
 	next();
 });
-
-// should change from "Esperando Aprobación" to "En Reparación" if it does not has warranty, a technician is assigned, a diagnose is set, and costAccepted is true
+// should change from "No Aceptado", to "En Reparación" if it  does not has warranty, a technician is assigned, a cost is set, and costAccepted is true
 ServiceRequestSchema.pre('save', function(next){
 	if (this.status === 'En Reparación'){ return next(); }
-	if (this.status === 'Esperando Aprobación' && this.withWarranty === false && this._technician && this.diagnose && this.costAccepted === true){
+	if (this.status === 'No Aceptado' && this.withWarranty === false && this._technician && this.cost > -1 && this.costAccepted === true){
 		this.status = 'En Reparación';
 	}
 	next();
 });
-
+// should change from "Esperando Aprobación" to "No Aceptado" if it does not has warranty, a technician is assigned, a cost is set, and costAccepted is false
+ServiceRequestSchema.pre('save', function(next){
+	if (this.status === 'No Aceptado'){ return next(); }
+	if (this.status === 'Esperando Aprobación' && this.withWarranty === false && this._technician && this.cost > -1 && this.costAccepted === false){
+		this.status = 'No Aceptado';
+	}
+	next();
+});
+// should change from "En Reparación", to "No Aceptado" if it  does not has warranty, a technician is assigned, a cost is set, and costAccepted is true
+ServiceRequestSchema.pre('save', function(next){
+	if (this.status === 'No Aceptado'){ return next(); }
+	if (this.status === 'En Reparación' && this.withWarranty === false && this._technician && this.cost > -1 && this.costAccepted === false){
+		this.status = 'No Aceptado';
+	}
+	next();
+});
+// Should change to "Esperando aprobación" if it does not has warranty, a technician is assigned, a cost is set, and costAccepted is null
+ServiceRequestSchema.pre('save', function(next){
+	if (this.status === 'Esperando Aprobación'){ return next(); }
+	if (this.withWarranty === false && this._technician && this.cost > -1 && this.costAccepted === null){
+		this.status = 'Esperando Aprobación';
+	}
+	next();
+});
 // should change from "En Reparación" to "Esperando Aprobación" if it does not has warranty, a technician is assigned, a cost is set, and costAccepted is false
 ServiceRequestSchema.pre('save', function(next){
 	if (this.status === 'Esperando Aprobación'){ return next(); }
-	if (this.status === 'En Reparación' && this.withWarranty === false && this._technician && this.cost && this.costAccepted === false){
+	if (this.status === 'En Reparación' && this.withWarranty === false && this._technician && this.cost > -1 && this.costAccepted === false){
 		this.status = 'Esperando Aprobación';
 	}
 	next();
 });
-
-// should change from "En Reparación" to "Esperando Aprobación" if it does not has warranty, a technician is assigned, a diagnose is set, and costAccepted is false
-ServiceRequestSchema.pre('save', function(next){
-	if (this.status === 'Esperando Aprobación'){ return next(); }
-	if (this.status === 'En Reparación' && this.withWarranty === false && this._technician && this.diagnose && this.costAccepted === false){
-		this.status = 'Esperando Aprobación';
-	}
-	next();
-});
-
 // should change from "En Reparación" to "Reparado" if it has warranty, a technician is assigned, and a solution is defined
 ServiceRequestSchema.pre('save', function(next){
 	if (this.status === 'Reparado'){ return next(); }
@@ -139,25 +145,14 @@ ServiceRequestSchema.pre('save', function(next){
 	}
 	next();
 });
-
 // should change from "En Reparación" to "Reparado" if it does not has warranty, a technician is assigned, a cost is set, costAccepted is true, and a solution is defined
 ServiceRequestSchema.pre('save', function(next){
 	if (this.status === 'Reparado'){ return next(); }
-	if (this.status === 'En Reparación' && this.withWarranty === false && this._technician && this.cost && this.costAccepted === true && this.solution){
+	if (this.status === 'En Reparación' && this.withWarranty === false && this._technician && this.cost > -1 && this.costAccepted === true && this.solution){
 		this.status = 'Reparado';
 	}
 	next();
 });
-
-// should change from "En Reparación" to "Reparado" if it does not has warranty, a technician is assigned, a diagnose is set, costAccepted is true, and a solution is defined
-ServiceRequestSchema.pre('save', function(next){
-	if (this.status === 'Reparado'){ return next(); }
-	if (this.status === 'En Reparación' && this.withWarranty === false && this._technician && this.diagnose && this.costAccepted === true && this.solution){
-		this.status = 'Reparado';
-	}
-	next();
-});
-
 // should change from any status to "Cerrado" if a "closedAt" date is passed
 // should store the previous status in "previousStatus" when setting the status to "Cerrado
 ServiceRequestSchema.pre('save', function(next){
@@ -168,7 +163,6 @@ ServiceRequestSchema.pre('save', function(next){
 	}
 	next();
 });
-
 // should revert back to "previousState" if the status is "Cerrado" and a "closedAt" is passed as null
 ServiceRequestSchema.pre('save', function(next){
 	if (this.previousStatus === null){ return next(); }
@@ -178,19 +172,31 @@ ServiceRequestSchema.pre('save', function(next){
 	}
 	next();
 });
-
-// Set the cost accepted date or set it to null
-// Also change the status to 'En Reparación' or 'Esperando Aprobación'
+/*
+** costAcceptedDates
+*/
+// should set the costNotAcceptedAt date if costAccepted is false
+// should set the costAcceptedAt date to null if costAccepted is false
 ServiceRequestSchema.pre('save', function(next){
-	if (this.costAccepted === null || this.costAccepted === undefined){ return next(); }
-	if (this.costAccepted === true){
-		if (!this.costAcceptedAt){ this.costAcceptedAt = new Date(); }
-	} else if (this.costAccepted === false) {
-		if (this.costAcceptedAt){ this.costAcceptedAt = null; }
+	switch(this.costAccepted){
+		case true:
+			if (!this.costAcceptedAt)    { this.costAcceptedAt    = new Date(); }
+			if ( this.costNotAcceptedAt) { this.costNotAcceptedAt = null; }
+			break;
+		case false:
+			if ( this.costAcceptedAt)    { this.costAcceptedAt    = null; }
+			if (!this.costNotAcceptedAt) { this.costNotAcceptedAt = new Date(); }
+			break;
+		case null:
+			if (this.costAcceptedAt)   { this.costAcceptedAt    = null; }
+			if (this.costNotAcceptedAt){ this.costNotAcceptedAt = null; }
+			break;
 	}
 	next();
 });
-
+/*
+** Statics Methods
+*/
 ServiceRequestSchema.statics.index = function(callback){
 	if (!_.isFunction(callback)){ return; }
 	this
@@ -212,5 +218,7 @@ ServiceRequestSchema.statics.show = function(id, callback){
 		.populate('createdBy'  , 'name')
 		.exec(callback);
 }
-
+/*
+** Model
+*/
 module.exports = mongoose.model('ServiceRequest', ServiceRequestSchema);

@@ -74,6 +74,14 @@ body {
 $air: 20px;
 $padding: 40px;
 
+.air {
+  margin:  $air;
+}
+
+.air-1-4 {
+  margin: $air / 4;
+}
+
 .air-top-1-2 {
   margin-top: $air/2;
 }
@@ -114,6 +122,10 @@ $padding: 40px;
 .form-control-in-cell[type=checkbox] {
   width: 23px;
   height: 23px;
+}
+
+.margin-none {
+  margin: 0;
 }
 
 textarea.form-control-in-cell {
