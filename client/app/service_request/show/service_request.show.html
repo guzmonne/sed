@@ -44,9 +44,13 @@
 								done="patchCostAccepted(accepted)"
 								disabled="model.status === 'Cerrado'"
 							></tr>
-							<tr ng-show="model.costAccepted">
+							<tr ng-show="model.costAccepted === true">
 								<td><label for="costAcceptedAt">Fecha de Aceptado</label></td>
 								<td>{{model.costAcceptedAt | date:'dd MMMM yyyy'}}</td>
+							</tr>
+							<tr ng-show="model.costAccepted === false">
+								<td><label for="costNotAcceptedAt">Fecha de Rechazado</label></td>
+								<td>{{model.costNotAcceptedAt | date:'dd MMMM yyyy'}}</td>
 							</tr>
 							<tr><td><label>Accesorios</label></td><td><div service-request-accessories-labels-h="model"></div></td></tr>
 							<tr>
@@ -71,7 +75,7 @@
 								model="model.solution"
 								form="controls.showSolutionForm"
 								done="patchSolution(solution)"
-								show="(model.withWarranty && (model._technician !== undefined)) || model.costAccepted"
+								show="(model.withWarranty && (model._technician !== undefined)) || (model.costAccepted !== null || model.costAccepted !== undefined) "
 								disabled="{{model.status === 'Cerrado'}}"
 							></tr>
 							<tr ng-show="model.status === 'Cerrado'">

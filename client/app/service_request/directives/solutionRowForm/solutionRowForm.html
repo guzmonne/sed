@@ -10,10 +10,10 @@
 	</span>
 	<div ng-show="form && !spinner">
 		<form ng-submit="ok()">
-			<div class="col-sm-8" style="margin-left: -15px">
+			<div class="col-sm-7" style="margin-left: -15px">
 				<textarea class="form-control form-control-in-cell" placeholder="Solución" ng-model="solution"></textarea>
 			</div><!-- /.col-xs-10 -->
-			<div class="col-sm-4">
+			<div class="col-sm-5">
 				<div class="btn-toolbar">
 					<div class="btn-group">
 						<button class="btn btn-primary btn-sm">
@@ -23,6 +23,11 @@
 					<div class="btn-group">
 						<button ng-click="$event.preventDefault(); form = false" class="btn  btn-inverse btn-sm">
 							Cancelar
+						</button>
+					</div><!-- /.btn-group -->
+					<div class="btn-group">
+						<button ng-click="solution = 'NSR'" class="btn  btn-danger btn-sm">
+							NSR
 						</button>
 					</div><!-- /.btn-group -->
 				</div><!-- /.btn-toolbar -->
