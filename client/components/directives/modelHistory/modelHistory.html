@@ -1,0 +1,15 @@
+<div class="row">
+	<div class="col-lg-12">
+		<button class="btn btn-primary" ng-click="fetch()" ng-disabled="fetching">
+			<i class="fa fa-spinner fa-spin" ng-show="fetching"></i>
+			<span ng-show="!fetching">Actualizar</span>
+		</button>
+	</div><!-- /.col-lg-12 -->
+</div><!-- /.row -->
+<div class="row air-top-1-4">
+	<div class="col-lg-12">
+		<span ng-repeat="item in data">
+			<span class="label label-success">{{item.message}}</span>
+		</span>
+	</div><!-- /.col-lg-12 -->	
+</div><!-- /.row -->

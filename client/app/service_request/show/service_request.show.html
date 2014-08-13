@@ -22,68 +22,78 @@
 			<div class="row">
 				<div service-request-controls="model" alerts="alerts"></div>
 				<div class="col-sm-9">
-					<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert(alerts, $index)">{{alert.msg}}</alert>
-					<table class="table table-hover table-bordered">
-						 	<col width="30%" />
-   						<col width="70%" />
-						<tbody>
-							<tr><td><label for="serial">Serie</label></td><td>&nbsp;{{model.serial}}</td></tr>
-							<tr><td><label for="withWarranty">Garantía</label></td><td><input type="checkbox" ng-model="model.withWarranty" disabled class="form-control form-control-in-cell"></td></tr>
-							<tr ng-show="model.withWarranty"><td><label for="invoiceNumber">N° Boleta</label></td><td>&nbsp;{{model.invoiceNumber}}</td></tr>
-							<tr ng-show="model.withWarranty"><td><label for="boughtAt">Fecha de Compra</label></td><td>&nbsp;{{model.boughtAt | date:'dd MMMM yyyy'}}</td></tr>
-							<tr cost-row-form 
-								model="model.cost" 
-								show="{{!model.withWarranty && model._technician}}" 
-								form="controls.showCostForm"
-								done="patchCost(cost)"
-								disabled="{{model.status === 'Cerrado'}}"
-							></tr>
-							<tr accepted-row-form
-								model="model.costAccepted"
-								show="!model.withWarranty  && model._technician && model.cost > -1"
-								done="patchCostAccepted(accepted)"
-								disabled="model.status === 'Cerrado'"
-							></tr>
-							<tr ng-show="model.costAccepted === true">
-								<td><label for="costAcceptedAt">Fecha de Aceptado</label></td>
-								<td>{{model.costAcceptedAt | date:'dd MMMM yyyy'}}</td>
-							</tr>
-							<tr ng-show="model.costAccepted === false">
-								<td><label for="costNotAcceptedAt">Fecha de Rechazado</label></td>
-								<td>{{model.costNotAcceptedAt | date:'dd MMMM yyyy'}}</td>
-							</tr>
-							<tr><td><label>Accesorios</label></td><td><div service-request-accessories-labels-h="model"></div></td></tr>
-							<tr>
-								<td><label>Defecto</label></td>
-								<td>{{model.defect}}</td>
-							</tr>
-							<tr technician-row-form
-								model="model._technician"
-								collection="collection"
-								form="controls.showTechnicianForm"
-								done="patchTechnician(technician)"
-								disabled="{{model.status === 'Cerrado'}}"
-							></tr>
-							<tr diagnose-row-form
-								model="model.diagnose"
-								form="controls.showDiagnoseForm"
-								done="patchDiagnose(diagnose)"
-								disabled="{{model.status === 'Cerrado'}}"
-								show="!model.withWarranty && (model._technician !== undefined) && model.cost > -1"
-							></tr>
-							<tr solution-row-form
-								model="model.solution"
-								form="controls.showSolutionForm"
-								done="patchSolution(solution)"
-								show="(model.withWarranty && model._technician) || (!model.withWarranty && model.costAccepted !== undefined)"
-								disabled="{{model.status === 'Cerrado'}}"
-							></tr>
-							<tr ng-show="model.status === 'Cerrado'">
-								<td><label>Cerrado</label></td>
-								<td>{{model.closedAt | date:'dd MMMM yyyy'}}</td>
-							</tr>
-						</tbody>
-					</table>
+					<tabset class="air-bottom">
+						<div tab heading="Detalle" class="pointer">
+							<div class="separator air-top-1-4"></div><!-- /.separator air-top -->
+							<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert(alerts, $index)">{{alert.msg}}</alert>
+							<table class="table table-hover table-bordered">
+								 	<col width="30%" />
+		   						<col width="70%" />
+								<tbody>
+									<tr><td><label for="serial">Serie</label></td><td>&nbsp;{{model.serial}}</td></tr>
+									<tr><td><label for="withWarranty">Garantía</label></td><td><input type="checkbox" ng-model="model.withWarranty" disabled class="form-control form-control-in-cell"></td></tr>
+									<tr ng-show="model.withWarranty"><td><label for="invoiceNumber">N° Boleta</label></td><td>&nbsp;{{model.invoiceNumber}}</td></tr>
+									<tr ng-show="model.withWarranty"><td><label for="boughtAt">Fecha de Compra</label></td><td>&nbsp;{{model.boughtAt | date:'dd MMMM yyyy'}}</td></tr>
+									<tr cost-row-form 
+										model="model.cost" 
+										show="{{!model.withWarranty && model._technician}}" 
+										form="controls.showCostForm"
+										done="patchCost(cost)"
+										disabled="{{model.status === 'Cerrado'}}"
+									></tr>
+									<tr accepted-row-form
+										model="model.costAccepted"
+										show="!model.withWarranty  && model._technician && model.cost > -1"
+										done="patchCostAccepted(accepted)"
+										disabled="model.status === 'Cerrado'"
+									></tr>
+									<tr ng-show="model.costAccepted === true">
+										<td><label for="costAcceptedAt">Fecha de Aceptado</label></td>
+										<td>{{model.costAcceptedAt | date:'dd MMMM yyyy'}}</td>
+									</tr>
+									<tr ng-show="model.costAccepted === false">
+										<td><label for="costNotAcceptedAt">Fecha de Rechazado</label></td>
+										<td>{{model.costNotAcceptedAt | date:'dd MMMM yyyy'}}</td>
+									</tr>
+									<tr><td><label>Accesorios</label></td><td><div service-request-accessories-labels-h="model"></div></td></tr>
+									<tr>
+										<td><label>Defecto</label></td>
+										<td>{{model.defect}}</td>
+									</tr>
+									<tr technician-row-form
+										model="model._technician"
+										collection="collection"
+										form="controls.showTechnicianForm"
+										done="patchTechnician(technician)"
+										disabled="{{model.status === 'Cerrado'}}"
+									></tr>
+									<tr diagnose-row-form
+										model="model.diagnose"
+										form="controls.showDiagnoseForm"
+										done="patchDiagnose(diagnose)"
+										disabled="{{model.status === 'Cerrado'}}"
+										show="!model.withWarranty && (model._technician !== undefined) && model.cost > -1"
+									></tr>
+									<tr solution-row-form
+										model="model.solution"
+										form="controls.showSolutionForm"
+										done="patchSolution(solution)"
+										show="(model.withWarranty && model._technician) || (!model.withWarranty && model.costAccepted !== undefined)"
+										disabled="{{model.status === 'Cerrado'}}"
+									></tr>
+									<tr ng-show="model.status === 'Cerrado'">
+										<td><label>Cerrado</label></td>
+										<td>{{model.closedAt | date:'dd MMMM yyyy'}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div tab heading="Auditoria" class="pointer">
+							<div class="container-fluid air-top-1-4">
+								<div model-history="model"></div>
+							</div><!-- /.container -->
+						</div>
+					</tabset>
 				</div><!-- /.col-sm-6 -->
 			</div><!-- /.row -->
 		</div><!-- /.panel-body -->

@@ -5,6 +5,12 @@ var Log = require('./log.model');
 
 // Get list of logs
 exports.index = function(req, res) {
+  if (req.query.col && req.query.doc){
+    Log.find({doc: req.query.doc}, function(err, logs){
+      if (err) { return handleError(res, err); }
+      res.json(200, logs);
+    });
+  }
   Log.find(function (err, logs) {
     if(err) { return handleError(res, err); }
     return res.json(200, logs);
