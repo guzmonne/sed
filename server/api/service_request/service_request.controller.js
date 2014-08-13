@@ -11,7 +11,6 @@ var Technician     = require('../technician/technician.model');
 
 // Get list of service_requests
 exports.index = function(req, res) {
-  //ServiceRequest.find(function (err, service_requests) {
   ServiceRequest.index(function (err, service_requests) {
     if(err) { return handleError(res, err); }
     return res.json(200, service_requests);

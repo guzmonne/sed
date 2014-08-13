@@ -5,110 +5,26 @@ var ServiceRequest = require('./service_request.model');
 var Device         = require('../device/device.model');
 var Client         = require('../client/client.model');
 var Technician     = require('../technician/technician.model');
+var helper         = require('../../utils/spec.helper.js');
 var async          = require('async');
 
 var model, device, client, technician;
 
-function handleError(err, callback){
-  if (err) { callback(err); }
-};
-
-function createDevice(callback){
-  Device.create({
-    brand      : "Marca",
-    model      : "Modelo",
-    description: "Descripición"
-  }, function(err, _device){
-    handleError(err, callback);
-    device = _device;
-    callback();
-  });
-}
-
-function createTechnician(callback){
-  Technician.create({
-    name   : 'Test',
-    phone  : '6666666',
-    address: 'Adress 123',
-    email  : 'test@test.com'
-  }, function(err, _technician){
-    handleError(err, callback);
-    technician = _technician;
-    callback();
-  });
-}
-
-function createClient(callback){
-  Client.create({
-    name     : "Test",
-    docType  : "C.I.",
-    docNumber: "123",
-    phone    : "123",
-    address  : "Test 123",
-    email    : "test@example.com"
-  }, function(err, _client){
-    handleError(err, callback);
-    client = _client;
-    callback();
-  });
-}
-
-function setup(done){
-  async.parallel([
-    function(cb){
-      Client.remove({}, function(err){
-        handleError(err, cb);
-        client = null;
-        createClient(cb);
-      });
-    },
-    function(cb){
-      Device.remove({}, function(err){
-        handleError(err, cb);
-        device = null;
-        createDevice(cb);
-      });
-    },
-    function(cb){
-      Technician.remove({}, function(err){
-        handleError(err, cb);
-        technician = null;
-        createTechnician(cb)
-      });
-    },
-    function(cb){
-      ServiceRequest.remove({}, function(err){
-        handleError(err, cb);
-        model = null;
-        cb(null);
-      });
-    },
-  ], function(err){
-    if (err) {console.log(err);}
-    model = new ServiceRequest({
-      _client : client._id,
-      _device : device._id,
-      accessories : ['ac1', 'ac2'],
-      serial: '123',
-      defect: 'Test'
-    });
-    done();
-  });
-}
+var handleError = helper.handleError;
 
 describe('Service Request Model', function() {
   before(function(done){
-    setup(done);
+    helper.setup(function(){
+      client     = helper.client;
+      device     = helper.device;
+      technician = helper.technician;
+      model      = helper.model;
+      done();
+    });
   });
 
   beforeEach(function(){
-    model = new ServiceRequest({
-      _client : client._id,
-      _device : device._id,
-      accessories : ['ac1', 'ac2'],
-      serial: '123',
-      defect: 'Test'
-    });
+    model = helper.newServiceRequest();
   });
 
   afterEach(function(done){
@@ -202,7 +118,7 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = true;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.costAcceptedAt.should.be.ok
         done();
       });
@@ -213,7 +129,7 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = true;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         (model.costNotAcceptedAt === undefined || model.costAcceptedAt === null).should.be.true;
         done();
       });
@@ -224,7 +140,7 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = false;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         (model.costAcceptedAt === undefined || model.costAcceptedAt === null).should.be.true;
         done();
       });
@@ -235,7 +151,7 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = false;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.costNotAcceptedAt.should.be.ok;
         done();
       });
@@ -246,7 +162,7 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = true;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.costAccepted = null;
         model.save(function(err){
           (model.costNotAcceptedAt === undefined || model.costAcceptedAt === null).should.be.true;
@@ -260,7 +176,7 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = false;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.costAccepted = null;
         model.save(function(err){
           (model.costAcceptedAt === undefined || model.costAcceptedAt === null).should.be.true;
@@ -273,7 +189,7 @@ describe('Service Request Model', function() {
   describe('Status cycle', function(){
     it('should have a "Pendiente" status if the service_request is new', function(done){
       model.save(function(err, model){
-        handleError(err, done);
+        handleError(err, done, done);
         model.status.should.equal('Pendiente');
         done();
       });
@@ -283,7 +199,7 @@ describe('Service Request Model', function() {
       model.withWarranty = true;
       model._technician = technician._id;
       model.save(function(err){
-        handleError(err, done);
+        handleError(err, done, done);
         model.status.should.equal('En Reparación');
         done();
       });
@@ -293,7 +209,7 @@ describe('Service Request Model', function() {
       model.withWarranty = false;
       model._technician = technician._id;
       model.save(function(err){
-        handleError(err, done);
+        handleError(err, done, done);
         model.status.should.equal('Esperando Presupuesto');
         done();
       });
@@ -304,7 +220,7 @@ describe('Service Request Model', function() {
       model._technician  = technician._id;
       model.cost         = 100;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.status.should.equal('Esperando Aprobación');
         done();
       });
@@ -317,7 +233,7 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = true;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.status.should.equal('En Reparación');
         done();
       });
@@ -328,10 +244,10 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = false;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.costAccepted = true;
         model.save(function(err){
-          handleError(err);
+          handleError(err, done);
           model.status.should.equal('En Reparación');
           done();
         });
@@ -344,7 +260,7 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = false;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.status.should.equal('No Aceptado');
         done();
       });
@@ -355,10 +271,10 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = true;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.costAccepted = false
         model.save(function(err){
-          handleError(err);
+          handleError(err, done);
           model.status.should.equal('No Aceptado');
           done();
         });
@@ -371,7 +287,7 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.save(function(err){
         model.costAccepted = null;
-        handleError(err);
+        handleError(err, done);
         model.save(function(err){
           model.status.should.equal('Esperando Aprobación');
           done();
@@ -384,10 +300,10 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = true;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.costAccepted = null
         model.save(function(err){
-          handleError(err);
+          handleError(err, done);
           model.status.should.equal('Esperando Aprobación');
           done();
         });
@@ -399,10 +315,10 @@ describe('Service Request Model', function() {
       model.cost         = 100;
       model.costAccepted = false;
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.costAccepted = null
         model.save(function(err){
-          handleError(err);
+          handleError(err, done);
           model.status.should.equal('Esperando Aprobación');
           done();
         });
@@ -416,7 +332,7 @@ describe('Service Request Model', function() {
       model.costAccepted = true;
       model.solution     = 'This is a solution'
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.status.should.equal('Reparado');
         done();
       });
@@ -427,7 +343,7 @@ describe('Service Request Model', function() {
       model._technician  = technician._id;
       model.solution     = 'This is a solution'
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.status.should.equal('Reparado');
         done();
       });
@@ -436,7 +352,7 @@ describe('Service Request Model', function() {
     it('should change from any status to "Cerrado" if a "closedAt" date is passed', function(done){
       model.closedAt = new Date();
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.status.should.equal('Cerrado');
         done();
       });
@@ -445,7 +361,7 @@ describe('Service Request Model', function() {
     it('should store the previous status in "previousStatus" when setting the status to "Cerrado"', function(done){
       model.closedAt = new Date();
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.previousStatus.should.equal('Pendiente');
         done();
       });
@@ -454,10 +370,10 @@ describe('Service Request Model', function() {
     it('should revert back to "previousState" if the status is "Cerrado" and a "closedAt" is passed as null', function(done){
       model.closedAt = new Date();
       model.save(function(err){
-        handleError(err);
+        handleError(err, done);
         model.closedAt = null;
         model.save(function(err){
-          handleError(err);
+          handleError(err, done);
           model.status.should.equal('Pendiente');
           (model.previousStatus === null).should.be.true;
           done();
