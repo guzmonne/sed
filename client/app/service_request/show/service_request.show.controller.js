@@ -76,9 +76,10 @@ angular.module('sedApp')
         case false: msg = COST_CANCELLED; break;
         case null : msg = COST_RESET    ; break;
       }
-      $scope.model.costAccepted   = data.costAccepted;
-      $scope.model.costAcceptedAt = data.costAcceptedAt; 
-      $scope.model.status         = data.status;
+      $scope.model.costAccepted      = data.costAccepted;
+      $scope.model.costAcceptedAt    = data.costAcceptedAt;
+      $scope.model.costNotAcceptedAt = data.costNotAcceptedAt;
+      $scope.model.status            = data.status;
       Alerts.pushAlert($scope.alerts, {type: 'success', msg: msg}, 0);
     }
     function costAcceptedError(){

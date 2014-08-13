@@ -77,7 +77,7 @@ angular.module('sedApp')
               { attribute: 'priority'            , name: 'Prioridad'            , show: true, content: '{{model.priority}}', columnClass: 'text-center' },
               { attribute: '_technician.name'    , name: 'Servicio Tecnico'     , show: true, content: '{{model._technician.name}}' },
               { attribute: 'cost'                , name: 'Presupuesto'          , show: true, content: '{{model.cost | currency}}' },
-              { attribute: 'costAccepted'        , name: 'Presupuesto Aceptado' , show: true, content: '<i class="fa fa-check text-success" ng-if="model.costAccepted === true"></i><i class="fa fa-times text-danger" ng-if="model.costAccepted === false"></i>', columnClass: 'text-center' },
+              { attribute: 'costAccepted'        , name: 'Presupuesto Aceptado' , show: true, content: '<i class="fa fa-minus text-muted" ng-if="model.costAccepted === null || model.costAccepted === undefined"></i><i class="fa fa-check text-success" ng-if="model.costAccepted === true"></i><i class="fa fa-times text-danger" ng-if="model.costAccepted === false"></i>', columnClass: 'text-center' },
               { attribute: 'costAcceptedAt'      , name: 'Aceptado'             , show: false, content: '{{model.costAcceptedAt | date:\'dd MMM yyyy\'}}', columnClass: 'no-wrap' },
               { attribute: 'authorizedBy'        , name: 'Autorizador'          , show: false, content: '{{model.authorizedBy}}' },
               { attribute: 'authorizedAt'        , name: 'Autorizado'           , show: false, content: '{{model.authorizedAt | date:\'dd MMM yyyy\'}}', columnClass: 'no-wrap' },

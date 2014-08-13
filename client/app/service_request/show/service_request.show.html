@@ -75,7 +75,7 @@
 								model="model.solution"
 								form="controls.showSolutionForm"
 								done="patchSolution(solution)"
-								show="(model.withWarranty && (model._technician !== undefined)) || (model.costAccepted !== null || model.costAccepted !== undefined) "
+								show="(model.withWarranty && model._technician) || (!model.withWarranty && model.costAccepted !== undefined)"
 								disabled="{{model.status === 'Cerrado'}}"
 							></tr>
 							<tr ng-show="model.status === 'Cerrado'">
