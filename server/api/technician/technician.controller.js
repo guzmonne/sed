@@ -37,7 +37,7 @@ exports.show = function(req, res) {
 
 // Creates a new technician in the DB.
 exports.create = function(req, res) {
-  req.body = helper.addUser(req.body, req.user);
+  helper.addUser(req);
   Technician.create(req.body, function(err, technician) {
     if(err) { return handleError(res, err); }
     createLog(req.user._id, technician._id, 'create');
@@ -47,7 +47,7 @@ exports.create = function(req, res) {
 
 // Updates an existing technician in the DB.
 exports.update = function(req, res) {
-  req.body = helper.addUser(req.body, req.user);
+  helper.addUser(req);
   if(req.body._id) { delete req.body._id; }
   Technician.findById(req.params.id, function (err, technician) {
     if (err) { return handleError(err); }

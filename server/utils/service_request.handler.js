@@ -8,6 +8,7 @@ function end(err, callback){
 }
 
 function removeServiceRequest(modelName , service_request_id, model_id, callback){
+	if(!modelName || !service_request_id || !model_id){ end(new Error('Bad arguments'), callback); }
 	mongoose.models[modelName].findOne({_id: model_id}, function(err, model){
 		if (err) { return end(err, callback); }
 		if (!model){ return(null, callback); }
@@ -22,6 +23,7 @@ function removeServiceRequest(modelName , service_request_id, model_id, callback
 }
 
 function addServiceRequest(modelName , service_request_id, model_id, callback){
+	if(!modelName || !service_request_id || !model_id){ end(new Error('Bad arguments'), callback); }
 	mongoose.models[modelName].findOne({_id: model_id}, function(err, model){
 		if (err) { return end(err, callback); }
 		if (!model){ return(null, callback); }

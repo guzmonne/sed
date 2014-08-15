@@ -29,7 +29,7 @@ exports.show = function(req, res) {
 
 // Creates a new service_request in the DB.
 exports.create = function(req, res) {
-  setBody(req);
+  helper.setBody(req);
   ServiceRequest.create(req.body, function(err, service_request) {
     if(err) { return handleError(res, err); }
     async.parallel([
@@ -46,13 +46,7 @@ exports.create = function(req, res) {
       // Add service_request to client
       function(callback){ helper.addServiceRequest('Client', service_request._id, service_request._client); callback(); },
       // Add service_request to device
-      function(callback){ helper.addServiceRequest('Device', service_request._id, service_request._device); callback(); },
-      // Add service_request to technician if a technician_id exists
-      function(callback){
-        if(service_request._technician){
-          helper.addServiceRequest('Technician', service_request._id, service_request._technician); callback();
-        } else { callback(); }
-      }
+      function(callback){ helper.addServiceRequest('Device', service_request._id, service_request._device); callback(); }
     ], function(err){
       if (err){ handleError(res, err); }
       return res.json(201, service_request);
@@ -62,39 +56,40 @@ exports.create = function(req, res) {
 
 // Updates an existing service_request in the DB.
 exports.update = function(req, res) {
-  setBody(req);
+  helper.setBody(req);
   if(req.body._id) { delete req.body._id; }
   ServiceRequest.findById(req.params.id, function (err, service_request) {
     if (err) { return handleError(res, err); }
     if(!service_request) { return res.send(404); }
-    var clone   = _.pick(service_request, '_id', '_client', '_device', '_technician');
+    var clone   = _.pick(service_request, '_id', '_client', '_device');
     var updated = _.merge(service_request, req.body, function(a, b){return b});
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       createLog(req.user._id, service_request._id, 'update');
-      handleServiceRequestRefs(clone, updated);
-      return res.json(200, service_request);
+      handleServiceRequestRefs(clone, updated, function(){
+        return res.json(200, service_request);
+      });
     });
   });
 };
 
 // Patches an existing service_request in the DB.
 exports.patch = function(req, res) {
-  setBody(req);
+  helper.setBody(req);
   if(req.body._id) { delete req.body._id; }
   ServiceRequest.findById(req.params.id, function (err, service_request) {
-    if (err) { return handleError(res, err); }
+    if( err)             { return handleError(res, err); }
     if(!service_request) { return res.send(404); }
     var _technician = _.pick(service_request, '_id', '_technician'); 
     var updated     = _.merge(service_request, req.body, function(a, b){return b});
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      createLog(req.user._id, service_request._id, 'patch');
-      checkAndLogCost(req, service_request._id);
+      //createLog              (req.user._id, service_request._id, 'patch');
+      checkAndLogCost        (req, service_request._id);
       checkAndLogCostAccepted(req, service_request._id);
       if (req.body._technician) {
-        checkUpdateAndLogTechnician(_technician, updated);
         updated.populate('_technician', 'name', function(err, result){
+          checkUpdateAndLogTechnician(_technician, updated);
           if (err){ handleError(res, err); }
           res.json(200, updated);
         });
@@ -121,42 +116,48 @@ exports.destroy = function(req, res) {
   });
 };
 
-function setBody(req){
-  req.body = helper.addUser(req.body, req.user);
-  req.body = justIds(req.body);
-  req.body = removeUnwantedAttrs(req.body);
-}
-
-function handleServiceRequestRefs(oldModel, newModel){
-  var id = oldModel._id;
-  checkUpdateAndLogClient(oldModel, newModel);
-  checkUpdateAndLogDevice(oldModel, newModel);
-  checkUpdateAndLogTechnician(oldModel, newModel);
-}
-
-function checkUpdateAndLogClient(oldModel, newModel){
-  var id = oldModel._id;
-  if (!_.isUndefined(oldModel._client) && oldModel._client !== newModel._client){
-    helper.swapServiceRequest('Client', id, oldModel._client, newModel._client, function(){
-      createLog(newModel.updatedBy, id, 'update:client:' + newModel._client); 
+function handleServiceRequestRefs(clone, updated, callback){
+  if ( !_.isEqual( clone._client, updated._client ) ) {
+    checkUpdateAndLogClient(clone, updated, function(){
+      return callback();
     });
+  } else if (!_.isEqual( clone._device, updated._device )){
+    checkUpdateAndLogDevice(clone, updated, function(){
+      return callback();
+    });
+  } else {
+    return callback();
   }
 }
 
-function checkUpdateAndLogDevice(oldModel, newModel){
-  var id = oldModel._id;
-  if (_.isUndefined(oldModel._device) && oldModel._device !== newModel._device){
-    helper.swapServiceRequest('Device', id, oldModel._device, newModel._device, function(){
-      createLog(newModel.updatedBy, id, 'update:device:' + newModel._device); 
+function checkUpdateAndLogClient(clone, updated, callback){
+  helper.swapServiceRequest('Client', updated._id, clone._client, updated._client, function(){
+    Client.find({ _id: updated._client }).limit(1).exec(function(err, collection){
+      if (err){ return console.log(err); }
+      if (collection.length === 0){ return; }
+      var client = collection[0];
+      createLog(updated.updatedBy, updated._id, 'update:client:' + client.name);
+      callback();
     });
-  }
+  });
+}
+
+function checkUpdateAndLogDevice(clone, updated, callback){
+  helper.swapServiceRequest('Device', updated._id, clone._device, updated._device, function(){
+    Device.find({ _id: updated._device }).limit(1).exec(function(err, collection){
+      if (err){ return console.log(err); }
+      if (collection.length === 0){ return; }
+      var device = collection[0];
+      createLog(updated.updatedBy, updated._id, 'update:device:' + device.model); 
+      callback();
+    });
+  });
 }
 
 function checkUpdateAndLogTechnician(oldModel, newModel){
-  var id = oldModel._id;
-  if (_.isUndefined(oldModel._technician) && oldModel._technician !== newModel._technician){
-    helper.swapServiceRequest('Technician', id, oldModel._technician, newModel._technician, function(){
-      createLog(newModel.updatedBy, id, 'update:technician:' + newModel._technician); 
+  if(_.isUndefined(oldModel._technician) || oldModel._technician !== newModel._technician._id){
+    helper.swapServiceRequest('Technician', oldModel._id, oldModel._technician, newModel._technician._id, function(){
+      createLog(newModel.updatedBy, oldModel._id, 'patch:technician:' + newModel._technician.name); 
     });
   }
 }
@@ -169,24 +170,9 @@ function checkAndLogCost(req, id){
 
 function checkAndLogCostAccepted(req, id){
   if (!_.isUndefined(req.body.costAccepted)) { 
-    var msg = (req.body.costAccepted === true) ? "patch:costAccepted" : "patch:costAccepted:cancelled";
+    var msg = (req.body.costAccepted === null) ? "patch:costAccepted:null" : "patch:costAccepted:" + req.body.costAccepted.toString();
     createLog(req.user._id, id, msg); 
   }
-}
-
-function justIds(body){
-  if (_.isObject(body._device)     && body._device._id)    { body._device     = body._device._id; }
-  if (_.isObject(body._client)     && body._client._id)    { body._client     = body._client._id; }
-  if (_.isObject(body._technician) && body._technician._id){ body._technician = body._technician._id; }
-  return body;
-}
-
-function removeUnwantedAttrs(body){
-  if (body.createdBy){ delete body.createdBy; }
-  if (body.createdAt){ delete body.createdAt; }
-  if (body.updatedBy){ delete body.updatedBy; }
-  if (body.updatedBy){ delete body.updatedBy; }
-  return body;
 }
 
 function createLog(usr, doc, msg){

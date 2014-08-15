@@ -38,7 +38,7 @@ exports.show = function(req, res) {
 
 // Creates a new device in the DB.
 exports.create = function(req, res) {
-  req.body = helper.addUser(req.body, req.user);
+  helper.addUser(req);
   Device.create(req.body, function(err, device) {
     if(err) { return handleError(res, err); }
     createLog(req.user._id, device._id, 'create');
@@ -48,7 +48,7 @@ exports.create = function(req, res) {
 
 // Updates an existing device in the DB.
 exports.update = function(req, res) {
-  req.body = helper.addUser(req.body, req.user);
+  helper.addUser(req);
   if(req.body._id) { delete req.body._id; }
   Device.findById(req.params.id, function (err, device) {
     if (err) { return handleError(err); }
